@@ -20,6 +20,12 @@ GITHUB_ORG="rulyweisbach"
 GITHUB_REPO="gatemate"
 GITHUB_BRANCH="main"
 
+# Custom domain (leave DOMAIN_NAME empty to deploy without a custom domain).
+# The ACM cert must be ISSUED and in us-east-1.
+DOMAIN_NAME="${DOMAIN_NAME:-gatemate.vip}"
+ACM_CERT_ARN="${ACM_CERT_ARN:-arn:aws:acm:us-east-1:532993682128:certificate/ad22c34c-4bf9-4163-9dbc-4e60e082ad4c}"
+HOSTED_ZONE_ID="${HOSTED_ZONE_ID:-Z06861331G5R0EU7AQEGT}"
+
 echo "▶ Deploying CloudFormation stack '$STACK_NAME' in $REGION ..."
 
 aws cloudformation deploy \
@@ -30,7 +36,10 @@ aws cloudformation deploy \
   --parameter-overrides \
       GitHubOrg="$GITHUB_ORG" \
       GitHubRepo="$GITHUB_REPO" \
-      GitHubBranch="$GITHUB_BRANCH"
+      GitHubBranch="$GITHUB_BRANCH" \
+      DomainName="$DOMAIN_NAME" \
+      AcmCertificateArn="$ACM_CERT_ARN" \
+      HostedZoneId="$HOSTED_ZONE_ID"
 
 echo ""
 echo "✅ Stack deployed. Fetching outputs ..."

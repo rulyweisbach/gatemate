@@ -17,6 +17,24 @@ Parameters:
     Type: String
     Default: main
     Description: Branch allowed to deploy.
+  DomainName:
+    Type: String
+    Default: ""
+    Description: >
+      Custom apex domain (e.g. gatemate.vip). Leave empty to use the
+      default CloudFront URL only. When set, also set AcmCertificateArn
+      and HostedZoneId.
+  AcmCertificateArn:
+    Type: String
+    Default: ""
+    Description: ARN of an ISSUED ACM certificate in us-east-1 covering the domain + www.
+  HostedZoneId:
+    Type: String
+    Default: ""
+    Description: Route 53 hosted zone ID for the domain (for the apex + www alias records).
+
+Conditions:
+  HasCustomDomain: !Not [!Equals [!Ref DomainName, ""]]
 
 Resources:
   # ──────────────────────────────────────────────────────────────
@@ -75,6 +93,17 @@ Resources:
         DefaultRootObject: index.html
         HttpVersion: http2and3
         PriceClass: PriceClass_100
+        # Custom domain (only when DomainName param is set)
+        Aliases: !If
+          - HasCustomDomain
+          - [!Ref DomainName, !Sub "www.${DomainName}"]
+          - !Ref AWS::NoValue
+        ViewerCertificate: !If
+          - HasCustomDomain
+          - AcmCertificateArn: !Ref AcmCertificateArn
+            SslSupportMethod: sni-only
+            MinimumProtocolVersion: TLSv1.2_2021
+          - CloudFrontDefaultCertificate: true
         Origins:
           - Id: S3Origin
             DomainName: !GetAtt SiteBucket.RegionalDomainName
@@ -97,6 +126,34 @@ Resources:
             ResponseCode: 200
             ResponsePagePath: /index.html
             ErrorCachingMinTTL: 10
+
+  # ──────────────────────────────────────────────────────────────
+  # Route 53 — point the domain (apex + www) at CloudFront
+  # CloudFront's fixed alias hosted-zone ID is Z2FDTNDATAQYW2.
+  # ──────────────────────────────────────────────────────────────
+  ApexAliasRecord:
+    Type: AWS::Route53::RecordSet
+    Condition: HasCustomDomain
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Name: !Ref DomainName
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt Distribution.DomainName
+        HostedZoneId: Z2FDTNDATAQYW2
+        EvaluateTargetHealth: false
+
+  WwwAliasRecord:
+    Type: AWS::Route53::RecordSet
+    Condition: HasCustomDomain
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Name: !Sub "www.${DomainName}"
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt Distribution.DomainName
+        HostedZoneId: Z2FDTNDATAQYW2
+        EvaluateTargetHealth: false
 
   # ──────────────────────────────────────────────────────────────
   # GitHub Actions OIDC — keyless deploy (no stored AWS secrets)

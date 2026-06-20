@@ -1,0 +1,28 @@
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import AppShell from './components/layout/AppShell';
+import SplashScreen from './components/screens/SplashScreen';
+import OnboardScreen from './components/screens/OnboardScreen';
+import FlightScreen from './components/screens/FlightScreen';
+import IntentScreen from './components/screens/IntentScreen';
+import FeedScreen from './components/screens/FeedScreen';
+import ProfileScreen from './components/screens/ProfileScreen';
+import ChatScreen from './components/screens/ChatScreen';
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AppShell>
+        <Routes>
+          <Route path="/" element={<SplashScreen />} />
+          <Route path="/welcome" element={<OnboardScreen />} />
+          <Route path="/flight" element={<FlightScreen />} />
+          <Route path="/intent" element={<IntentScreen />} />
+          <Route path="/feed" element={<FeedScreen />} />
+          <Route path="/profile/:id" element={<ProfileScreen />} />
+          <Route path="/chat/:id" element={<ChatScreen />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </AppShell>
+    </BrowserRouter>
+  );
+}

@@ -1,0 +1,178 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Nunito:wght@700;800&display=swap');
+@import "tailwindcss";
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Quicksand', sans-serif;
+  background: linear-gradient(180deg, #0b1a3b 0%, #2e6bb5 55%, #b6d8f7 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  color: white;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Nunito', sans-serif;
+}
+
+::-webkit-scrollbar { width: 0; }
+
+@keyframes float-plane {
+  0%, 100% { transform: translateY(0px) rotate(-2deg); }
+  50% { transform: translateY(-18px) rotate(2deg); }
+}
+
+@keyframes float-cloud {
+  0%, 100% { transform: translateX(0px) translateY(0px); }
+  33% { transform: translateX(12px) translateY(-6px); }
+  66% { transform: translateX(-8px) translateY(4px); }
+}
+
+@keyframes float-cloud-slow {
+  0%, 100% { transform: translateX(0px) translateY(0px); }
+  50% { transform: translateX(20px) translateY(-10px); }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.15; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.5); }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 8px rgba(125, 211, 252, 0.4); }
+  50% { box-shadow: 0 0 22px rgba(125, 211, 252, 0.85); }
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.glass-dark {
+  background: rgba(11, 26, 59, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.glass-input {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 14px;
+  color: white;
+  width: 100%;
+  padding: 14px 16px;
+  font-family: 'Quicksand', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.glass-input::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.glass-input:focus {
+  border-color: rgba(125, 211, 252, 0.7);
+  box-shadow: 0 0 0 3px rgba(125, 211, 252, 0.18);
+}
+
+.btn-solid {
+  background: white;
+  color: #0b1a3b;
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  border-radius: 40px;
+  padding: 15px 32px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.btn-solid:hover, .btn-solid:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+  outline: none;
+}
+
+.btn-solid:active { transform: translateY(0); }
+
+.btn-glass {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  color: white;
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  border-radius: 40px;
+  padding: 15px 32px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  width: 100%;
+  transition: transform 0.15s, background 0.2s;
+}
+
+.btn-glass:hover, .btn-glass:focus {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.intent-chip {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  border-radius: 40px;
+  padding: 10px 18px;
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.intent-chip.selected {
+  background: rgba(125, 211, 252, 0.28);
+  border-color: #7dd3fc;
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.intent-chip:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.anim-float-plane { animation: float-plane 3.5s ease-in-out infinite; }
+.anim-slide-up { animation: slide-up 0.5s ease-out forwards; }
+.anim-fade-in { animation: fade-in 0.6s ease-out forwards; }

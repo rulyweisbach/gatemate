@@ -13,7 +13,9 @@
 set -euo pipefail
 
 STACK_NAME="gatemate-frontend"
-REGION="${AWS_REGION:-us-east-1}"   # CloudFront/OIDC live in us-east-1
+# S3 origin lives here. CloudFront + OIDC + IAM are global (region-independent).
+# The ACM cert for CloudFront is the one exception — it must be in us-east-1.
+REGION="${AWS_REGION:-il-central-1}"
 GITHUB_ORG="rulyweisbach"
 GITHUB_REPO="gatemate"
 GITHUB_BRANCH="main"

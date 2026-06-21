@@ -11,12 +11,6 @@ Parameters:
   CodeS3Key:
     Type: String
     Description: S3 key of the Lambda code zip.
-  CallbackUrls:
-    Type: CommaDelimitedList
-    Default: "https://gatemate.vip,https://www.gatemate.vip,http://localhost:5173"
-  LogoutUrls:
-    Type: CommaDelimitedList
-    Default: "https://gatemate.vip,https://www.gatemate.vip,http://localhost:5173"
   GoogleClientId:
     Type: String
     Default: ""
@@ -84,8 +78,16 @@ Resources:
       AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthFlows: [code]
       AllowedOAuthScopes: [openid, email, profile]
-      CallbackURLs: !Ref CallbackUrls
-      LogoutURLs: !Ref LogoutUrls
+      CallbackURLs:
+        - https://gatemate.vip
+        - https://www.gatemate.vip
+        - https://d1ciaxgk453t4o.cloudfront.net
+        - http://localhost:5173
+      LogoutURLs:
+        - https://gatemate.vip
+        - https://www.gatemate.vip
+        - https://d1ciaxgk453t4o.cloudfront.net
+        - http://localhost:5173
       SupportedIdentityProviders: [COGNITO, Google]
       ExplicitAuthFlows:
         - ALLOW_USER_SRP_AUTH

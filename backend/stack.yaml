@@ -139,6 +139,9 @@ Resources:
                   - !Sub "${UsersTable.Arn}/index/*"
                   - !GetAtt MessagesTable.Arn
                   - !GetAtt ConnectionsTable.Arn
+              - Effect: Allow
+                Action: s3:PutObject
+                Resource: !Sub "${MediaBucket.Arn}/photos/*"
 
   ApiFunction:
     Type: AWS::Lambda::Function
@@ -158,6 +161,7 @@ Resources:
           USERS_TABLE: !Ref UsersTable
           MESSAGES_TABLE: !Ref MessagesTable
           CONNECTIONS_TABLE: !Ref ConnectionsTable
+          MEDIA_BUCKET: !Ref MediaBucket
 
   # ── HTTP API (API Gateway v2) ──────────────────────────────────
   HttpApi:
@@ -255,6 +259,15 @@ Resources:
       AuthorizerId: !Ref JwtAuthorizer
       Target: !Sub "integrations/${Integration}"
 
+  RouteUploadUrl:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: "POST /upload-url"
+      AuthorizationType: JWT
+      AuthorizerId: !Ref JwtAuthorizer
+      Target: !Sub "integrations/${Integration}"
+
   Stage:
     Type: AWS::ApiGatewayV2::Stage
     Properties:
@@ -270,6 +283,199 @@ Resources:
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${HttpApi}/*"
 
+  # ── S3 media bucket (profile photos) ───────────────────────────
+  MediaBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "gatemate-media-${AWS::Region}-${AWS::AccountId}"
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        IgnorePublicAcls: true
+        BlockPublicPolicy: false
+        RestrictPublicBuckets: false
+      CorsConfiguration:
+        CorsRules:
+          - AllowedMethods: [PUT, GET]
+            AllowedOrigins: ["*"]
+            AllowedHeaders: ["*"]
+            MaxAge: 3000
+
+  MediaBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref MediaBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: PublicReadPhotos
+            Effect: Allow
+            Principal: "*"
+            Action: s3:GetObject
+            Resource: !Sub "${MediaBucket.Arn}/photos/*"
+
+  # ── WebSocket chat ─────────────────────────────────────────────
+  WsConnectionsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: gatemate-ws-connections
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - { AttributeName: connectionId, AttributeType: S }
+        - { AttributeName: userId, AttributeType: S }
+      KeySchema:
+        - { AttributeName: connectionId, KeyType: HASH }
+      GlobalSecondaryIndexes:
+        - IndexName: userId-index
+          KeySchema: [{ AttributeName: userId, KeyType: HASH }]
+          Projection: { ProjectionType: ALL }
+
+  WsLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: { Service: lambda.amazonaws.com }
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: ws-access
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:Query
+                Resource:
+                  - !GetAtt WsConnectionsTable.Arn
+                  - !Sub "${WsConnectionsTable.Arn}/index/*"
+                  - !GetAtt MessagesTable.Arn
+              - Effect: Allow
+                Action: execute-api:ManageConnections
+                Resource: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*"
+
+  WsAuthorizerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: { Service: lambda.amazonaws.com }
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+  WsFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: gatemate-ws
+      Runtime: nodejs20.x
+      Architectures: [arm64]
+      Handler: wsRouter.handler
+      MemorySize: 256
+      Timeout: 10
+      Role: !GetAtt WsLambdaRole.Arn
+      Code:
+        S3Bucket: !Ref CodeS3Bucket
+        S3Key: !Ref CodeS3Key
+      Environment:
+        Variables:
+          WS_TABLE: !Ref WsConnectionsTable
+          MESSAGES_TABLE: !Ref MessagesTable
+
+  WsAuthorizerFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: gatemate-ws-authorizer
+      Runtime: nodejs20.x
+      Architectures: [arm64]
+      Handler: wsAuthorizer.handler
+      MemorySize: 256
+      Timeout: 10
+      Role: !GetAtt WsAuthorizerRole.Arn
+      Code:
+        S3Bucket: !Ref CodeS3Bucket
+        S3Key: !Ref CodeS3Key
+      Environment:
+        Variables:
+          USER_POOL_ID: !Ref UserPool
+          USER_POOL_CLIENT_ID: !Ref UserPoolClient
+
+  WebSocketApi:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: gatemate-ws
+      ProtocolType: WEBSOCKET
+      RouteSelectionExpression: "$request.body.action"
+
+  WsAuthorizer:
+    Type: AWS::ApiGatewayV2::Authorizer
+    Properties:
+      ApiId: !Ref WebSocketApi
+      AuthorizerType: REQUEST
+      Name: ws-jwt
+      IdentitySource: ["route.request.querystring.token"]
+      AuthorizerUri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WsAuthorizerFunction.Arn}/invocations"
+
+  WsIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref WebSocketApi
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WsFunction.Arn}/invocations"
+
+  WsConnectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref WebSocketApi
+      RouteKey: $connect
+      AuthorizationType: CUSTOM
+      AuthorizerId: !Ref WsAuthorizer
+      Target: !Sub "integrations/${WsIntegration}"
+
+  WsDisconnectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref WebSocketApi
+      RouteKey: $disconnect
+      Target: !Sub "integrations/${WsIntegration}"
+
+  WsSendRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref WebSocketApi
+      RouteKey: sendMessage
+      Target: !Sub "integrations/${WsIntegration}"
+
+  WsStage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      ApiId: !Ref WebSocketApi
+      StageName: prod
+      AutoDeploy: true
+
+  WsInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref WsFunction
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*"
+
+  WsAuthorizerInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref WsAuthorizerFunction
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*"
+
 Outputs:
   ApiUrl:
     Description: Base URL of the REST API.
@@ -280,3 +486,8 @@ Outputs:
     Value: !Ref UserPoolClient
   HostedUiDomain:
     Value: !Sub "https://gatemate-${AWS::AccountId}.auth.${AWS::Region}.amazoncognito.com"
+  WebSocketUrl:
+    Description: WebSocket URL for real-time chat (connect with ?token=ID_TOKEN).
+    Value: !Sub "wss://${WebSocketApi}.execute-api.${AWS::Region}.amazonaws.com/prod"
+  MediaBucketName:
+    Value: !Ref MediaBucket

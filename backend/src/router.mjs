@@ -9,6 +9,7 @@ import { handler as getUser } from './handlers/getUser.mjs';
 import { handler as sayHi } from './handlers/sayHi.mjs';
 import { handler as getMessages } from './handlers/getMessages.mjs';
 import { handler as sendMessage } from './handlers/sendMessage.mjs';
+import { handler as uploadUrl } from './handlers/uploadUrl.mjs';
 import { json } from './lib/http.mjs';
 
 const routes = [
@@ -19,6 +20,7 @@ const routes = [
   { method: 'POST', re: /^\/connections\/([^/]+)$/, fn: sayHi,       params: ['id'] },
   { method: 'GET',  re: /^\/messages\/([^/]+)$/,    fn: getMessages, params: ['otherId'] },
   { method: 'POST', re: /^\/messages\/([^/]+)$/,    fn: sendMessage, params: ['otherId'] },
+  { method: 'POST', re: /^\/upload-url$/,           fn: uploadUrl,   params: [] },
 ];
 
 export const handler = async (event) => {

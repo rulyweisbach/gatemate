@@ -18,9 +18,12 @@ if ! aws s3api head-bucket --bucket "$ARTIFACT_BUCKET" 2>/dev/null; then
     --create-bucket-configuration LocationConstraint="$REGION" >/dev/null
 fi
 
+echo "▶ Installing production dependencies"
+( cd "$HERE/src" && npm install --omit=dev --no-audit --no-fund --silent )
+
 echo "▶ Packaging Lambda code"
 rm -f "$HERE/code.zip"
-( cd "$HERE/src" && zip -rq "$HERE/code.zip" . )
+( cd "$HERE/src" && zip -rq "$HERE/code.zip" . -x "package-lock.json" )
 HASH="$(shasum -a 256 "$HERE/code.zip" | cut -c1-12)"
 KEY="backend/${HASH}.zip"
 aws s3 cp "$HERE/code.zip" "s3://${ARTIFACT_BUCKET}/${KEY}" >/dev/null

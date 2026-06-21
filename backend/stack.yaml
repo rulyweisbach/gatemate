@@ -17,6 +17,15 @@ Parameters:
   LogoutUrls:
     Type: CommaDelimitedList
     Default: "https://gatemate.vip,https://www.gatemate.vip,http://localhost:5173"
+  GoogleClientId:
+    Type: String
+    Default: ""
+    Description: Google OAuth client ID (passed from SSM by deploy.sh).
+  GoogleClientSecret:
+    Type: String
+    NoEcho: true
+    Default: ""
+    Description: Google OAuth client secret (passed from SSM by deploy.sh).
 
 Resources:
   # ── Cognito ────────────────────────────────────────────────────
@@ -48,8 +57,26 @@ Resources:
       Domain: !Sub "gatemate-${AWS::AccountId}"
       UserPoolId: !Ref UserPool
 
+  # Google sign-in. Credentials are pulled from SSM at deploy time:
+  #   /gatemate/google-client-id      (String)
+  #   /gatemate/google-client-secret  (SecureString)
+  GoogleIdP:
+    Type: AWS::Cognito::UserPoolIdentityProvider
+    Properties:
+      UserPoolId: !Ref UserPool
+      ProviderName: Google
+      ProviderType: Google
+      ProviderDetails:
+        client_id: !Ref GoogleClientId
+        client_secret: !Ref GoogleClientSecret
+        authorize_scopes: "openid email profile"
+      AttributeMapping:
+        email: email
+        name: name
+
   UserPoolClient:
     Type: AWS::Cognito::UserPoolClient
+    DependsOn: GoogleIdP
     Properties:
       ClientName: gatemate-web
       UserPoolId: !Ref UserPool
@@ -59,7 +86,7 @@ Resources:
       AllowedOAuthScopes: [openid, email, profile]
       CallbackURLs: !Ref CallbackUrls
       LogoutURLs: !Ref LogoutUrls
-      SupportedIdentityProviders: [COGNITO]
+      SupportedIdentityProviders: [COGNITO, Google]
       ExplicitAuthFlows:
         - ALLOW_USER_SRP_AUTH
         - ALLOW_REFRESH_TOKEN_AUTH

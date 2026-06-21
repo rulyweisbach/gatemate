@@ -1,13 +1,19 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from 'react-oidc-context';
 
 export default function SplashScreen() {
   const navigate = useNavigate();
+  const auth = useAuth();
 
   useEffect(() => {
-    const t = setTimeout(() => navigate('/welcome'), 2500);
+    // While returning from Google, the auth lib exchanges the code — wait for it.
+    if (auth.isLoading) return;
+    // Logged in → into the app; otherwise → onboarding.
+    const authed = auth.isAuthenticated;
+    const t = setTimeout(() => navigate(authed ? '/flight' : '/welcome'), authed ? 400 : 2500);
     return () => clearTimeout(t);
-  }, [navigate]);
+  }, [auth.isLoading, auth.isAuthenticated, navigate]);
 
   return (
     <div

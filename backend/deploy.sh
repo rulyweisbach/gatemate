@@ -29,6 +29,11 @@ KEY="backend/${HASH}.zip"
 aws s3 cp "$HERE/code.zip" "s3://${ARTIFACT_BUCKET}/${KEY}" >/dev/null
 echo "  uploaded s3://${ARTIFACT_BUCKET}/${KEY}"
 
+# Pull Google OAuth credentials from SSM (kept out of source + chat).
+# Empty strings are fine if Google isn't configured yet.
+GOOGLE_ID="$(aws ssm get-parameter --region "$REGION" --name /gatemate/google-client-id --query Parameter.Value --output text 2>/dev/null || echo '')"
+GOOGLE_SECRET="$(aws ssm get-parameter --region "$REGION" --name /gatemate/google-client-secret --with-decryption --query Parameter.Value --output text 2>/dev/null || echo '')"
+
 echo "▶ Deploying CloudFormation stack '$STACK'"
 aws cloudformation deploy \
   --region "$REGION" \
@@ -37,7 +42,9 @@ aws cloudformation deploy \
   --capabilities CAPABILITY_IAM \
   --parameter-overrides \
       CodeS3Bucket="$ARTIFACT_BUCKET" \
-      CodeS3Key="$KEY"
+      CodeS3Key="$KEY" \
+      GoogleClientId="$GOOGLE_ID" \
+      GoogleClientSecret="$GOOGLE_SECRET"
 
 echo ""
 echo "✅ Deployed. Outputs:"

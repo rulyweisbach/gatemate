@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from 'react-oidc-context';
 
 // ── Inline SVG brand logos ────────────────────────────────────────────────────
 
@@ -70,10 +71,16 @@ const SOCIAL_BUTTONS: {
 
 export default function OnboardScreen() {
   const navigate = useNavigate();
+  const auth = useAuth();
 
-  const handleSocial = (_provider: SocialProvider) => {
-    // Demo: skip auth and go straight to flight entry
-    navigate('/flight');
+  const handleSocial = (provider: SocialProvider) => {
+    if (provider === 'google') {
+      // Real Cognito Hosted-UI login, jumping straight to Google.
+      void auth.signinRedirect({ extraQueryParams: { identity_provider: 'Google' } });
+      return;
+    }
+    // Facebook / Apple aren't configured as identity providers yet.
+    alert(`${provider[0].toUpperCase() + provider.slice(1)} login is coming soon — Google works now!`);
   };
 
   return (

@@ -1,5 +1,8 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from 'react-oidc-context';
 import { useAppStore } from '../../store/useAppStore';
+import { useApi } from '../../api/client';
 import type { Intent } from '../../types';
 import IntentChip from '../ui/IntentChip';
 import GlassButton from '../ui/GlassButton';
@@ -16,12 +19,31 @@ const ALL_INTENTS: Intent[] = [
 
 export default function IntentScreen() {
   const navigate = useNavigate();
-  const { selectedIntents, toggleIntent } = useAppStore();
+  const auth = useAuth();
+  const api = useApi();
+  const { selectedIntents, toggleIntent, flightNumber, gate } = useAppStore();
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const ctaLabel =
-    selectedIntents.length === 0
-      ? 'Show Everyone'
-      : `Show ${selectedIntents.length} Filter${selectedIntents.length > 1 ? 's' : ''}`;
+  const handleContinue = async () => {
+    setSaving(true);
+    setError(null);
+    try {
+      // Save the caller's profile so they show up in others' feeds.
+      const claims = auth.user?.profile;
+      await api.updateMe({
+        name: (claims?.name as string) || (claims?.email as string) || 'Traveler',
+        photo: (claims?.picture as string) || '',
+        flight: flightNumber || undefined,
+        gate: gate || undefined,
+        intents: selectedIntents,
+      });
+      navigate('/feed');
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not save your profile');
+      setSaving(false);
+    }
+  };
 
   return (
     <div
@@ -78,13 +100,24 @@ export default function IntentScreen() {
         </p>
       </div>
 
+      {error && (
+        <p className="text-xs text-center" style={{ color: '#ffb4b4' }}>
+          {error}
+        </p>
+      )}
+
       {/* CTA */}
       <div
         className="mt-auto pt-4"
         style={{ animation: 'slide-up 0.5s ease-out forwards', animationDelay: '0.25s', opacity: 0 }}
       >
-        <GlassButton variant="solid" onClick={() => navigate('/feed')}>
-          {ctaLabel}
+        <GlassButton
+          variant="solid"
+          onClick={handleContinue}
+          disabled={saving}
+          style={saving ? { opacity: 0.6, cursor: 'wait' } : {}}
+        >
+          {saving ? 'Finding your match…' : 'Find your match'}
         </GlassButton>
       </div>
     </div>

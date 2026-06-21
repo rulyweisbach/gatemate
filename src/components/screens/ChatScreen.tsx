@@ -1,30 +1,53 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useAuth } from 'react-oidc-context';
 import { ArrowLeft, Send } from 'lucide-react';
-import { mockUsers, autoReplies } from '../../data/mockUsers';
-import { useAppStore } from '../../store/useAppStore';
-import type { Message } from '../../types';
-
-const ME = 'me';
-
-function generateId() {
-  return Math.random().toString(36).slice(2);
-}
+import { useApi } from '../../api/client';
+import type { Profile, ApiMessage } from '../../types';
+import Avatar from '../ui/Avatar';
 
 export default function ChatScreen() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { addMessage, getMessages } = useAppStore();
-  const user = mockUsers.find((u) => u.id === id);
+  const auth = useAuth();
+  const api = useApi();
+  const myId = auth.user?.profile?.sub;
+
+  const [other, setOther] = useState<Profile | null>(null);
+  const [messages, setMessages] = useState<ApiMessage[]>([]);
   const [text, setText] = useState('');
+  const [sending, setSending] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
-  const messages = id ? getMessages(id) : [];
+
+  const loadMessages = useCallback(async () => {
+    if (!id) return;
+    try {
+      const res = await api.getMessages(id);
+      setMessages(res.messages ?? []);
+    } catch {
+      /* keep existing messages on transient errors */
+    }
+  }, [api, id]);
+
+  // Load the other user's profile + record the connection (best-effort).
+  useEffect(() => {
+    if (!id) return;
+    api.getUser(id).then((r) => setOther(r.profile)).catch(() => setOther(null));
+    api.sayHi(id).catch(() => {});
+  }, [api, id]);
+
+  // Initial history + light polling for new messages.
+  useEffect(() => {
+    loadMessages();
+    const t = setInterval(loadMessages, 4000);
+    return () => clearInterval(t);
+  }, [loadMessages]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  if (!user || !id) {
+  if (!id) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <p className="text-white">User not found</p>
@@ -32,29 +55,39 @@ export default function ChatScreen() {
     );
   }
 
-  const handleSend = () => {
+  const firstName = other?.name?.split(' ')[0] ?? 'there';
+
+  const handleSend = async () => {
     const trimmed = text.trim();
-    if (!trimmed) return;
-
-    const userMsg: Message = { id: generateId(), senderId: ME, text: trimmed, timestamp: Date.now() };
-    addMessage(id, userMsg);
+    if (!trimmed || sending) return;
+    setSending(true);
     setText('');
-
-    setTimeout(() => {
-      const reply: Message = {
-        id: generateId(),
-        senderId: id,
-        text: autoReplies[Math.floor(Math.random() * autoReplies.length)],
-        timestamp: Date.now(),
-      };
-      addMessage(id, reply);
-    }, 900 + Math.random() * 800);
+    // Optimistic append.
+    const optimistic: ApiMessage = {
+      conversationId: '',
+      sentAt: Date.now(),
+      messageId: `tmp-${Date.now()}`,
+      senderId: myId ?? 'me',
+      recipientId: id,
+      text: trimmed,
+    };
+    setMessages((m) => [...m, optimistic]);
+    try {
+      await api.sendMessage(id, trimmed);
+      await loadMessages();
+    } catch {
+      // Roll back the optimistic message on failure.
+      setMessages((m) => m.filter((x) => x.messageId !== optimistic.messageId));
+      setText(trimmed);
+    } finally {
+      setSending(false);
+    }
   };
 
   const handleKey = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      handleSend();
+      void handleSend();
     }
   };
 
@@ -79,23 +112,12 @@ export default function ChatScreen() {
           <ArrowLeft size={18} className="text-white" />
         </button>
 
-        <div
-          className="flex items-center justify-center text-2xl shrink-0"
-          style={{
-            width: 40,
-            height: 40,
-            background: 'rgba(255,255,255,0.12)',
-            borderRadius: 12,
-            border: '1px solid rgba(255,255,255,0.18)',
-          }}
-        >
-          {user.photo}
-        </div>
+        <Avatar photo={other?.photo} size={40} radius={12} />
 
         <div className="flex-1 min-w-0">
-          <p className="font-bold text-white text-sm truncate">{user.name}</p>
+          <p className="font-bold text-white text-sm truncate">{other?.name ?? 'Traveler'}</p>
           <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            📍 {user.distance} · ✈️ {user.gate}
+            {other?.distance ? `📍 ${other.distance} · ` : ''}✈️ {other?.gate ?? other?.flight ?? 'at the airport'}
           </p>
         </div>
       </div>
@@ -105,7 +127,7 @@ export default function ChatScreen() {
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center flex-1 gap-3 text-center py-12">
             <div className="text-5xl">✈️</div>
-            <p className="font-bold text-white">Say hi to {user.name.split(' ')[0]}!</p>
+            <p className="font-bold text-white">Say hi to {firstName}!</p>
             <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>
               You're both at the airport ✈️
             </p>
@@ -113,22 +135,15 @@ export default function ChatScreen() {
         )}
 
         {messages.map((msg) => {
-          const isMe = msg.senderId === ME;
+          const isMe = msg.senderId === myId;
           return (
-            <div
-              key={msg.id}
-              className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}
-            >
+            <div key={msg.messageId} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
               <div
                 className="px-4 py-2.5 max-w-[78%] text-sm font-medium"
                 style={{
                   borderRadius: isMe ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
-                  background: isMe
-                    ? 'rgba(125, 211, 252, 0.35)'
-                    : 'rgba(255, 255, 255, 0.13)',
-                  border: isMe
-                    ? '1px solid rgba(125, 211, 252, 0.45)'
-                    : '1px solid rgba(255,255,255,0.18)',
+                  background: isMe ? 'rgba(125, 211, 252, 0.35)' : 'rgba(255, 255, 255, 0.13)',
+                  border: isMe ? '1px solid rgba(125, 211, 252, 0.45)' : '1px solid rgba(255,255,255,0.18)',
                   backdropFilter: 'blur(12px)',
                   color: 'white',
                   wordBreak: 'break-word',
@@ -153,7 +168,7 @@ export default function ChatScreen() {
         <div className="flex gap-3 items-center">
           <input
             className="glass-input flex-1"
-            placeholder={`Message ${user.name.split(' ')[0]}...`}
+            placeholder={`Message ${firstName}…`}
             value={text}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={handleKey}
@@ -161,7 +176,7 @@ export default function ChatScreen() {
           />
           <button
             onClick={handleSend}
-            disabled={!text.trim()}
+            disabled={!text.trim() || sending}
             className="flex items-center justify-center rounded-full shrink-0 transition-all"
             style={{
               width: 44,

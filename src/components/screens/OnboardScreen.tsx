@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
 
 // ── Inline SVG brand logos ────────────────────────────────────────────────────
@@ -70,7 +69,6 @@ const SOCIAL_BUTTONS: {
 ];
 
 export default function OnboardScreen() {
-  const navigate = useNavigate();
   const auth = useAuth();
 
   const handleSocial = (provider: SocialProvider) => {
@@ -177,7 +175,7 @@ export default function OnboardScreen() {
         <button
           type="button"
           className="btn-solid w-full"
-          onClick={() => navigate('/flight')}
+          onClick={() => void auth.signinRedirect()}
         >
           Get Started
         </button>

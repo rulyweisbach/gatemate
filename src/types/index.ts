@@ -31,3 +31,33 @@ export interface Message {
   text: string;
   timestamp: number;
 }
+
+// Profile as stored/returned by the backend API (userId key, intents array).
+export interface Profile {
+  userId: string;
+  name?: string;
+  email?: string;
+  photo?: string;
+  verified?: boolean;
+  age?: number;
+  tagline?: string;
+  bio?: string;
+  intents?: Intent[];
+  flight?: string;
+  gate?: string;
+  departure?: string;
+  origin?: string;
+  destination?: string;
+  distance?: string;
+  mutualConnections?: number;
+}
+
+// Chat message as returned by the backend.
+export interface ApiMessage {
+  conversationId: string;
+  sentAt: number;
+  messageId: string;
+  senderId: string;
+  recipientId: string;
+  text: string;
+}

@@ -1,0 +1,74 @@
+{
+  "gatemate-users": [
+    { "PutRequest": { "Item": {
+      "userId": {"S": "seed-1"}, "name": {"S": "Maya Cohen"}, "age": {"N": "31"},
+      "intents": {"L": [{"S": "networking"}]}, "verified": {"BOOL": true}, "photo": {"S": "👩‍💼"},
+      "tagline": {"S": "VC at TLV Ventures · Always down to talk startups"},
+      "bio": {"S": "Partner at TLV Ventures, flying to NYC for a portfolio meetup. Love talking fintech, SaaS, and the future of work."},
+      "flight": {"S": "LY 002"}, "gate": {"S": "A14"}, "departure": {"S": "14:30"},
+      "origin": {"S": "TLV"}, "destination": {"S": "JFK"}, "distance": {"S": "12m away"}, "mutualConnections": {"N": "3"} } } },
+    { "PutRequest": { "Item": {
+      "userId": {"S": "seed-4"}, "name": {"S": "Tom Kessler"}, "age": {"N": "29"},
+      "intents": {"L": [{"S": "lounge"}]}, "verified": {"BOOL": true}, "photo": {"S": "🧑‍💻"},
+      "tagline": {"S": "Senior engineer at Wix · Remote-first forever"},
+      "bio": {"S": "Full-stack engineer on a team trip to NYC. Have lounge access and would love some company."},
+      "flight": {"S": "LY 002"}, "gate": {"S": "A14"}, "departure": {"S": "14:30"},
+      "origin": {"S": "TLV"}, "destination": {"S": "JFK"}, "distance": {"S": "8m away"}, "mutualConnections": {"N": "5"} } } },
+    { "PutRequest": { "Item": {
+      "userId": {"S": "seed-8"}, "name": {"S": "Yonatan Shapiro"}, "age": {"N": "45"},
+      "intents": {"L": [{"S": "networking"}]}, "verified": {"BOOL": true}, "photo": {"S": "👨‍💼"},
+      "tagline": {"S": "Serial founder · 2 exits · Building in NYC"},
+      "bio": {"S": "Two exits in cybersecurity, now exploring AI infrastructure. Flying to NYC for fundraising meetings."},
+      "flight": {"S": "LY 002"}, "gate": {"S": "A14"}, "departure": {"S": "14:30"},
+      "origin": {"S": "TLV"}, "destination": {"S": "JFK"}, "distance": {"S": "20m away"}, "mutualConnections": {"N": "8"} } } },
+    { "PutRequest": { "Item": {
+      "userId": {"S": "seed-10"}, "name": {"S": "Eran Bar"}, "age": {"N": "36"},
+      "intents": {"L": [{"S": "dating"}]}, "verified": {"BOOL": true}, "photo": {"S": "🧑‍🏫"},
+      "tagline": {"S": "Travel writer · Fluent in 4 languages"},
+      "bio": {"S": "Writing a book about love stories born in transit. Looking for a good conversation between gates."},
+      "flight": {"S": "LY 002"}, "gate": {"S": "A14"}, "departure": {"S": "14:30"},
+      "origin": {"S": "TLV"}, "destination": {"S": "JFK"}, "distance": {"S": "25m away"}, "mutualConnections": {"N": "2"} } } },
+    { "PutRequest": { "Item": {
+      "userId": {"S": "seed-2"}, "name": {"S": "Lior Ben-David"}, "age": {"N": "27"},
+      "intents": {"L": [{"S": "friendship"}]}, "verified": {"BOOL": true}, "photo": {"S": "🧑‍🎨"},
+      "tagline": {"S": "Digital nomad & photographer · 47 countries"},
+      "bio": {"S": "Freelance photographer and full-time traveler. Heading to Paris for a month-long residency."},
+      "flight": {"S": "LY 314"}, "gate": {"S": "B8"}, "departure": {"S": "16:00"},
+      "origin": {"S": "TLV"}, "destination": {"S": "CDG"}, "distance": {"S": "40m away"}, "mutualConnections": {"N": "1"} } } },
+    { "PutRequest": { "Item": {
+      "userId": {"S": "seed-6"}, "name": {"S": "Rafael Mizrahi"}, "age": {"N": "38"},
+      "intents": {"L": [{"S": "networking"}]}, "verified": {"BOOL": true}, "photo": {"S": "👨‍🍳"},
+      "tagline": {"S": "Chef · Opening a restaurant in Paris"},
+      "bio": {"S": "Award-winning chef opening my second restaurant in Le Marais. Looking for investors and great conversation."},
+      "flight": {"S": "LY 314"}, "gate": {"S": "B8"}, "departure": {"S": "16:00"},
+      "origin": {"S": "TLV"}, "destination": {"S": "CDG"}, "distance": {"S": "35m away"}, "mutualConnections": {"N": "2"} } } },
+    { "PutRequest": { "Item": {
+      "userId": {"S": "seed-7"}, "name": {"S": "Sophie Laurent"}, "age": {"N": "32"},
+      "intents": {"L": [{"S": "local-guide"}]}, "verified": {"BOOL": true}, "photo": {"S": "👩‍🌾"},
+      "tagline": {"S": "Parisian expat returning home"},
+      "bio": {"S": "Lived in Tel Aviv 3 years, heading back to Paris. Ask me anything — hidden gems, best neighborhoods."},
+      "flight": {"S": "LY 314"}, "gate": {"S": "B8"}, "departure": {"S": "16:00"},
+      "origin": {"S": "TLV"}, "destination": {"S": "CDG"}, "distance": {"S": "42m away"}, "mutualConnections": {"N": "1"} } } },
+    { "PutRequest": { "Item": {
+      "userId": {"S": "seed-3"}, "name": {"S": "Aisha Okonkwo"}, "age": {"N": "34"},
+      "intents": {"L": [{"S": "shared-travel"}]}, "verified": {"BOOL": true}, "photo": {"S": "👩‍🔬"},
+      "tagline": {"S": "Biotech researcher · Moving to London"},
+      "bio": {"S": "Just accepted a research fellowship at Imperial College London. Looking for someone to share the journey."},
+      "flight": {"S": "LY 316"}, "gate": {"S": "B12"}, "departure": {"S": "17:15"},
+      "origin": {"S": "TLV"}, "destination": {"S": "LHR"}, "distance": {"S": "55m away"}, "mutualConnections": {"N": "0"} } } },
+    { "PutRequest": { "Item": {
+      "userId": {"S": "seed-5"}, "name": {"S": "Noa Friedman"}, "age": {"N": "26"},
+      "intents": {"L": [{"S": "first-time"}]}, "verified": {"BOOL": false}, "photo": {"S": "👩‍🎓"},
+      "tagline": {"S": "First solo flight! Moving to study in London 🎓"},
+      "bio": {"S": "My first time flying alone. Starting my master's at UCL. Would love a friendly face at the gate!"},
+      "flight": {"S": "LY 316"}, "gate": {"S": "B12"}, "departure": {"S": "17:15"},
+      "origin": {"S": "TLV"}, "destination": {"S": "LHR"}, "distance": {"S": "60m away"}, "mutualConnections": {"N": "0"} } } },
+    { "PutRequest": { "Item": {
+      "userId": {"S": "seed-9"}, "name": {"S": "Daniela Russo"}, "age": {"N": "24"},
+      "intents": {"L": [{"S": "friendship"}]}, "verified": {"BOOL": false}, "photo": {"S": "👩‍🎤"},
+      "tagline": {"S": "Musician & songwriter · Touring Europe"},
+      "bio": {"S": "Just wrapped my first EP and heading to a summer tour across Europe. Love meeting creatives."},
+      "flight": {"S": "LY 316"}, "gate": {"S": "B12"}, "departure": {"S": "17:15"},
+      "origin": {"S": "TLV"}, "destination": {"S": "LHR"}, "distance": {"S": "70m away"}, "mutualConnections": {"N": "0"} } } }
+  ]
+}

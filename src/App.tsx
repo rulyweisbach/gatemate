@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import AppShell from './components/layout/AppShell';
+import RequireAuth from './components/RequireAuth';
 import SplashScreen from './components/screens/SplashScreen';
 import OnboardScreen from './components/screens/OnboardScreen';
 import FlightScreen from './components/screens/FlightScreen';
@@ -13,13 +14,17 @@ export default function App() {
     <BrowserRouter>
       <AppShell>
         <Routes>
+          {/* Public */}
           <Route path="/" element={<SplashScreen />} />
           <Route path="/welcome" element={<OnboardScreen />} />
-          <Route path="/flight" element={<FlightScreen />} />
-          <Route path="/intent" element={<IntentScreen />} />
-          <Route path="/feed" element={<FeedScreen />} />
-          <Route path="/profile/:id" element={<ProfileScreen />} />
-          <Route path="/chat/:id" element={<ChatScreen />} />
+
+          {/* Authenticated app */}
+          <Route path="/flight" element={<RequireAuth><FlightScreen /></RequireAuth>} />
+          <Route path="/intent" element={<RequireAuth><IntentScreen /></RequireAuth>} />
+          <Route path="/feed" element={<RequireAuth><FeedScreen /></RequireAuth>} />
+          <Route path="/profile/:id" element={<RequireAuth><ProfileScreen /></RequireAuth>} />
+          <Route path="/chat/:id" element={<RequireAuth><ChatScreen /></RequireAuth>} />
+
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AppShell>

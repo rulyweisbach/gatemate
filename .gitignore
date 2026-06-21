@@ -26,3 +26,6 @@ dist-ssr
 
 # Claude Code local state
 .claude
+
+# Backend build artifact
+backend/code.zip

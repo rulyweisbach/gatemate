@@ -1,0 +1,7 @@
+{
+  "name": "gatemate-backend",
+  "version": "1.0.0",
+  "description": "GateMate serverless backend (Lambda + API Gateway + DynamoDB + Cognito)",
+  "type": "module",
+  "private": true
+}

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plane, Hash, DoorOpen, Calendar, MapPin, Mic } from 'lucide-react';
+import { Plane, Hash, DoorOpen, Calendar, MapPin, Mic, UserCircle } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
 import type { SearchMode, EventType } from '../../store/useAppStore';
 import GlassCard from '../layout/GlassCard';
@@ -375,13 +375,28 @@ export default function FlightScreen() {
       }}
     >
       {/* Header */}
-      <div className="pt-6 anim-slide-up">
-        <h1 className="text-3xl font-black text-white" style={{ fontFamily: 'Nunito, sans-serif' }}>
-          {titles[searchMode]}
-        </h1>
-        <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.55)' }}>
-          {subtitles[searchMode]}
-        </p>
+      <div className="flex items-start justify-between gap-3 pt-6 anim-slide-up">
+        <div>
+          <h1 className="text-3xl font-black text-white" style={{ fontFamily: 'Nunito, sans-serif' }}>
+            {titles[searchMode]}
+          </h1>
+          <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.55)' }}>
+            {subtitles[searchMode]}
+          </p>
+        </div>
+        <button
+          onClick={() => navigate('/me')}
+          className="flex items-center justify-center rounded-full shrink-0 mt-1"
+          style={{
+            width: 40,
+            height: 40,
+            background: 'rgba(125,211,252,0.2)',
+            border: '1px solid rgba(125,211,252,0.4)',
+          }}
+          aria-label="Edit my profile"
+        >
+          <UserCircle size={22} style={{ color: '#7dd3fc' }} />
+        </button>
       </div>
 
       {/* Mode switcher */}

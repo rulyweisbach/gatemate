@@ -4,7 +4,7 @@
 import { useMemo } from 'react';
 import { useAuth } from 'react-oidc-context';
 import { API_URL } from '../auth/authConfig';
-import type { Profile, ApiMessage } from '../types';
+import type { Profile, ApiMessage, Group } from '../types';
 
 export function useApi() {
   const auth = useAuth();
@@ -68,6 +68,27 @@ export function useApi() {
 
       sendMessage: (otherId: string, text: string): Promise<{ message: ApiMessage }> =>
         request(`/messages/${otherId}`, { method: 'POST', body: JSON.stringify({ text }) }),
+
+      // ── Groups ──
+      listGroups: (q?: string, category?: string): Promise<{ groups: Group[]; count: number }> => {
+        const qs = new URLSearchParams();
+        if (q) qs.set('q', q);
+        if (category) qs.set('category', category);
+        const s = qs.toString();
+        return request(`/groups${s ? `?${s}` : ''}`);
+      },
+
+      createGroup: (group: Partial<Group>): Promise<{ group: Group }> =>
+        request('/groups', { method: 'POST', body: JSON.stringify(group) }),
+
+      joinGroup: (id: string): Promise<{ group: Group }> =>
+        request(`/groups/${id}/join`, { method: 'POST' }),
+
+      leaveGroup: (id: string): Promise<{ group: Group }> =>
+        request(`/groups/${id}/leave`, { method: 'POST' }),
+
+      deleteGroup: (id: string): Promise<{ ok: boolean }> =>
+        request(`/groups/${id}`, { method: 'DELETE' }),
     };
   }, [token]);
 }

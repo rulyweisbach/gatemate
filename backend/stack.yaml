@@ -138,6 +138,21 @@ Resources:
         - { AttributeName: userId, KeyType: HASH }
         - { AttributeName: otherUserId, KeyType: RANGE }
 
+  GroupsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: gatemate-groups
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - { AttributeName: groupId, AttributeType: S }
+        - { AttributeName: ownerId, AttributeType: S }
+      KeySchema:
+        - { AttributeName: groupId, KeyType: HASH }
+      GlobalSecondaryIndexes:
+        - IndexName: owner-index
+          KeySchema: [{ AttributeName: ownerId, KeyType: HASH }]
+          Projection: { ProjectionType: ALL }
+
   # ── Lambda (single router) ─────────────────────────────────────
   ApiFunctionRole:
     Type: AWS::IAM::Role
@@ -168,6 +183,8 @@ Resources:
                   - !Sub "${UsersTable.Arn}/index/*"
                   - !GetAtt MessagesTable.Arn
                   - !GetAtt ConnectionsTable.Arn
+                  - !GetAtt GroupsTable.Arn
+                  - !Sub "${GroupsTable.Arn}/index/*"
               - Effect: Allow
                 Action: s3:PutObject
                 Resource: !Sub "${MediaBucket.Arn}/photos/*"
@@ -190,6 +207,7 @@ Resources:
           USERS_TABLE: !Ref UsersTable
           MESSAGES_TABLE: !Ref MessagesTable
           CONNECTIONS_TABLE: !Ref ConnectionsTable
+          GROUPS_TABLE: !Ref GroupsTable
           MEDIA_BUCKET: !Ref MediaBucket
 
   # ── HTTP API (API Gateway v2) ──────────────────────────────────
@@ -201,7 +219,7 @@ Resources:
       CorsConfiguration:
         AllowOrigins: ["*"]
         AllowHeaders: [authorization, content-type]
-        AllowMethods: [GET, PUT, POST, OPTIONS]
+        AllowMethods: [GET, PUT, POST, DELETE, OPTIONS]
 
   JwtAuthorizer:
     Type: AWS::ApiGatewayV2::Authorizer
@@ -293,6 +311,51 @@ Resources:
     Properties:
       ApiId: !Ref HttpApi
       RouteKey: "POST /upload-url"
+      AuthorizationType: JWT
+      AuthorizerId: !Ref JwtAuthorizer
+      Target: !Sub "integrations/${Integration}"
+
+  RouteCreateGroup:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: "POST /groups"
+      AuthorizationType: JWT
+      AuthorizerId: !Ref JwtAuthorizer
+      Target: !Sub "integrations/${Integration}"
+
+  RouteListGroups:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: "GET /groups"
+      AuthorizationType: JWT
+      AuthorizerId: !Ref JwtAuthorizer
+      Target: !Sub "integrations/${Integration}"
+
+  RouteJoinGroup:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: "POST /groups/{id}/join"
+      AuthorizationType: JWT
+      AuthorizerId: !Ref JwtAuthorizer
+      Target: !Sub "integrations/${Integration}"
+
+  RouteLeaveGroup:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: "POST /groups/{id}/leave"
+      AuthorizationType: JWT
+      AuthorizerId: !Ref JwtAuthorizer
+      Target: !Sub "integrations/${Integration}"
+
+  RouteDeleteGroup:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: "DELETE /groups/{id}"
       AuthorizationType: JWT
       AuthorizerId: !Ref JwtAuthorizer
       Target: !Sub "integrations/${Integration}"

@@ -14,6 +14,7 @@ export const TABLES = {
   messages: process.env.MESSAGES_TABLE,
   connections: process.env.CONNECTIONS_TABLE,
   ws: process.env.WS_TABLE,
+  groups: process.env.GROUPS_TABLE,
 };
 
 // A conversation id is the two user ids sorted + joined, so both

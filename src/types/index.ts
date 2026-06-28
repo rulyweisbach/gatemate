@@ -53,6 +53,28 @@ export interface Profile {
   mutualConnections?: number;
 }
 
+export type GroupCategory = 'concert' | 'sport' | 'travel' | 'cab' | 'family' | 'other';
+
+export interface GroupMember {
+  userId: string;
+  name?: string;
+  photo?: string;
+}
+
+export interface Group {
+  groupId: string;
+  ownerId: string;
+  ownerName?: string;
+  title: string;
+  description?: string;
+  category: GroupCategory;
+  date?: string;
+  location?: string;
+  maxMembers: number;
+  members: GroupMember[];
+  createdAt: number;
+}
+
 // Chat message as returned by the backend.
 export interface ApiMessage {
   conversationId: string;

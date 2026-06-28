@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plane, Hash, DoorOpen, Calendar, MapPin, Mic, UserCircle } from 'lucide-react';
+import { Plane, Hash, DoorOpen, Calendar, MapPin, Mic, UserCircle, UsersRound } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
 import type { SearchMode, EventType } from '../../store/useAppStore';
 import GlassCard from '../layout/GlassCard';
@@ -384,19 +384,24 @@ export default function FlightScreen() {
             {subtitles[searchMode]}
           </p>
         </div>
-        <button
-          onClick={() => navigate('/me')}
-          className="flex items-center justify-center rounded-full shrink-0 mt-1"
-          style={{
-            width: 40,
-            height: 40,
-            background: 'rgba(125,211,252,0.2)',
-            border: '1px solid rgba(125,211,252,0.4)',
-          }}
-          aria-label="Edit my profile"
-        >
-          <UserCircle size={22} style={{ color: '#7dd3fc' }} />
-        </button>
+        <div className="flex items-center gap-2 mt-1 shrink-0">
+          <button
+            onClick={() => navigate('/groups')}
+            className="flex items-center justify-center rounded-full"
+            style={{ width: 40, height: 40, background: 'rgba(125,211,252,0.2)', border: '1px solid rgba(125,211,252,0.4)' }}
+            aria-label="Browse and create groups"
+          >
+            <UsersRound size={20} style={{ color: '#7dd3fc' }} />
+          </button>
+          <button
+            onClick={() => navigate('/me')}
+            className="flex items-center justify-center rounded-full"
+            style={{ width: 40, height: 40, background: 'rgba(125,211,252,0.2)', border: '1px solid rgba(125,211,252,0.4)' }}
+            aria-label="Edit my profile"
+          >
+            <UserCircle size={22} style={{ color: '#7dd3fc' }} />
+          </button>
+        </div>
       </div>
 
       {/* Mode switcher */}

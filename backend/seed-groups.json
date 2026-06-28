@@ -1,0 +1,25 @@
+{
+  "gatemate-groups": [
+    { "PutRequest": { "Item": {
+      "groupId": {"S": "seed-group-1"}, "ownerId": {"S": "seed-1"}, "ownerName": {"S": "Maya Cohen"},
+      "title": {"S": "Rock concert in LA 🎸 — looking for 5"},
+      "description": {"S": "Going to a rock show downtown LA next month. Want a few people to go together — grab drinks before and share the vibe!"},
+      "category": {"S": "concert"}, "date": {"S": "2026-07-18"}, "location": {"S": "Los Angeles"},
+      "maxMembers": {"N": "6"}, "createdAt": {"N": "1750000000000"},
+      "members": {"L": [{"M": {"userId": {"S": "seed-1"}, "name": {"S": "Maya Cohen"}, "photo": {"S": "👩‍💼"}}}]} } } },
+    { "PutRequest": { "Item": {
+      "groupId": {"S": "seed-group-2"}, "ownerId": {"S": "seed-8"}, "ownerName": {"S": "Yonatan Shapiro"},
+      "title": {"S": "Landing at LAX — share a cab to the hotel"},
+      "description": {"S": "Landing around 6pm, heading to downtown hotels. Looking for up to 3 people to split a cab and the fare."},
+      "category": {"S": "cab"}, "date": {"S": "2026-07-02"}, "location": {"S": "LAX → Downtown LA"},
+      "maxMembers": {"N": "4"}, "createdAt": {"N": "1750000100000"},
+      "members": {"L": [{"M": {"userId": {"S": "seed-8"}, "name": {"S": "Yonatan Shapiro"}, "photo": {"S": "👨‍💼"}}}]} } } },
+    { "PutRequest": { "Item": {
+      "groupId": {"S": "seed-group-3"}, "ownerId": {"S": "seed-3"}, "ownerName": {"S": "Aisha Okonkwo"},
+      "title": {"S": "Traveling with kids to Greece 👨‍👩‍👧‍👦"},
+      "description": {"S": "Family flying to Greece for summer — would love to partner with another family travelling with kids. Playmates for the little ones!"},
+      "category": {"S": "family"}, "date": {"S": "2026-08-10"}, "location": {"S": "Athens, Greece"},
+      "maxMembers": {"N": "4"}, "createdAt": {"N": "1750000200000"},
+      "members": {"L": [{"M": {"userId": {"S": "seed-3"}, "name": {"S": "Aisha Okonkwo"}, "photo": {"S": "👩‍🔬"}}}]} } } }
+  ]
+}

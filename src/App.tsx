@@ -9,6 +9,8 @@ import FeedScreen from './components/screens/FeedScreen';
 import ProfileScreen from './components/screens/ProfileScreen';
 import ChatScreen from './components/screens/ChatScreen';
 import EditProfileScreen from './components/screens/EditProfileScreen';
+import GroupsScreen from './components/screens/GroupsScreen';
+import CreateGroupScreen from './components/screens/CreateGroupScreen';
 
 export default function App() {
   return (
@@ -24,6 +26,8 @@ export default function App() {
           <Route path="/intent" element={<RequireAuth><IntentScreen /></RequireAuth>} />
           <Route path="/feed" element={<RequireAuth><FeedScreen /></RequireAuth>} />
           <Route path="/me" element={<RequireAuth><EditProfileScreen /></RequireAuth>} />
+          <Route path="/groups" element={<RequireAuth><GroupsScreen /></RequireAuth>} />
+          <Route path="/groups/new" element={<RequireAuth><CreateGroupScreen /></RequireAuth>} />
           <Route path="/profile/:id" element={<RequireAuth><ProfileScreen /></RequireAuth>} />
           <Route path="/chat/:id" element={<RequireAuth><ChatScreen /></RequireAuth>} />
 

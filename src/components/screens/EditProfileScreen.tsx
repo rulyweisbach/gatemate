@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Plus, X, LogOut } from 'lucide-react';
+import { ArrowLeft, Plus, X, LogOut, Trash2, UsersRound } from 'lucide-react';
 import { useAuth } from 'react-oidc-context';
 import { useApi } from '../../api/client';
-import type { Intent } from '../../types';
+import type { Intent, Group } from '../../types';
 import { cognitoLogoutUrl } from '../../auth/authConfig';
+import { groupCategoryMeta } from '../../data/groupMeta';
 import GlassButton from '../ui/GlassButton';
 import IntentChip from '../ui/IntentChip';
 
@@ -31,6 +32,24 @@ export default function EditProfileScreen() {
   const [tagline, setTagline] = useState('');
   const [bio, setBio] = useState('');
   const [intents, setIntents] = useState<Intent[]>([]);
+  const [myGroups, setMyGroups] = useState<Group[]>([]);
+  const myId = auth.user?.profile?.sub;
+
+  // Load groups I own.
+  const loadMyGroups = () => {
+    api.listGroups()
+      .then((r) => setMyGroups((r.groups ?? []).filter((g) => g.ownerId === myId)))
+      .catch(() => {});
+  };
+  useEffect(loadMyGroups, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const deleteGroup = async (id: string) => {
+    if (!confirm('Delete this group?')) return;
+    try {
+      await api.deleteGroup(id);
+      setMyGroups((g) => g.filter((x) => x.groupId !== id));
+    } catch { /* ignore */ }
+  };
 
   // Prefill from the saved profile.
   useEffect(() => {
@@ -235,6 +254,51 @@ export default function EditProfileScreen() {
                 <IntentChip key={it} intent={it} selected={intents.includes(it)} onClick={() => toggleIntent(it)} />
               ))}
             </div>
+          </div>
+
+          {/* My Groups */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-xs font-semibold" style={{ color: 'rgba(255,255,255,0.55)' }}>MY GROUPS</p>
+              <button onClick={() => navigate('/groups/new')} className="flex items-center gap-1 text-xs font-bold" style={{ color: '#7dd3fc' }}>
+                <Plus size={14} /> Create
+              </button>
+            </div>
+            {myGroups.length === 0 ? (
+              <button
+                onClick={() => navigate('/groups/new')}
+                className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl"
+                style={{ background: 'rgba(255,255,255,0.07)', border: '1.5px dashed rgba(255,255,255,0.25)', color: 'rgba(255,255,255,0.6)' }}
+              >
+                <UsersRound size={16} /> <span className="text-sm font-semibold">Create your first group</span>
+              </button>
+            ) : (
+              <div className="flex flex-col gap-2">
+                {myGroups.map((g) => (
+                  <div
+                    key={g.groupId}
+                    className="flex items-center gap-3 p-3 rounded-2xl"
+                    style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}
+                  >
+                    <span className="text-xl">{groupCategoryMeta[g.category].emoji}</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-bold text-white truncate">{g.title}</p>
+                      <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                        {g.members?.length ?? 0}/{g.maxMembers} joined
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => deleteGroup(g.groupId)}
+                      aria-label="Delete group"
+                      className="flex items-center justify-center rounded-full shrink-0"
+                      style={{ width: 32, height: 32, background: 'rgba(255,120,120,0.15)', border: '1px solid rgba(255,120,120,0.3)' }}
+                    >
+                      <Trash2 size={14} style={{ color: '#ffb4b4' }} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {error && <p className="text-xs text-center" style={{ color: '#ffb4b4' }}>{error}</p>}

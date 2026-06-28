@@ -10,17 +10,27 @@ import { handler as sayHi } from './handlers/sayHi.mjs';
 import { handler as getMessages } from './handlers/getMessages.mjs';
 import { handler as sendMessage } from './handlers/sendMessage.mjs';
 import { handler as uploadUrl } from './handlers/uploadUrl.mjs';
+import { handler as createGroup } from './handlers/createGroup.mjs';
+import { handler as listGroups } from './handlers/listGroups.mjs';
+import { handler as joinGroup } from './handlers/joinGroup.mjs';
+import { handler as leaveGroup } from './handlers/leaveGroup.mjs';
+import { handler as deleteGroup } from './handlers/deleteGroup.mjs';
 import { json } from './lib/http.mjs';
 
 const routes = [
-  { method: 'GET',  re: /^\/me$/,                   fn: getMe,       params: [] },
-  { method: 'PUT',  re: /^\/me$/,                   fn: updateMe,    params: [] },
-  { method: 'GET',  re: /^\/feed$/,                 fn: getFeed,     params: [] },
-  { method: 'GET',  re: /^\/users\/([^/]+)$/,       fn: getUser,     params: ['id'] },
-  { method: 'POST', re: /^\/connections\/([^/]+)$/, fn: sayHi,       params: ['id'] },
-  { method: 'GET',  re: /^\/messages\/([^/]+)$/,    fn: getMessages, params: ['otherId'] },
-  { method: 'POST', re: /^\/messages\/([^/]+)$/,    fn: sendMessage, params: ['otherId'] },
-  { method: 'POST', re: /^\/upload-url$/,           fn: uploadUrl,   params: [] },
+  { method: 'GET',    re: /^\/me$/,                       fn: getMe,       params: [] },
+  { method: 'PUT',    re: /^\/me$/,                       fn: updateMe,    params: [] },
+  { method: 'GET',    re: /^\/feed$/,                     fn: getFeed,     params: [] },
+  { method: 'GET',    re: /^\/users\/([^/]+)$/,           fn: getUser,     params: ['id'] },
+  { method: 'POST',   re: /^\/connections\/([^/]+)$/,     fn: sayHi,       params: ['id'] },
+  { method: 'GET',    re: /^\/messages\/([^/]+)$/,        fn: getMessages, params: ['otherId'] },
+  { method: 'POST',   re: /^\/messages\/([^/]+)$/,        fn: sendMessage, params: ['otherId'] },
+  { method: 'POST',   re: /^\/upload-url$/,               fn: uploadUrl,   params: [] },
+  { method: 'POST',   re: /^\/groups$/,                   fn: createGroup, params: [] },
+  { method: 'GET',    re: /^\/groups$/,                   fn: listGroups,  params: [] },
+  { method: 'POST',   re: /^\/groups\/([^/]+)\/join$/,    fn: joinGroup,   params: ['id'] },
+  { method: 'POST',   re: /^\/groups\/([^/]+)\/leave$/,   fn: leaveGroup,  params: ['id'] },
+  { method: 'DELETE', re: /^\/groups\/([^/]+)$/,          fn: deleteGroup, params: ['id'] },
 ];
 
 export const handler = async (event) => {

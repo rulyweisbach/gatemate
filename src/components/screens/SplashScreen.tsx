@@ -9,9 +9,24 @@ export default function SplashScreen() {
   useEffect(() => {
     // While returning from Google, the auth lib exchanges the code — wait for it.
     if (auth.isLoading) return;
-    // Logged in → into the app; otherwise → onboarding.
+    // Logged in → into the app (returning to a deep-linked page if one was
+    // saved, e.g. /admin); otherwise → onboarding.
     const authed = auth.isAuthenticated;
-    const t = setTimeout(() => navigate(authed ? '/flight' : '/welcome'), authed ? 400 : 2500);
+    const t = setTimeout(() => {
+      if (!authed) {
+        navigate('/welcome');
+        return;
+      }
+      let dest = '/flight';
+      try {
+        const rt = localStorage.getItem('gm_returnTo');
+        if (rt) {
+          localStorage.removeItem('gm_returnTo');
+          dest = rt;
+        }
+      } catch { /* ignore */ }
+      navigate(dest);
+    }, authed ? 400 : 2500);
     return () => clearTimeout(t);
   }, [auth.isLoading, auth.isAuthenticated, navigate]);
 

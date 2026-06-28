@@ -18,6 +18,10 @@ import { handler as deleteGroup } from './handlers/deleteGroup.mjs';
 import { handler as getGroup } from './handlers/getGroup.mjs';
 import { handler as getGroupMessages } from './handlers/getGroupMessages.mjs';
 import { handler as sendGroupMessage } from './handlers/sendGroupMessage.mjs';
+import { handler as adminListUsers } from './handlers/adminListUsers.mjs';
+import { handler as adminDeleteUser } from './handlers/adminDeleteUser.mjs';
+import { handler as adminListGroups } from './handlers/adminListGroups.mjs';
+import { handler as adminDeleteGroup } from './handlers/adminDeleteGroup.mjs';
 import { json } from './lib/http.mjs';
 
 const routes = [
@@ -37,6 +41,11 @@ const routes = [
   { method: 'POST',   re: /^\/groups\/([^/]+)\/messages$/, fn: sendGroupMessage, params: ['id'] },
   { method: 'GET',    re: /^\/groups\/([^/]+)$/,           fn: getGroup,         params: ['id'] },
   { method: 'DELETE', re: /^\/groups\/([^/]+)$/,           fn: deleteGroup,      params: ['id'] },
+  // Admin (server-side admin-email gated)
+  { method: 'GET',    re: /^\/admin\/users$/,              fn: adminListUsers,   params: [] },
+  { method: 'DELETE', re: /^\/admin\/users\/([^/]+)$/,     fn: adminDeleteUser,  params: ['id'] },
+  { method: 'GET',    re: /^\/admin\/groups$/,             fn: adminListGroups,  params: [] },
+  { method: 'DELETE', re: /^\/admin\/groups\/([^/]+)$/,    fn: adminDeleteGroup, params: ['id'] },
 ];
 
 export const handler = async (event) => {

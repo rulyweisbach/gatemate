@@ -20,6 +20,10 @@ Parameters:
     NoEcho: true
     Default: ""
     Description: Google OAuth client secret (passed from SSM by deploy.sh).
+  AdminEmails:
+    Type: String
+    Default: ""
+    Description: Comma-separated allowlist of admin emails (passed from SSM by deploy.sh).
 
 Resources:
   # ── Cognito ────────────────────────────────────────────────────
@@ -188,6 +192,11 @@ Resources:
               - Effect: Allow
                 Action: s3:PutObject
                 Resource: !Sub "${MediaBucket.Arn}/photos/*"
+              - Effect: Allow
+                Action:
+                  - cognito-idp:ListUsers
+                  - cognito-idp:AdminDeleteUser
+                Resource: !GetAtt UserPool.Arn
 
   ApiFunction:
     Type: AWS::Lambda::Function
@@ -209,6 +218,8 @@ Resources:
           CONNECTIONS_TABLE: !Ref ConnectionsTable
           GROUPS_TABLE: !Ref GroupsTable
           MEDIA_BUCKET: !Ref MediaBucket
+          USER_POOL_ID: !Ref UserPool
+          ADMIN_EMAILS: !Ref AdminEmails
 
   # ── HTTP API (API Gateway v2) ──────────────────────────────────
   HttpApi:
@@ -383,6 +394,42 @@ Resources:
     Properties:
       ApiId: !Ref HttpApi
       RouteKey: "POST /groups/{id}/messages"
+      AuthorizationType: JWT
+      AuthorizerId: !Ref JwtAuthorizer
+      Target: !Sub "integrations/${Integration}"
+
+  RouteAdminListUsers:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: "GET /admin/users"
+      AuthorizationType: JWT
+      AuthorizerId: !Ref JwtAuthorizer
+      Target: !Sub "integrations/${Integration}"
+
+  RouteAdminDeleteUser:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: "DELETE /admin/users/{id}"
+      AuthorizationType: JWT
+      AuthorizerId: !Ref JwtAuthorizer
+      Target: !Sub "integrations/${Integration}"
+
+  RouteAdminListGroups:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: "GET /admin/groups"
+      AuthorizationType: JWT
+      AuthorizerId: !Ref JwtAuthorizer
+      Target: !Sub "integrations/${Integration}"
+
+  RouteAdminDeleteGroup:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: "DELETE /admin/groups/{id}"
       AuthorizationType: JWT
       AuthorizerId: !Ref JwtAuthorizer
       Target: !Sub "integrations/${Integration}"

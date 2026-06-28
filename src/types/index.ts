@@ -75,6 +75,19 @@ export interface Group {
   createdAt: number;
 }
 
+// Admin view of a registered user (Cognito + merged profile).
+export interface AdminUser {
+  username: string;
+  sub?: string;
+  email?: string;
+  name?: string;
+  provider?: 'social' | 'email';
+  status?: string;
+  enabled?: boolean;
+  createdAt?: string;
+  profile?: Profile | null;
+}
+
 // Chat message as returned by the backend.
 export interface ApiMessage {
   conversationId: string;

@@ -33,6 +33,7 @@ echo "  uploaded s3://${ARTIFACT_BUCKET}/${KEY}"
 # Empty strings are fine if Google isn't configured yet.
 GOOGLE_ID="$(aws ssm get-parameter --region "$REGION" --name /gatemate/google-client-id --query Parameter.Value --output text 2>/dev/null || echo '')"
 GOOGLE_SECRET="$(aws ssm get-parameter --region "$REGION" --name /gatemate/google-client-secret --with-decryption --query Parameter.Value --output text 2>/dev/null || echo '')"
+ADMIN_EMAILS="$(aws ssm get-parameter --region "$REGION" --name /gatemate/admin-emails --query Parameter.Value --output text 2>/dev/null || echo '')"
 
 echo "▶ Deploying CloudFormation stack '$STACK'"
 aws cloudformation deploy \
@@ -44,7 +45,8 @@ aws cloudformation deploy \
       CodeS3Bucket="$ARTIFACT_BUCKET" \
       CodeS3Key="$KEY" \
       GoogleClientId="$GOOGLE_ID" \
-      GoogleClientSecret="$GOOGLE_SECRET"
+      GoogleClientSecret="$GOOGLE_SECRET" \
+      AdminEmails="$ADMIN_EMAILS"
 
 echo ""
 echo "✅ Deployed. Outputs:"

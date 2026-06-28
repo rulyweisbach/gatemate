@@ -4,7 +4,7 @@
 import { useMemo } from 'react';
 import { useAuth } from 'react-oidc-context';
 import { API_URL } from '../auth/authConfig';
-import type { Profile, ApiMessage, Group } from '../types';
+import type { Profile, ApiMessage, Group, AdminUser } from '../types';
 
 export function useApi() {
   const auth = useAuth();
@@ -97,6 +97,17 @@ export function useApi() {
 
       sendGroupMessage: (id: string, text: string): Promise<{ message: ApiMessage }> =>
         request(`/groups/${id}/messages`, { method: 'POST', body: JSON.stringify({ text }) }),
+
+      // ── Admin (server-side gated by email allowlist) ──
+      adminListUsers: (): Promise<{ users: AdminUser[]; count: number }> => request('/admin/users'),
+
+      adminDeleteUser: (username: string, sub?: string): Promise<{ ok: boolean }> =>
+        request(`/admin/users/${encodeURIComponent(username)}${sub ? `?sub=${encodeURIComponent(sub)}` : ''}`, { method: 'DELETE' }),
+
+      adminListGroups: (): Promise<{ groups: Group[]; count: number }> => request('/admin/groups'),
+
+      adminDeleteGroup: (id: string): Promise<{ ok: boolean }> =>
+        request(`/admin/groups/${id}`, { method: 'DELETE' }),
     };
   }, [token]);
 }

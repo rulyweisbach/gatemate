@@ -173,7 +173,16 @@ export default function GroupsScreen() {
               </div>
 
               {/* Action */}
-              <div className="mt-3">
+              <div className="mt-3 flex items-center gap-2 flex-wrap">
+                {(isOwner || isMember) && (
+                  <button
+                    onClick={() => navigate(`/groups/${g.groupId}/chat`)}
+                    className="text-xs font-bold px-4 py-2 rounded-full"
+                    style={{ background: '#7dd3fc', color: '#0b1a3b' }}
+                  >
+                    💬 Open chat
+                  </button>
+                )}
                 {isOwner ? (
                   <span className="text-xs font-bold px-3 py-1.5 rounded-full inline-block"
                     style={{ background: 'rgba(125,245,192,0.15)', border: '1px solid rgba(125,245,192,0.4)', color: '#7df5c0' }}>
@@ -186,7 +195,7 @@ export default function GroupsScreen() {
                     className="text-xs font-bold px-4 py-2 rounded-full"
                     style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.25)', color: 'white' }}
                   >
-                    {busyId === g.groupId ? '…' : 'Joined ✓ · Leave'}
+                    {busyId === g.groupId ? '…' : 'Leave'}
                   </button>
                 ) : full ? (
                   <span className="text-xs font-semibold px-4 py-2 rounded-full inline-block"

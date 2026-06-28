@@ -15,6 +15,9 @@ import { handler as listGroups } from './handlers/listGroups.mjs';
 import { handler as joinGroup } from './handlers/joinGroup.mjs';
 import { handler as leaveGroup } from './handlers/leaveGroup.mjs';
 import { handler as deleteGroup } from './handlers/deleteGroup.mjs';
+import { handler as getGroup } from './handlers/getGroup.mjs';
+import { handler as getGroupMessages } from './handlers/getGroupMessages.mjs';
+import { handler as sendGroupMessage } from './handlers/sendGroupMessage.mjs';
 import { json } from './lib/http.mjs';
 
 const routes = [
@@ -28,9 +31,12 @@ const routes = [
   { method: 'POST',   re: /^\/upload-url$/,               fn: uploadUrl,   params: [] },
   { method: 'POST',   re: /^\/groups$/,                   fn: createGroup, params: [] },
   { method: 'GET',    re: /^\/groups$/,                   fn: listGroups,  params: [] },
-  { method: 'POST',   re: /^\/groups\/([^/]+)\/join$/,    fn: joinGroup,   params: ['id'] },
-  { method: 'POST',   re: /^\/groups\/([^/]+)\/leave$/,   fn: leaveGroup,  params: ['id'] },
-  { method: 'DELETE', re: /^\/groups\/([^/]+)$/,          fn: deleteGroup, params: ['id'] },
+  { method: 'POST',   re: /^\/groups\/([^/]+)\/join$/,     fn: joinGroup,        params: ['id'] },
+  { method: 'POST',   re: /^\/groups\/([^/]+)\/leave$/,    fn: leaveGroup,       params: ['id'] },
+  { method: 'GET',    re: /^\/groups\/([^/]+)\/messages$/, fn: getGroupMessages, params: ['id'] },
+  { method: 'POST',   re: /^\/groups\/([^/]+)\/messages$/, fn: sendGroupMessage, params: ['id'] },
+  { method: 'GET',    re: /^\/groups\/([^/]+)$/,           fn: getGroup,         params: ['id'] },
+  { method: 'DELETE', re: /^\/groups\/([^/]+)$/,           fn: deleteGroup,      params: ['id'] },
 ];
 
 export const handler = async (event) => {

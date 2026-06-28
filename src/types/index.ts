@@ -81,6 +81,8 @@ export interface ApiMessage {
   sentAt: number;
   messageId: string;
   senderId: string;
-  recipientId: string;
+  recipientId?: string;
+  senderName?: string;
+  senderPhoto?: string;
   text: string;
 }

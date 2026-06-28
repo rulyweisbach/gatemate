@@ -89,6 +89,14 @@ export function useApi() {
 
       deleteGroup: (id: string): Promise<{ ok: boolean }> =>
         request(`/groups/${id}`, { method: 'DELETE' }),
+
+      getGroup: (id: string): Promise<{ group: Group }> => request(`/groups/${id}`),
+
+      getGroupMessages: (id: string): Promise<{ messages: ApiMessage[] }> =>
+        request(`/groups/${id}/messages`),
+
+      sendGroupMessage: (id: string, text: string): Promise<{ message: ApiMessage }> =>
+        request(`/groups/${id}/messages`, { method: 'POST', body: JSON.stringify({ text }) }),
     };
   }, [token]);
 }

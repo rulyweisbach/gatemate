@@ -112,7 +112,7 @@ export default function ChatScreen() {
           <ArrowLeft size={18} className="text-white" />
         </button>
 
-        <Avatar photo={other?.photo} size={40} radius={12} />
+        <Avatar photo={other?.photos?.[0] ?? other?.photo} size={40} radius={12} />
 
         <div className="flex-1 min-w-0">
           <p className="font-bold text-white text-sm truncate">{other?.name ?? 'Traveler'}</p>

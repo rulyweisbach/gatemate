@@ -5,7 +5,7 @@ import { json, getUserId, getClaims, parseBody } from '../lib/http.mjs';
 // Fields a user may set on their own profile.
 const ALLOWED = [
   'name', 'age', 'intents', 'tagline', 'bio',
-  'flight', 'gate', 'departure', 'origin', 'destination', 'photo',
+  'flight', 'gate', 'departure', 'origin', 'destination', 'photo', 'photos',
 ];
 
 // PUT /me — upsert the caller's profile (partial update).

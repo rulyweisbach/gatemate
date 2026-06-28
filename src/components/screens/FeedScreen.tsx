@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Users } from 'lucide-react';
+import { ArrowLeft, UserCircle } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
 import { useApi } from '../../api/client';
 import type { Profile } from '../../types';
@@ -74,15 +74,19 @@ export default function FeedScreen() {
           </p>
         </div>
 
-        <div
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
-          style={{ background: 'rgba(125,211,252,0.2)', border: '1px solid rgba(125,211,252,0.4)' }}
+        <button
+          onClick={() => navigate('/me')}
+          className="flex items-center justify-center rounded-full"
+          style={{
+            width: 36,
+            height: 36,
+            background: 'rgba(125,211,252,0.2)',
+            border: '1px solid rgba(125,211,252,0.4)',
+          }}
+          aria-label="Edit my profile"
         >
-          <Users size={13} style={{ color: '#7dd3fc' }} />
-          <span className="text-xs font-bold" style={{ color: '#7dd3fc' }}>
-            {filtered.length}
-          </span>
-        </div>
+          <UserCircle size={20} style={{ color: '#7dd3fc' }} />
+        </button>
       </div>
 
       {/* Feed */}
@@ -127,7 +131,7 @@ export default function FeedScreen() {
               }}
             >
               <div className="flex gap-3 items-start">
-                <Avatar photo={user.photo} size={56} radius={16} />
+                <Avatar photo={user.photos?.[0] ?? user.photo} size={56} radius={16} />
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">

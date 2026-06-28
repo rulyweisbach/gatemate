@@ -31,6 +31,22 @@ export function useApi() {
     return {
       getMe: (): Promise<{ profile: Profile; isNew: boolean }> => request('/me'),
 
+      // Ask the backend for a presigned S3 URL, then PUT the file straight to S3
+      // (no auth header on the S3 request — the presigned URL carries its own).
+      uploadPhoto: async (file: File): Promise<string> => {
+        const { uploadUrl, publicUrl } = await request('/upload-url', {
+          method: 'POST',
+          body: JSON.stringify({ contentType: file.type }),
+        });
+        const put = await fetch(uploadUrl, {
+          method: 'PUT',
+          headers: { 'content-type': file.type },
+          body: file,
+        });
+        if (!put.ok) throw new Error(`Upload failed (${put.status})`);
+        return publicUrl as string;
+      },
+
       updateMe: (profile: Partial<Profile>): Promise<{ profile: Profile }> =>
         request('/me', { method: 'PUT', body: JSON.stringify(profile) }),
 

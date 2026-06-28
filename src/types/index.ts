@@ -42,6 +42,7 @@ export interface Profile {
   age?: number;
   tagline?: string;
   bio?: string;
+  photos?: string[];
   intents?: Intent[];
   flight?: string;
   gate?: string;

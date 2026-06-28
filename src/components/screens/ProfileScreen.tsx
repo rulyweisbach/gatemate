@@ -81,9 +81,34 @@ export default function ProfileScreen() {
       </div>
 
       <div className="px-5 pb-10 flex flex-col gap-5">
-        {/* Avatar + name */}
+        {/* Photos or avatar */}
         <div className="flex flex-col items-center gap-3 pt-4 anim-slide-up">
-          <Avatar photo={user.photo} size={100} radius={28} />
+          {user.photos && user.photos.length > 0 ? (
+            <div
+              className="flex gap-3 overflow-x-auto w-full pb-1"
+              style={{ scrollSnapType: 'x mandatory' }}
+            >
+              {user.photos.map((url, i) => (
+                <img
+                  key={i}
+                  src={url}
+                  alt=""
+                  referrerPolicy="no-referrer"
+                  style={{
+                    width: user.photos!.length === 1 ? '100%' : '78%',
+                    aspectRatio: '3 / 4',
+                    objectFit: 'cover',
+                    borderRadius: 22,
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    flexShrink: 0,
+                    scrollSnapAlign: 'center',
+                  }}
+                />
+              ))}
+            </div>
+          ) : (
+            <Avatar photo={user.photo} size={100} radius={28} />
+          )}
           <div className="text-center">
             <h2 className="text-2xl font-black text-white" style={{ fontFamily: 'Nunito, sans-serif' }}>
               {user.name}

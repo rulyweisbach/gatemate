@@ -12,6 +12,7 @@ import EditProfileScreen from './components/screens/EditProfileScreen';
 import GroupsScreen from './components/screens/GroupsScreen';
 import CreateGroupScreen from './components/screens/CreateGroupScreen';
 import GroupChatScreen from './components/screens/GroupChatScreen';
+import GroupMembersScreen from './components/screens/GroupMembersScreen';
 import AdminScreen from './components/screens/AdminScreen';
 
 export default function App() {
@@ -31,6 +32,7 @@ export default function App() {
           <Route path="/groups" element={<RequireAuth><GroupsScreen /></RequireAuth>} />
           <Route path="/groups/new" element={<RequireAuth><CreateGroupScreen /></RequireAuth>} />
           <Route path="/groups/:id/chat" element={<RequireAuth><GroupChatScreen /></RequireAuth>} />
+          <Route path="/groups/:id/members" element={<RequireAuth><GroupMembersScreen /></RequireAuth>} />
           <Route path="/admin" element={<RequireAuth><AdminScreen /></RequireAuth>} />
           <Route path="/profile/:id" element={<RequireAuth><ProfileScreen /></RequireAuth>} />
           <Route path="/chat/:id" element={<RequireAuth><ChatScreen /></RequireAuth>} />

@@ -380,6 +380,15 @@ Resources:
       AuthorizerId: !Ref JwtAuthorizer
       Target: !Sub "integrations/${Integration}"
 
+  RouteRemoveMember:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: "DELETE /groups/{id}/members/{memberId}"
+      AuthorizationType: JWT
+      AuthorizerId: !Ref JwtAuthorizer
+      Target: !Sub "integrations/${Integration}"
+
   RouteGetGroupMessages:
     Type: AWS::ApiGatewayV2::Route
     Properties:

@@ -18,6 +18,7 @@ import { handler as deleteGroup } from './handlers/deleteGroup.mjs';
 import { handler as getGroup } from './handlers/getGroup.mjs';
 import { handler as getGroupMessages } from './handlers/getGroupMessages.mjs';
 import { handler as sendGroupMessage } from './handlers/sendGroupMessage.mjs';
+import { handler as removeMember } from './handlers/removeMember.mjs';
 import { handler as adminListUsers } from './handlers/adminListUsers.mjs';
 import { handler as adminDeleteUser } from './handlers/adminDeleteUser.mjs';
 import { handler as adminListGroups } from './handlers/adminListGroups.mjs';
@@ -39,6 +40,7 @@ const routes = [
   { method: 'POST',   re: /^\/groups\/([^/]+)\/leave$/,    fn: leaveGroup,       params: ['id'] },
   { method: 'GET',    re: /^\/groups\/([^/]+)\/messages$/, fn: getGroupMessages, params: ['id'] },
   { method: 'POST',   re: /^\/groups\/([^/]+)\/messages$/, fn: sendGroupMessage, params: ['id'] },
+  { method: 'DELETE', re: /^\/groups\/([^/]+)\/members\/([^/]+)$/, fn: removeMember, params: ['id', 'memberId'] },
   { method: 'GET',    re: /^\/groups\/([^/]+)$/,           fn: getGroup,         params: ['id'] },
   { method: 'DELETE', re: /^\/groups\/([^/]+)$/,           fn: deleteGroup,      params: ['id'] },
   // Admin (server-side admin-email gated)

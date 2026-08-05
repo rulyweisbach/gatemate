@@ -98,6 +98,9 @@ export function useApi() {
       sendGroupMessage: (id: string, text: string): Promise<{ message: ApiMessage }> =>
         request(`/groups/${id}/messages`, { method: 'POST', body: JSON.stringify({ text }) }),
 
+      removeMember: (groupId: string, memberId: string): Promise<{ group: Group }> =>
+        request(`/groups/${groupId}/members/${encodeURIComponent(memberId)}`, { method: 'DELETE' }),
+
       // ── Admin (server-side gated by email allowlist) ──
       adminListUsers: (): Promise<{ users: AdminUser[]; count: number }> => request('/admin/users'),
 

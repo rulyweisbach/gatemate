@@ -96,12 +96,16 @@ export default function GroupChatScreen() {
         >
           {group ? groupCategoryMeta[group.category].emoji : '💬'}
         </div>
-        <div className="flex-1 min-w-0">
+        <button
+          className="flex-1 min-w-0 text-left"
+          onClick={() => navigate(`/groups/${id}/members`)}
+          aria-label="View members"
+        >
           <p className="font-bold text-white text-sm truncate">{group?.title ?? 'Group chat'}</p>
           <p className="text-xs flex items-center gap-1" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            <Users size={11} /> {group?.members?.length ?? 0}/{group?.maxMembers ?? '-'} members
+            <Users size={11} /> {group?.members?.length ?? 0}/{group?.maxMembers ?? '-'} members · tap to view
           </p>
-        </div>
+        </button>
       </div>
 
       {/* Messages */}

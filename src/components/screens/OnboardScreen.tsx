@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAuth } from 'react-oidc-context';
+import { content, fmt } from '../../content';
 
 // ── Inline SVG brand logos ────────────────────────────────────────────────────
 
@@ -47,21 +48,21 @@ const SOCIAL_BUTTONS: {
 }[] = [
   {
     id: 'google',
-    label: 'Continue with Google',
+    label: content.onboard.continueGoogle,
     Logo: GoogleLogo,
     bg: 'rgba(255,255,255,0.14)',
     border: 'rgba(255,255,255,0.3)',
   },
   {
     id: 'instagram',
-    label: 'Continue with Instagram',
+    label: content.onboard.continueInstagram,
     Logo: InstagramLogo,
     bg: 'rgba(220,39,67,0.15)',
     border: 'rgba(220,39,67,0.35)',
   },
   {
     id: 'facebook',
-    label: 'Continue with Facebook',
+    label: content.onboard.continueFacebook,
     Logo: FacebookLogo,
     bg: 'rgba(24,119,242,0.18)',
     border: 'rgba(24,119,242,0.45)',
@@ -78,7 +79,7 @@ export default function OnboardScreen() {
       return;
     }
     // Facebook / Apple aren't configured as identity providers yet.
-    alert(`${provider[0].toUpperCase() + provider.slice(1)} login is coming soon — Google works now!`);
+    alert(fmt(content.onboard.comingSoon, { provider: provider[0].toUpperCase() + provider.slice(1) }));
   };
 
   return (
@@ -103,16 +104,16 @@ export default function OnboardScreen() {
           className="text-5xl font-black text-center text-white leading-tight"
           style={{ fontFamily: 'Nunito, sans-serif' }}
         >
-          Your next connection
+          {content.onboard.titleLine1}
           <br />
-          is waiting at your{' '}
-          <span style={{ color: '#7dd3fc' }}>Gate</span>
+          {content.onboard.titleLine2}{' '}
+          <span style={{ color: '#7dd3fc' }}>{content.onboard.titleHighlight}</span>
         </h1>
         <p
           className="text-center mt-3 text-sm font-medium leading-relaxed px-4"
           style={{ color: 'rgba(255,255,255,0.65)' }}
         >
-          Connect with fellow travelers at your gate, lounge, or terminal on your terms.
+          {content.onboard.subtitle}
         </p>
       </div>
 
@@ -159,7 +160,7 @@ export default function OnboardScreen() {
         }}
       >
         <div className="flex-1 h-px" style={{ background: 'rgba(255,255,255,0.18)' }} />
-        <span className="text-xs font-semibold" style={{ color: 'rgba(255,255,255,0.4)' }}>or</span>
+        <span className="text-xs font-semibold" style={{ color: 'rgba(255,255,255,0.4)' }}>{content.onboard.or}</span>
         <div className="flex-1 h-px" style={{ background: 'rgba(255,255,255,0.18)' }} />
       </div>
 
@@ -177,13 +178,13 @@ export default function OnboardScreen() {
           className="btn-solid w-full"
           onClick={() => void auth.signinRedirect()}
         >
-          Get Started
+          {content.onboard.getStarted}
         </button>
         <p
           className="text-center text-xs mt-3"
           style={{ color: 'rgba(255,255,255,0.4)' }}
         >
-          By continuing you agree to our Terms & Privacy Policy
+          {content.onboard.terms}
         </p>
       </div>
     </div>

@@ -2,7 +2,10 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Plane, DoorOpen, Clock, MapPin } from 'lucide-react';
 import { useApi } from '../../api/client';
+import { content, fmt } from '../../content';
 import type { Profile } from '../../types';
+
+const c = content.profile;
 import GlassCard from '../layout/GlassCard';
 import VerifiedBadge from '../ui/VerifiedBadge';
 import GlassButton from '../ui/GlassButton';
@@ -36,7 +39,7 @@ export default function ProfileScreen() {
     return (
       <div className="flex flex-col items-center justify-center gap-3" style={{ minHeight: '100dvh' }}>
         <div className="text-4xl anim-float-plane">✈️</div>
-        <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>Loading profile…</p>
+        <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>{c.loading}</p>
       </div>
     );
   }
@@ -44,8 +47,8 @@ export default function ProfileScreen() {
   if (!user) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen gap-4">
-        <p className="text-white text-lg font-bold">Profile not found</p>
-        <button className="btn-glass" onClick={() => navigate(-1)}>Go Back</button>
+        <p className="text-white text-lg font-bold">{c.notFound}</p>
+        <button className="btn-glass" onClick={() => navigate(-1)}>{content.common.back}</button>
       </div>
     );
   }
@@ -53,10 +56,10 @@ export default function ProfileScreen() {
   const route =
     user.origin && user.destination ? `${user.origin} → ${user.destination}` : '—';
   const infoCards = [
-    { icon: Plane, label: 'Flight', value: user.flight || '—' },
-    { icon: DoorOpen, label: 'Gate', value: user.gate || '—' },
-    { icon: Clock, label: 'Departs', value: user.departure || '—' },
-    { icon: MapPin, label: 'Route', value: route },
+    { icon: Plane, label: c.flight, value: user.flight || '—' },
+    { icon: DoorOpen, label: c.gate, value: user.gate || '—' },
+    { icon: Clock, label: c.departs, value: user.departure || '—' },
+    { icon: MapPin, label: c.route, value: route },
   ];
   const primaryIntent = user.intents?.[0];
 
@@ -77,7 +80,7 @@ export default function ProfileScreen() {
         >
           <ArrowLeft size={18} className="text-white" />
         </button>
-        <span className="font-bold text-white" style={{ fontFamily: 'Nunito, sans-serif' }}>Profile</span>
+        <span className="font-bold text-white" style={{ fontFamily: 'Nunito, sans-serif' }}>{c.header}</span>
       </div>
 
       <div className="px-5 pb-10 flex flex-col gap-5">
@@ -114,7 +117,7 @@ export default function ProfileScreen() {
               {user.name}
             </h2>
             {!!user.age && (
-              <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.55)' }}>{user.age} years old</p>
+              <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.55)' }}>{fmt(c.yearsOld, { age: user.age! })}</p>
             )}
             {user.verified && (
               <div className="flex justify-center mt-2"><VerifiedBadge /></div>
@@ -130,7 +133,7 @@ export default function ProfileScreen() {
         {/* Bio */}
         {user.bio && (
           <GlassCard className="p-4" style={{ borderRadius: 18, animation: 'slide-up 0.45s ease-out forwards', animationDelay: '0.1s', opacity: 0 }}>
-            <p className="text-xs font-semibold mb-2" style={{ color: 'rgba(255,255,255,0.5)' }}>ABOUT</p>
+            <p className="text-xs font-semibold mb-2" style={{ color: 'rgba(255,255,255,0.5)' }}>{c.about}</p>
             <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>{user.bio}</p>
           </GlassCard>
         )}
@@ -154,7 +157,7 @@ export default function ProfileScreen() {
         {/* Looking for */}
         {primaryIntent && (
           <div style={{ animation: 'slide-up 0.45s ease-out forwards', animationDelay: '0.2s', opacity: 0 }}>
-            <p className="text-xs font-semibold mb-2" style={{ color: 'rgba(255,255,255,0.5)' }}>LOOKING FOR</p>
+            <p className="text-xs font-semibold mb-2" style={{ color: 'rgba(255,255,255,0.5)' }}>{c.lookingFor}</p>
             <div className="flex flex-wrap gap-2">
               {user.intents?.map((it) => <IntentChip key={it} intent={it} selected readOnly />)}
             </div>
@@ -166,8 +169,8 @@ export default function ProfileScreen() {
           className="flex gap-3 pt-2"
           style={{ animation: 'slide-up 0.45s ease-out forwards', animationDelay: '0.25s', opacity: 0 }}
         >
-          <GlassButton variant="glass" onClick={() => navigate(-1)}>Pass</GlassButton>
-          <GlassButton variant="solid" onClick={() => navigate(`/chat/${user.userId}`)}>Say Hi 👋</GlassButton>
+          <GlassButton variant="glass" onClick={() => navigate(-1)}>{c.pass}</GlassButton>
+          <GlassButton variant="solid" onClick={() => navigate(`/chat/${user.userId}`)}>{c.sayHi}</GlassButton>
         </div>
       </div>
     </div>

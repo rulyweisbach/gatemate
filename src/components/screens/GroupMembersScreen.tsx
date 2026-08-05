@@ -5,8 +5,11 @@ import { ArrowLeft, Crown, UserMinus } from 'lucide-react';
 import { useApi } from '../../api/client';
 import type { Group } from '../../types';
 import { groupCategoryMeta } from '../../data/groupMeta';
+import { content, fmt } from '../../content';
 import Avatar from '../ui/Avatar';
 import GlassCard from '../layout/GlassCard';
+
+const c = content.members;
 
 export default function GroupMembersScreen() {
   const { id } = useParams<{ id: string }>();
@@ -31,13 +34,13 @@ export default function GroupMembersScreen() {
   const isOwner = !!group && group.ownerId === myId;
 
   const remove = async (memberId: string) => {
-    if (!id || !confirm('Remove this member from the group?')) return;
+    if (!id || !confirm(c.confirmRemove)) return;
     setBusyId(memberId);
     try {
       const r = await api.removeMember(id, memberId);
       setGroup(r.group);
     } catch (e) {
-      alert(e instanceof Error ? e.message : 'Could not remove member');
+      alert(e instanceof Error ? e.message : c.removeError);
     } finally {
       setBusyId(null);
     }
@@ -60,10 +63,10 @@ export default function GroupMembersScreen() {
         </button>
         <div className="flex-1 min-w-0">
           <p className="font-bold text-white text-sm truncate" style={{ fontFamily: 'Nunito, sans-serif' }}>
-            {group ? group.title : 'Members'}
+            {group ? group.title : c.fallbackTitle}
           </p>
           <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            {group ? `${group.members?.length ?? 0}/${group.maxMembers} members` : ' '}
+            {group ? fmt(c.count, { count: group.members?.length ?? 0, max: group.maxMembers }) : ' '}
           </p>
         </div>
       </div>
@@ -76,14 +79,14 @@ export default function GroupMembersScreen() {
         )}
 
         {!loading && !group && (
-          <p className="text-center text-sm py-16" style={{ color: 'rgba(255,255,255,0.5)' }}>Group not found.</p>
+          <p className="text-center text-sm py-16" style={{ color: 'rgba(255,255,255,0.5)' }}>{c.notFound}</p>
         )}
 
         {!loading && group && (
           <>
             {isOwner && (
               <p className="text-xs px-1 pb-1" style={{ color: 'rgba(255,255,255,0.45)' }}>
-                You're the {groupCategoryMeta[group.category]?.emoji} organizer — you can remove members below.
+                {fmt(c.ownerHint, { emoji: groupCategoryMeta[group.category]?.emoji ?? '' })}
               </p>
             )}
             {group.members?.map((m) => {
@@ -96,12 +99,12 @@ export default function GroupMembersScreen() {
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-white text-sm truncate">{m.name || 'Traveler'}</span>
                       {isMe && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.7)' }}>you</span>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.7)' }}>{c.you}</span>
                       )}
                     </div>
                     {isTheOwner && (
                       <span className="text-xs flex items-center gap-1 mt-0.5" style={{ color: '#7df5c0' }}>
-                        <Crown size={11} /> Organizer
+                        <Crown size={11} /> {c.organizer}
                       </span>
                     )}
                   </div>
@@ -112,7 +115,7 @@ export default function GroupMembersScreen() {
                       className="flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-full shrink-0"
                       style={{ background: 'rgba(255,120,120,0.15)', border: '1px solid rgba(255,120,120,0.3)', color: '#ffb4b4' }}
                     >
-                      <UserMinus size={13} /> {busyId === m.userId ? '…' : 'Remove'}
+                      <UserMinus size={13} /> {busyId === m.userId ? '…' : c.remove}
                     </button>
                   )}
                 </GlassCard>

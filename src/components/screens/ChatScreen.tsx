@@ -3,8 +3,11 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
 import { ArrowLeft, Send } from 'lucide-react';
 import { useApi } from '../../api/client';
+import { content, fmt } from '../../content';
 import type { Profile, ApiMessage } from '../../types';
 import Avatar from '../ui/Avatar';
+
+const c = content.chat;
 
 export default function ChatScreen() {
   const { id } = useParams<{ id: string }>();
@@ -50,7 +53,7 @@ export default function ChatScreen() {
   if (!id) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <p className="text-white">User not found</p>
+        <p className="text-white">{c.userNotFound}</p>
       </div>
     );
   }
@@ -117,7 +120,7 @@ export default function ChatScreen() {
         <div className="flex-1 min-w-0">
           <p className="font-bold text-white text-sm truncate">{other?.name ?? 'Traveler'}</p>
           <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            {other?.distance ? `📍 ${other.distance} · ` : ''}✈️ {other?.gate ?? other?.flight ?? 'at the airport'}
+            {other?.distance ? `📍 ${other.distance} · ` : ''}✈️ {other?.gate ?? other?.flight ?? c.atTheAirport}
           </p>
         </div>
       </div>
@@ -127,9 +130,9 @@ export default function ChatScreen() {
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center flex-1 gap-3 text-center py-12">
             <div className="text-5xl">✈️</div>
-            <p className="font-bold text-white">Say hi to {firstName}!</p>
+            <p className="font-bold text-white">{fmt(c.sayHiTo, { name: firstName })}</p>
             <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>
-              You're both at the airport ✈️
+              {c.bothAtAirport}
             </p>
           </div>
         )}
@@ -168,7 +171,7 @@ export default function ChatScreen() {
         <div className="flex gap-3 items-center">
           <input
             className="glass-input flex-1"
-            placeholder={`Message ${firstName}…`}
+            placeholder={fmt(c.placeholder, { name: firstName })}
             value={text}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={handleKey}

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, UserCircle, UsersRound } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
 import { useApi } from '../../api/client';
+import { content, fmt } from '../../content';
 import type { Profile } from '../../types';
 import GlassCard from '../layout/GlassCard';
 import VerifiedBadge from '../ui/VerifiedBadge';
@@ -67,10 +68,10 @@ export default function FeedScreen() {
 
         <div className="flex-1">
           <p className="font-bold text-white text-base" style={{ fontFamily: 'Nunito, sans-serif' }}>
-            Near Your Gate
+            {content.feed.title}
           </p>
           <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            {loading ? 'Looking around…' : `${filtered.length} traveler${filtered.length !== 1 ? 's' : ''} nearby`}
+            {loading ? content.feed.lookingAround : fmt(content.feed.travelersNearby, { count: filtered.length })}
           </p>
         </div>
 
@@ -97,14 +98,14 @@ export default function FeedScreen() {
         {loading && (
           <div className="flex flex-col items-center justify-center py-20 gap-3">
             <div className="text-4xl anim-float-plane">✈️</div>
-            <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>Finding travelers nearby…</p>
+            <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>{content.feed.loading}</p>
           </div>
         )}
 
         {!loading && error && (
           <div className="flex flex-col items-center justify-center py-20 gap-3 text-center">
             <div className="text-5xl">⚠️</div>
-            <p className="font-bold text-white">Couldn't load the feed</p>
+            <p className="font-bold text-white">{content.feed.errorTitle}</p>
             <p className="text-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>{error}</p>
           </div>
         )}
@@ -112,9 +113,9 @@ export default function FeedScreen() {
         {!loading && !error && filtered.length === 0 && (
           <div className="flex flex-col items-center justify-center py-20 gap-3 text-center">
             <div className="text-5xl">🔍</div>
-            <p className="font-bold text-white">No one here yet</p>
+            <p className="font-bold text-white">{content.feed.emptyTitle}</p>
             <p className="text-sm px-6" style={{ color: 'rgba(255,255,255,0.5)' }}>
-              No travelers match your flight and filters right now. Check back closer to boarding!
+              {content.feed.emptyBody}
             </p>
           </div>
         )}
@@ -171,7 +172,7 @@ export default function FeedScreen() {
                     )}
                     {!!user.mutualConnections && (
                       <span className="text-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>
-                        👥 {user.mutualConnections} mutual
+                        👥 {fmt(content.feed.mutual, { count: user.mutualConnections ?? 0 })}
                       </span>
                     )}
                   </div>

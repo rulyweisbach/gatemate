@@ -4,7 +4,10 @@ import { ArrowLeft, Calendar, MapPin, Users } from 'lucide-react';
 import { useApi } from '../../api/client';
 import type { GroupCategory } from '../../types';
 import { groupCategoryMeta, GROUP_CATEGORIES } from '../../data/groupMeta';
+import { content, fmt } from '../../content';
 import GlassButton from '../ui/GlassButton';
+
+const c = content.createGroup;
 
 export default function CreateGroupScreen() {
   const navigate = useNavigate();
@@ -21,7 +24,7 @@ export default function CreateGroupScreen() {
 
   const handleCreate = async () => {
     if (!title.trim()) {
-      setError('Give your group a title');
+      setError(c.titleRequired);
       return;
     }
     setSaving(true);
@@ -37,7 +40,7 @@ export default function CreateGroupScreen() {
       });
       navigate('/groups');
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Could not create group');
+      setError(e instanceof Error ? e.message : c.error);
       setSaving(false);
     }
   };
@@ -57,15 +60,15 @@ export default function CreateGroupScreen() {
         >
           <ArrowLeft size={18} className="text-white" />
         </button>
-        <span className="font-bold text-white" style={{ fontFamily: 'Nunito, sans-serif' }}>Create a Group</span>
+        <span className="font-bold text-white" style={{ fontFamily: 'Nunito, sans-serif' }}>{c.header}</span>
       </div>
 
       <div className="flex flex-col gap-5 px-5 py-5 pb-28">
         {/* Title */}
-        <Field label="What's the plan?">
+        <Field label={c.titleLabel}>
           <input
             className="glass-input"
-            placeholder="e.g. Rock concert in LA — looking for 5"
+            placeholder={c.titlePlaceholder}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             maxLength={80}
@@ -74,7 +77,7 @@ export default function CreateGroupScreen() {
 
         {/* Category */}
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.7)' }}>Type</label>
+          <label className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.7)' }}>{c.typeLabel}</label>
           <div className="flex flex-wrap gap-2">
             {GROUP_CATEGORIES.map((c) => (
               <button
@@ -91,10 +94,10 @@ export default function CreateGroupScreen() {
         </div>
 
         {/* Description */}
-        <Field label="Details">
+        <Field label={c.detailsLabel}>
           <textarea
             className="glass-input"
-            placeholder="Who are you looking for and what's the plan? e.g. Sharing a cab from LAX to downtown hotels around 6pm."
+            placeholder={c.detailsPlaceholder}
             value={description}
             onChange={(e) => setDescription(e.target.value.slice(0, 500))}
             rows={3}
@@ -103,23 +106,23 @@ export default function CreateGroupScreen() {
         </Field>
 
         {/* Date + location */}
-        <Field label="Date">
+        <Field label={c.dateLabel}>
           <div className="relative">
             <Calendar size={16} className="absolute top-1/2 -translate-y-1/2 left-4 pointer-events-none" style={{ color: 'rgba(255,255,255,0.5)' }} />
             <input type="date" className="glass-input pl-10" value={date} onChange={(e) => setDate(e.target.value)} style={{ colorScheme: 'dark' }} />
           </div>
         </Field>
-        <Field label="Where">
+        <Field label={c.whereLabel}>
           <div className="relative">
             <MapPin size={16} className="absolute top-1/2 -translate-y-1/2 left-4 pointer-events-none" style={{ color: 'rgba(255,255,255,0.5)' }} />
-            <input className="glass-input pl-10" placeholder="e.g. Los Angeles, Athens, LAX" value={location} onChange={(e) => setLocation(e.target.value)} maxLength={80} />
+            <input className="glass-input pl-10" placeholder={c.wherePlaceholder} value={location} onChange={(e) => setLocation(e.target.value)} maxLength={80} />
           </div>
         </Field>
 
         {/* Max members */}
         <div className="flex flex-col gap-2">
           <label className="text-sm font-semibold flex items-center gap-2" style={{ color: 'rgba(255,255,255,0.7)' }}>
-            <Users size={15} /> Group size — up to {maxMembers} people
+            <Users size={15} /> {fmt(c.sizeLabel, { count: maxMembers })}
           </label>
           <input
             type="range"
@@ -133,7 +136,7 @@ export default function CreateGroupScreen() {
             <span>2</span><span>20</span>
           </div>
           <p className="text-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>
-            You count as the first member, so {maxMembers - 1} more can join.
+            {fmt(c.sizeHint, { count: maxMembers - 1 })}
           </p>
         </div>
 
@@ -146,7 +149,7 @@ export default function CreateGroupScreen() {
         style={{ maxWidth: 430, borderTop: '1px solid rgba(255,255,255,0.1)', paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}
       >
         <GlassButton variant="solid" onClick={handleCreate} disabled={saving} style={saving ? { opacity: 0.6, cursor: 'wait' } : {}}>
-          {saving ? 'Creating…' : 'Create Group'}
+          {saving ? c.ctaSaving : c.cta}
         </GlassButton>
       </div>
     </div>

@@ -5,7 +5,10 @@ import { ArrowLeft, Send, Users } from 'lucide-react';
 import { useApi } from '../../api/client';
 import type { Group, ApiMessage } from '../../types';
 import { groupCategoryMeta } from '../../data/groupMeta';
+import { content, fmt } from '../../content';
 import Avatar from '../ui/Avatar';
+
+const c = content.groupChat;
 
 export default function GroupChatScreen() {
   const { id } = useParams<{ id: string }>();
@@ -47,7 +50,7 @@ export default function GroupChatScreen() {
   }, [messages]);
 
   if (!id) {
-    return <div className="flex items-center justify-center min-h-screen"><p className="text-white">Group not found</p></div>;
+    return <div className="flex items-center justify-center min-h-screen"><p className="text-white">{c.notFound}</p></div>;
   }
 
   const handleSend = async () => {
@@ -101,9 +104,9 @@ export default function GroupChatScreen() {
           onClick={() => navigate(`/groups/${id}/members`)}
           aria-label="View members"
         >
-          <p className="font-bold text-white text-sm truncate">{group?.title ?? 'Group chat'}</p>
+          <p className="font-bold text-white text-sm truncate">{group?.title ?? c.fallbackTitle}</p>
           <p className="text-xs flex items-center gap-1" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            <Users size={11} /> {group?.members?.length ?? 0}/{group?.maxMembers ?? '-'} members · tap to view
+            <Users size={11} /> {fmt(c.membersTapToView, { count: group?.members?.length ?? 0, max: group?.maxMembers ?? '-' })}
           </p>
         </button>
       </div>
@@ -113,9 +116,9 @@ export default function GroupChatScreen() {
         {denied && (
           <div className="flex flex-col items-center justify-center flex-1 gap-3 text-center py-12">
             <div className="text-5xl">🔒</div>
-            <p className="font-bold text-white">Join the group to chat</p>
+            <p className="font-bold text-white">{c.lockedTitle}</p>
             <button onClick={() => navigate('/groups')} className="btn-glass mt-2" style={{ width: 'auto', padding: '10px 24px' }}>
-              Back to groups
+              {c.backToGroups}
             </button>
           </div>
         )}
@@ -123,8 +126,8 @@ export default function GroupChatScreen() {
         {!denied && messages.length === 0 && (
           <div className="flex flex-col items-center justify-center flex-1 gap-3 text-center py-12">
             <div className="text-5xl">👋</div>
-            <p className="font-bold text-white">Start the conversation</p>
-            <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>Say hi to your group!</p>
+            <p className="font-bold text-white">{c.emptyTitle}</p>
+            <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>{c.emptyBody}</p>
           </div>
         )}
 
@@ -171,7 +174,7 @@ export default function GroupChatScreen() {
           <div className="flex gap-3 items-center">
             <input
               className="glass-input flex-1"
-              placeholder="Message the group…"
+              placeholder={c.placeholder}
               value={text}
               onChange={(e) => setText(e.target.value)}
               onKeyDown={handleKey}

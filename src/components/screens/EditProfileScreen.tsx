@@ -6,8 +6,11 @@ import { useApi } from '../../api/client';
 import type { Intent, Group } from '../../types';
 import { cognitoLogoutUrl } from '../../auth/authConfig';
 import { groupCategoryMeta } from '../../data/groupMeta';
+import { content, fmt } from '../../content';
 import GlassButton from '../ui/GlassButton';
 import IntentChip from '../ui/IntentChip';
+
+const c = content.editProfile;
 
 const MAX_PHOTOS = 6;
 const ALL_INTENTS: Intent[] = [
@@ -44,7 +47,7 @@ export default function EditProfileScreen() {
   useEffect(loadMyGroups, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const deleteGroup = async (id: string) => {
-    if (!confirm('Delete this group?')) return;
+    if (!confirm(c.confirmDeleteGroup)) return;
     try {
       await api.deleteGroup(id);
       setMyGroups((g) => g.filter((x) => x.groupId !== id));
@@ -80,11 +83,11 @@ export default function EditProfileScreen() {
     e.target.value = ''; // allow re-picking the same file
     if (!file) return;
     if (!ALLOWED_TYPES.includes(file.type)) {
-      setError('Please choose a JPG, PNG, or WebP image.');
+      setError(c.badImageType);
       return;
     }
     if (file.size > 8 * 1024 * 1024) {
-      setError('Image must be under 8 MB.');
+      setError(c.imageTooLarge);
       return;
     }
     setError(null);
@@ -93,7 +96,7 @@ export default function EditProfileScreen() {
       const url = await api.uploadPhoto(file);
       setPhotos((p) => [...p, url].slice(0, MAX_PHOTOS));
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Upload failed');
+      setError(err instanceof Error ? err.message : c.uploadFailed);
     } finally {
       setUploading(false);
     }
@@ -119,7 +122,7 @@ export default function EditProfileScreen() {
       });
       navigate(-1);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Could not save');
+      setError(err instanceof Error ? err.message : c.saveError);
       setSaving(false);
     }
   };
@@ -143,28 +146,28 @@ export default function EditProfileScreen() {
           <ArrowLeft size={18} className="text-white" />
         </button>
         <span className="flex-1 font-bold text-white" style={{ fontFamily: 'Nunito, sans-serif' }}>
-          Edit Profile
+          {c.header}
         </span>
         <button
           onClick={() => { window.location.href = cognitoLogoutUrl(); }}
           className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full"
           style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: 'rgba(255,255,255,0.7)' }}
         >
-          <LogOut size={13} /> Log out
+          <LogOut size={13} /> {content.common.logOut}
         </button>
       </div>
 
       {loading ? (
         <div className="flex flex-col items-center justify-center flex-1 gap-3">
           <div className="text-4xl anim-float-plane">✈️</div>
-          <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>Loading your profile…</p>
+          <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>{c.loading}</p>
         </div>
       ) : (
         <div className="flex flex-col gap-6 px-5 py-5 pb-28">
           {/* Photos */}
           <div>
             <p className="text-xs font-semibold mb-2" style={{ color: 'rgba(255,255,255,0.55)' }}>
-              PHOTOS <span style={{ color: 'rgba(255,255,255,0.35)' }}>({photos.length}/{MAX_PHOTOS})</span>
+              {c.photos} <span style={{ color: 'rgba(255,255,255,0.35)' }}>({photos.length}/{MAX_PHOTOS})</span>
             </p>
             <div className="grid grid-cols-3 gap-3">
               {cells.map((photo, i) =>
@@ -180,7 +183,7 @@ export default function EditProfileScreen() {
                         className="absolute bottom-1 left-1 text-[10px] font-bold px-2 py-0.5 rounded-full"
                         style={{ background: 'rgba(125,211,252,0.85)', color: '#0b1a3b' }}
                       >
-                        Main
+                        {c.main}
                       </span>
                     )}
                     <button
@@ -209,7 +212,7 @@ export default function EditProfileScreen() {
                     aria-label="Add photo"
                   >
                     {i === photos.length && uploading ? (
-                      <span className="text-xs" style={{ color: 'rgba(255,255,255,0.6)' }}>Uploading…</span>
+                      <span className="text-xs" style={{ color: 'rgba(255,255,255,0.6)' }}>{c.uploading}</span>
                     ) : (
                       <Plus size={22} style={{ color: 'rgba(255,255,255,0.5)' }} />
                     )}
@@ -219,28 +222,28 @@ export default function EditProfileScreen() {
             </div>
             <input ref={fileInput} type="file" accept="image/jpeg,image/png,image/webp" onChange={handleFile} hidden />
             <p className="text-xs mt-2" style={{ color: 'rgba(255,255,255,0.4)' }}>
-              Your first photo is your main one. Tap a tile to add.
+              {c.photosHint}
             </p>
           </div>
 
           {/* Basic fields */}
           <div className="flex flex-col gap-3">
-            <Field label="Name">
-              <input className="glass-input" value={name} onChange={(e) => setName(e.target.value)} maxLength={50} placeholder="Your name" />
+            <Field label={c.nameLabel}>
+              <input className="glass-input" value={name} onChange={(e) => setName(e.target.value)} maxLength={50} placeholder={c.namePlaceholder} />
             </Field>
-            <Field label="Age">
-              <input className="glass-input" value={age} onChange={(e) => setAge(e.target.value.replace(/\D/g, '').slice(0, 2))} inputMode="numeric" placeholder="e.g. 29" />
+            <Field label={c.ageLabel}>
+              <input className="glass-input" value={age} onChange={(e) => setAge(e.target.value.replace(/\D/g, '').slice(0, 2))} inputMode="numeric" placeholder={c.agePlaceholder} />
             </Field>
-            <Field label="Tagline">
-              <input className="glass-input" value={tagline} onChange={(e) => setTagline(e.target.value)} maxLength={60} placeholder="One line about you" />
+            <Field label={c.taglineLabel}>
+              <input className="glass-input" value={tagline} onChange={(e) => setTagline(e.target.value)} maxLength={60} placeholder={c.taglinePlaceholder} />
             </Field>
-            <Field label={`Bio (${bio.length}/300)`}>
+            <Field label={fmt(c.bioLabel, { count: bio.length })}>
               <textarea
                 className="glass-input"
                 value={bio}
                 onChange={(e) => setBio(e.target.value.slice(0, 300))}
                 rows={4}
-                placeholder="Who are you? What are you traveling for? Say hi 👋"
+                placeholder={c.bioPlaceholder}
                 style={{ resize: 'none', lineHeight: 1.5 }}
               />
             </Field>
@@ -248,7 +251,7 @@ export default function EditProfileScreen() {
 
           {/* Intents */}
           <div>
-            <p className="text-xs font-semibold mb-2" style={{ color: 'rgba(255,255,255,0.55)' }}>LOOKING FOR</p>
+            <p className="text-xs font-semibold mb-2" style={{ color: 'rgba(255,255,255,0.55)' }}>{c.lookingFor}</p>
             <div className="flex flex-wrap gap-2">
               {ALL_INTENTS.map((it) => (
                 <IntentChip key={it} intent={it} selected={intents.includes(it)} onClick={() => toggleIntent(it)} />
@@ -259,9 +262,9 @@ export default function EditProfileScreen() {
           {/* My Groups */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <p className="text-xs font-semibold" style={{ color: 'rgba(255,255,255,0.55)' }}>MY GROUPS</p>
+              <p className="text-xs font-semibold" style={{ color: 'rgba(255,255,255,0.55)' }}>{c.myGroups}</p>
               <button onClick={() => navigate('/groups/new')} className="flex items-center gap-1 text-xs font-bold" style={{ color: '#7dd3fc' }}>
-                <Plus size={14} /> Create
+                <Plus size={14} /> {c.createGroup}
               </button>
             </div>
             {myGroups.length === 0 ? (
@@ -270,7 +273,7 @@ export default function EditProfileScreen() {
                 className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl"
                 style={{ background: 'rgba(255,255,255,0.07)', border: '1.5px dashed rgba(255,255,255,0.25)', color: 'rgba(255,255,255,0.6)' }}
               >
-                <UsersRound size={16} /> <span className="text-sm font-semibold">Create your first group</span>
+                <UsersRound size={16} /> <span className="text-sm font-semibold">{c.createFirstGroup}</span>
               </button>
             ) : (
               <div className="flex flex-col gap-2">
@@ -284,7 +287,7 @@ export default function EditProfileScreen() {
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-bold text-white truncate">{g.title}</p>
                       <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
-                        {g.members?.length ?? 0}/{g.maxMembers} joined
+                        {fmt(c.joined, { count: g.members?.length ?? 0, max: g.maxMembers })}
                       </p>
                     </div>
                     <button
@@ -312,7 +315,7 @@ export default function EditProfileScreen() {
           style={{ maxWidth: 430, borderTop: '1px solid rgba(255,255,255,0.1)', paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}
         >
           <GlassButton variant="solid" onClick={handleSave} disabled={saving} style={saving ? { opacity: 0.6, cursor: 'wait' } : {}}>
-            {saving ? 'Saving…' : 'Save Profile'}
+            {saving ? c.saving : c.save}
           </GlassButton>
         </div>
       )}

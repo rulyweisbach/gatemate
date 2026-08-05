@@ -3,9 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
 import { useAppStore } from '../../store/useAppStore';
 import { useApi } from '../../api/client';
+import { content } from '../../content';
 import type { Intent } from '../../types';
 import IntentChip from '../ui/IntentChip';
 import GlassButton from '../ui/GlassButton';
+
+const c = content.intentScreen;
 
 const ALL_INTENTS: Intent[] = [
   'networking',
@@ -40,7 +43,7 @@ export default function IntentScreen() {
       });
       navigate('/feed');
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Could not save your profile');
+      setError(e instanceof Error ? e.message : c.error);
       setSaving(false);
     }
   };
@@ -60,12 +63,12 @@ export default function IntentScreen() {
           className="text-3xl font-black text-white"
           style={{ fontFamily: 'Nunito, sans-serif' }}
         >
-          What are you
+          {c.titleLine1}
           <br />
-          <span style={{ color: '#7dd3fc' }}>looking for?</span>
+          <span style={{ color: '#7dd3fc' }}>{c.titleHighlight}</span>
         </h1>
         <p className="text-sm mt-2" style={{ color: 'rgba(255,255,255,0.55)' }}>
-          Choose one or more — others will see your intent too
+          {c.subtitle}
         </p>
       </div>
 
@@ -96,7 +99,7 @@ export default function IntentScreen() {
         }}
       >
         <p className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.65)' }}>
-          💡 Your intent is visible to others. You can update it anytime. Selecting none shows all travelers nearby.
+          {c.note}
         </p>
       </div>
 
@@ -117,7 +120,7 @@ export default function IntentScreen() {
           disabled={saving}
           style={saving ? { opacity: 0.6, cursor: 'wait' } : {}}
         >
-          {saving ? 'Finding your match…' : 'Find your match'}
+          {saving ? c.ctaSaving : c.cta}
         </GlassButton>
       </div>
     </div>

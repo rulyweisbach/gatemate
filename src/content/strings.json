@@ -1,0 +1,244 @@
+{
+  "_readme": "All user-facing text for GateMate. Edit the values (right of each colon, inside quotes), keep the keys and any {placeholders}. Commit to Git; the next build shows your text.",
+
+  "common": {
+    "back": "Go back",
+    "loading": "Loading…",
+    "logOut": "Log out"
+  },
+
+  "splash": {
+    "brandFirst": "Gate",
+    "brandSecond": "Mate",
+    "tagline": "Meet people around your flight"
+  },
+
+  "onboard": {
+    "titleLine1": "Your next connection",
+    "titleLine2": "is waiting at your",
+    "titleHighlight": "Gate",
+    "subtitle": "Connect with fellow travelers at your gate, lounge, or terminal on your terms.",
+    "continueGoogle": "Continue with Google",
+    "continueInstagram": "Continue with Instagram",
+    "continueFacebook": "Continue with Facebook",
+    "comingSoon": "{provider} login is coming soon — Google works now!",
+    "or": "or",
+    "getStarted": "Get Started",
+    "terms": "By continuing you agree to our Terms & Privacy Policy"
+  },
+
+  "flight": {
+    "modeFlight": "By Flight",
+    "modeDate": "By Date",
+    "modeEvent": "By Event",
+    "titleFlight": "Your Flight",
+    "titleDate": "Travel Date",
+    "titleEvent": "Your Event",
+    "subtitleFlight": "We'll show you who's on your flight",
+    "subtitleDate": "Find travelers heading out the same day",
+    "subtitleEvent": "Connect with people going to the same event",
+    "flightNumberLabel": "Flight Number",
+    "flightNumberPlaceholder": "e.g. LY 002",
+    "gateLabel": "Gate",
+    "gatePlaceholder": "e.g. A14",
+    "boardingDirect": "direct",
+    "boardingGate": "Gate",
+    "boardingDeparts": "Departs",
+    "boardingFlight": "Flight",
+    "dateLabel": "Travel Date",
+    "destinationLabel": "Destination",
+    "optional": "(optional)",
+    "orTypeCity": "or type any city",
+    "cityPlaceholder": "e.g. Rome, Singapore, Cape Town…",
+    "anyDate": "Any date",
+    "allDestinations": "All destinations",
+    "eventTypeLabel": "Event Type",
+    "eventTypeConcert": "Concert",
+    "eventTypeSport": "Sport Game",
+    "eventTypeConference": "Conference",
+    "eventTypeOther": "Other",
+    "eventArtist": "Artist or venue",
+    "eventTeam": "Team or stadium",
+    "eventConference": "Conference name",
+    "eventOther": "Event name or description",
+    "eventArtistPlaceholder": "e.g. Coldplay at Wembley",
+    "eventTeamPlaceholder": "e.g. Champions League Final",
+    "eventConferencePlaceholder": "e.g. Web Summit Lisbon",
+    "eventOtherPlaceholder": "Describe your event…",
+    "anyEvent": "Any event",
+    "cta": "Find your match"
+  },
+
+  "intentScreen": {
+    "titleLine1": "What are you",
+    "titleHighlight": "looking for?",
+    "subtitle": "Choose one or more — others will see your intent too",
+    "note": "💡 Your intent is visible to others. You can update it anytime. Selecting none shows all travelers nearby.",
+    "cta": "Find your match",
+    "ctaSaving": "Finding your match…",
+    "error": "Could not save your profile"
+  },
+
+  "feed": {
+    "title": "Near Your Gate",
+    "lookingAround": "Looking around…",
+    "travelersNearby": "{count} travelers nearby",
+    "loading": "Finding travelers nearby…",
+    "errorTitle": "Couldn't load the feed",
+    "emptyTitle": "No one here yet",
+    "emptyBody": "No travelers match your flight and filters right now. Check back closer to boarding!",
+    "mutual": "{count} mutual"
+  },
+
+  "profile": {
+    "header": "Profile",
+    "notFound": "Profile not found",
+    "loading": "Loading profile…",
+    "yearsOld": "{age} years old",
+    "about": "ABOUT",
+    "flight": "Flight",
+    "gate": "Gate",
+    "departs": "Departs",
+    "route": "Route",
+    "lookingFor": "LOOKING FOR",
+    "pass": "Pass",
+    "sayHi": "Say Hi 👋"
+  },
+
+  "chat": {
+    "sayHiTo": "Say hi to {name}!",
+    "bothAtAirport": "You're both at the airport ✈️",
+    "atTheAirport": "at the airport",
+    "placeholder": "Message {name}…",
+    "userNotFound": "User not found"
+  },
+
+  "groups": {
+    "title": "Groups",
+    "create": "Create",
+    "searchPlaceholder": "Search groups — concert, cab to hotel, Greece…",
+    "all": "All",
+    "loading": "Loading groups…",
+    "emptyTitle": "No groups yet",
+    "emptyBody": "Be the first — create a group for your concert, cab share, or family trip!",
+    "emptyCta": "+ Create a Group",
+    "by": "by",
+    "you": "you",
+    "aTraveler": "a traveler",
+    "openChat": "💬 Open chat",
+    "members": "👥 Members",
+    "yourGroup": "✓ Your group",
+    "leave": "Leave",
+    "full": "Full",
+    "join": "Join"
+  },
+
+  "createGroup": {
+    "header": "Create a Group",
+    "titleLabel": "What's the plan?",
+    "titlePlaceholder": "e.g. Rock concert in LA — looking for 5",
+    "typeLabel": "Type",
+    "detailsLabel": "Details",
+    "detailsPlaceholder": "Who are you looking for and what's the plan? e.g. Sharing a cab from LAX to downtown hotels around 6pm.",
+    "dateLabel": "Date",
+    "whereLabel": "Where",
+    "wherePlaceholder": "e.g. Los Angeles, Athens, LAX",
+    "sizeLabel": "Group size — up to {count} people",
+    "sizeHint": "You count as the first member, so {count} more can join.",
+    "cta": "Create Group",
+    "ctaSaving": "Creating…",
+    "titleRequired": "Give your group a title",
+    "error": "Could not create group"
+  },
+
+  "groupChat": {
+    "fallbackTitle": "Group chat",
+    "membersTapToView": "{count}/{max} members · tap to view",
+    "lockedTitle": "Join the group to chat",
+    "backToGroups": "Back to groups",
+    "emptyTitle": "Start the conversation",
+    "emptyBody": "Say hi to your group!",
+    "placeholder": "Message the group…",
+    "notFound": "Group not found"
+  },
+
+  "members": {
+    "fallbackTitle": "Members",
+    "count": "{count}/{max} members",
+    "ownerHint": "You're the {emoji} organizer — you can remove members below.",
+    "organizer": "Organizer",
+    "you": "you",
+    "remove": "Remove",
+    "confirmRemove": "Remove this member from the group?",
+    "notFound": "Group not found.",
+    "removeError": "Could not remove member"
+  },
+
+  "editProfile": {
+    "header": "Edit Profile",
+    "loading": "Loading your profile…",
+    "photos": "PHOTOS",
+    "photosHint": "Your first photo is your main one. Tap a tile to add.",
+    "uploading": "Uploading…",
+    "main": "Main",
+    "nameLabel": "Name",
+    "namePlaceholder": "Your name",
+    "ageLabel": "Age",
+    "agePlaceholder": "e.g. 29",
+    "taglineLabel": "Tagline",
+    "taglinePlaceholder": "One line about you",
+    "bioLabel": "Bio ({count}/300)",
+    "bioPlaceholder": "Who are you? What are you traveling for? Say hi 👋",
+    "lookingFor": "LOOKING FOR",
+    "myGroups": "MY GROUPS",
+    "createGroup": "Create",
+    "createFirstGroup": "Create your first group",
+    "joined": "{count}/{max} joined",
+    "confirmDeleteGroup": "Delete this group?",
+    "save": "Save Profile",
+    "saving": "Saving…",
+    "badImageType": "Please choose a JPG, PNG, or WebP image.",
+    "imageTooLarge": "Image must be under 8 MB.",
+    "uploadFailed": "Upload failed",
+    "saveError": "Could not save"
+  },
+
+  "admin": {
+    "title": "Admin",
+    "usersTab": "Users",
+    "groupsTab": "Groups",
+    "deniedTitle": "Access denied",
+    "deniedBody": "You're signed in as {email}, which isn't an admin account.",
+    "switchAccount": "Switch account",
+    "home": "Home",
+    "loginGoogle": "Google",
+    "loginEmail": "Email",
+    "you": "you",
+    "noUsers": "No registered users yet.",
+    "noGroups": "No groups yet.",
+    "close": "Close",
+    "confirmRemoveUser": "Remove {who}? This deletes their account, profile, and groups they own.",
+    "removeUserError": "Failed to remove user",
+    "confirmCloseGroup": "Close the group \"{title}\"? This permanently removes it.",
+    "closeGroupError": "Failed to close group"
+  },
+
+  "intents": {
+    "networking": { "label": "Networking", "emoji": "💼" },
+    "friendship": { "label": "Friendship", "emoji": "🤝" },
+    "shared-travel": { "label": "Shared Travel", "emoji": "🧳" },
+    "lounge": { "label": "Lounge Partner", "emoji": "🛋️" },
+    "dating": { "label": "Dating", "emoji": "💫" },
+    "local-guide": { "label": "Local Guide", "emoji": "🗺️" },
+    "first-time": { "label": "First Flight Support", "emoji": "✈️" }
+  },
+
+  "groupCategories": {
+    "concert": { "label": "Concert / Show", "emoji": "🎵" },
+    "sport": { "label": "Sport Event", "emoji": "🏟️" },
+    "travel": { "label": "Travel Buddy", "emoji": "🧳" },
+    "cab": { "label": "Share a Ride", "emoji": "🚕" },
+    "family": { "label": "Family Travel", "emoji": "👨‍👩‍👧‍👦" },
+    "other": { "label": "Other", "emoji": "✨" }
+  }
+}

@@ -3,16 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import { Plane, Hash, DoorOpen, Calendar, MapPin, Mic, UserCircle, UsersRound } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
 import type { SearchMode, EventType } from '../../store/useAppStore';
+import { content } from '../../content';
 import GlassCard from '../layout/GlassCard';
 import GlassInput from '../ui/GlassInput';
 import GlassButton from '../ui/GlassButton';
 
+const c = content.flight;
+
 // ─── Mode tab switcher ────────────────────────────────────────────────────────
 
 const MODES: { id: SearchMode; label: string; emoji: string }[] = [
-  { id: 'flight', label: 'By Flight', emoji: '✈️' },
-  { id: 'date',   label: 'By Date',   emoji: '📅' },
-  { id: 'event',  label: 'By Event',  emoji: '🎪' },
+  { id: 'flight', label: c.modeFlight, emoji: '✈️' },
+  { id: 'date',   label: c.modeDate,   emoji: '📅' },
+  { id: 'event',  label: c.modeEvent,  emoji: '🎪' },
 ];
 
 // ─── Destination options for date mode ───────────────────────────────────────
@@ -29,10 +32,10 @@ const DESTINATIONS = [
 // ─── Event type options ───────────────────────────────────────────────────────
 
 const EVENT_TYPES: { id: EventType; label: string; emoji: string }[] = [
-  { id: 'concert',    label: 'Concert',     emoji: '🎵' },
-  { id: 'sport',      label: 'Sport Game',  emoji: '⚽' },
-  { id: 'conference', label: 'Conference',  emoji: '💼' },
-  { id: 'other',      label: 'Other',       emoji: '✏️' },
+  { id: 'concert',    label: c.eventTypeConcert,    emoji: '🎵' },
+  { id: 'sport',      label: c.eventTypeSport,      emoji: '⚽' },
+  { id: 'conference', label: c.eventTypeConference, emoji: '💼' },
+  { id: 'other',      label: c.eventTypeOther,      emoji: '✏️' },
 ];
 
 // ─── Sub-panels ──────────────────────────────────────────────────────────────
@@ -58,17 +61,17 @@ function FlightPanel() {
   return (
     <div className="flex flex-col gap-4">
       <GlassInput
-        label="Flight Number"
+        label={c.flightNumberLabel}
         icon={Hash}
-        placeholder="e.g. LY 002"
+        placeholder={c.flightNumberPlaceholder}
         value={flight}
         onChange={(e) => handleFlightChange(e.target.value)}
         maxLength={10}
       />
       <GlassInput
-        label="Gate"
+        label={c.gateLabel}
         icon={DoorOpen}
-        placeholder="e.g. A14"
+        placeholder={c.gatePlaceholder}
         value={gateLocal}
         onChange={(e) => handleGateChange(e.target.value)}
         maxLength={6}
@@ -97,15 +100,15 @@ function FlightPanel() {
         </div>
         <div className="flex justify-between pt-3 mt-1">
           <div className="text-center">
-            <p className="text-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>Gate</p>
+            <p className="text-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>{c.boardingGate}</p>
             <p className="font-bold text-white text-sm">{displayGate}</p>
           </div>
           <div className="text-center">
-            <p className="text-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>Departs</p>
+            <p className="text-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>{c.boardingDeparts}</p>
             <p className="font-bold text-white text-sm">14:30</p>
           </div>
           <div className="text-center">
-            <p className="text-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>Flight</p>
+            <p className="text-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>{c.boardingFlight}</p>
             <p className="font-bold text-white text-sm">{displayFlight}</p>
           </div>
         </div>
@@ -148,7 +151,7 @@ function DatePanel() {
       {/* Date picker */}
       <div className="flex flex-col gap-1.5">
         <label className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.7)' }}>
-          Travel Date
+          {c.dateLabel}
         </label>
         <div className="relative">
           <Calendar
@@ -169,7 +172,7 @@ function DatePanel() {
       {/* Destination */}
       <div className="flex flex-col gap-2">
         <label className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.7)' }}>
-          Destination <span style={{ color: 'rgba(255,255,255,0.4)', fontWeight: 400 }}>(optional)</span>
+          {c.destinationLabel} <span style={{ color: 'rgba(255,255,255,0.4)', fontWeight: 400 }}>{c.optional}</span>
         </label>
 
         {/* Preset grid */}
@@ -201,7 +204,7 @@ function DatePanel() {
         {/* Divider */}
         <div className="flex items-center gap-3 my-1">
           <div className="flex-1 h-px" style={{ background: 'rgba(255,255,255,0.15)' }} />
-          <span className="text-xs font-semibold" style={{ color: 'rgba(255,255,255,0.35)' }}>or type any city</span>
+          <span className="text-xs font-semibold" style={{ color: 'rgba(255,255,255,0.35)' }}>{c.orTypeCity}</span>
           <div className="flex-1 h-px" style={{ background: 'rgba(255,255,255,0.15)' }} />
         </div>
 
@@ -214,7 +217,7 @@ function DatePanel() {
           />
           <input
             className="glass-input pl-10"
-            placeholder="e.g. Rome, Singapore, Cape Town…"
+            placeholder={c.cityPlaceholder}
             value={customDest}
             onChange={(e) => handleCustomDest(e.target.value)}
             maxLength={60}
@@ -232,8 +235,8 @@ function DatePanel() {
           <p className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.8)' }}>
             {date
               ? new Date(date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
-              : 'Any date'}
-            {activeDest ? ` · TLV → ${activeDest}` : ' · All destinations'}
+              : c.anyDate}
+            {activeDest ? ` · TLV → ${activeDest}` : ` · ${c.allDestinations}`}
           </p>
         </div>
       )}
@@ -261,7 +264,7 @@ function EventPanel() {
       {/* Event type chips */}
       <div className="flex flex-col gap-1.5">
         <label className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.7)' }}>
-          Event Type
+          {c.eventTypeLabel}
         </label>
         <div className="grid grid-cols-2 gap-2">
           {EVENT_TYPES.map((et) => {
@@ -289,10 +292,10 @@ function EventPanel() {
       {/* Free text — always visible, label changes with type */}
       <div className="flex flex-col gap-1.5">
         <label className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.7)' }}>
-          {type === 'concert'    ? 'Artist or venue'
-          : type === 'sport'    ? 'Team or stadium'
-          : type === 'conference' ? 'Conference name'
-          : 'Event name or description'}
+          {type === 'concert'    ? c.eventArtist
+          : type === 'sport'    ? c.eventTeam
+          : type === 'conference' ? c.eventConference
+          : c.eventOther}
         </label>
         <div className="relative">
           <Mic
@@ -303,10 +306,10 @@ function EventPanel() {
           <input
             className="glass-input pl-10"
             placeholder={
-              type === 'concert'      ? 'e.g. Coldplay at Wembley'
-              : type === 'sport'     ? 'e.g. Champions League Final'
-              : type === 'conference' ? 'e.g. Web Summit Lisbon'
-              : 'Describe your event…'
+              type === 'concert'      ? c.eventArtistPlaceholder
+              : type === 'sport'     ? c.eventTeamPlaceholder
+              : type === 'conference' ? c.eventConferencePlaceholder
+              : c.eventOtherPlaceholder
             }
             value={text}
             onChange={(e) => handleText(e.target.value)}
@@ -325,7 +328,7 @@ function EventPanel() {
             {EVENT_TYPES.find((e) => e.id === type)?.emoji ?? '🎪'}
           </span>
           <p className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.8)' }}>
-            {text || EVENT_TYPES.find((e) => e.id === type)?.label || 'Any event'}
+            {text || EVENT_TYPES.find((e) => e.id === type)?.label || c.anyEvent}
           </p>
         </div>
       )}
@@ -355,14 +358,14 @@ export default function FlightScreen() {
   };
 
   const titles: Record<SearchMode, string> = {
-    flight: 'Your Flight',
-    date:   'Travel Date',
-    event:  'Your Event',
+    flight: c.titleFlight,
+    date:   c.titleDate,
+    event:  c.titleEvent,
   };
   const subtitles: Record<SearchMode, string> = {
-    flight: "We'll show you who's on your flight",
-    date:   "Find travelers heading out the same day",
-    event:  "Connect with people going to the same event",
+    flight: c.subtitleFlight,
+    date:   c.subtitleDate,
+    event:  c.subtitleEvent,
   };
 
   return (
@@ -458,7 +461,7 @@ export default function FlightScreen() {
           disabled={!canContinue}
           style={!canContinue ? { opacity: 0.45, cursor: 'not-allowed', transform: 'none' } : {}}
         >
-          Find your match
+          {c.cta}
         </GlassButton>
       </div>
     </div>

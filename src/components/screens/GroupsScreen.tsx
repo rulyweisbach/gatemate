@@ -5,7 +5,10 @@ import { useAuth } from 'react-oidc-context';
 import { useApi } from '../../api/client';
 import type { Group, GroupCategory } from '../../types';
 import { groupCategoryMeta, GROUP_CATEGORIES } from '../../data/groupMeta';
+import { content } from '../../content';
 import GlassCard from '../layout/GlassCard';
+
+const c = content.groups;
 
 export default function GroupsScreen() {
   const navigate = useNavigate();
@@ -69,14 +72,14 @@ export default function GroupsScreen() {
           <ArrowLeft size={18} className="text-white" />
         </button>
         <span className="flex-1 font-bold text-white text-base" style={{ fontFamily: 'Nunito, sans-serif' }}>
-          Groups
+          {c.title}
         </span>
         <button
           onClick={() => navigate('/groups/new')}
           className="flex items-center gap-1.5 font-bold text-sm rounded-full px-3.5 py-2"
           style={{ background: '#7dd3fc', color: '#0b1a3b' }}
         >
-          <Plus size={16} /> Create
+          <Plus size={16} /> {c.create}
         </button>
       </div>
 
@@ -86,7 +89,7 @@ export default function GroupsScreen() {
           <Search size={16} className="absolute top-1/2 -translate-y-1/2 left-4" style={{ color: 'rgba(255,255,255,0.5)' }} />
           <input
             className="glass-input pl-10"
-            placeholder="Search groups — concert, cab to hotel, Greece…"
+            placeholder={c.searchPlaceholder}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -97,7 +100,7 @@ export default function GroupsScreen() {
             className="intent-chip shrink-0"
             style={!cat ? { background: 'rgba(125,211,252,0.28)', borderColor: '#7dd3fc' } : {}}
           >
-            All
+            {c.all}
           </button>
           {GROUP_CATEGORIES.map((c) => (
             <button
@@ -117,19 +120,19 @@ export default function GroupsScreen() {
         {loading && (
           <div className="flex flex-col items-center justify-center py-16 gap-3">
             <div className="text-4xl anim-float-plane">✈️</div>
-            <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>Loading groups…</p>
+            <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>{c.loading}</p>
           </div>
         )}
 
         {!loading && filtered.length === 0 && (
           <div className="flex flex-col items-center justify-center py-16 gap-3 text-center">
             <div className="text-5xl">🧩</div>
-            <p className="font-bold text-white">No groups yet</p>
+            <p className="font-bold text-white">{c.emptyTitle}</p>
             <p className="text-sm px-6" style={{ color: 'rgba(255,255,255,0.5)' }}>
-              Be the first — create a group for your concert, cab share, or family trip!
+              {c.emptyBody}
             </p>
             <button onClick={() => navigate('/groups/new')} className="btn-solid mt-2" style={{ width: 'auto', padding: '12px 28px' }}>
-              + Create a Group
+              {c.emptyCta}
             </button>
           </div>
         )}
@@ -155,7 +158,7 @@ export default function GroupsScreen() {
                 <div className="flex-1 min-w-0">
                   <p className="font-bold text-white text-sm leading-snug">{g.title}</p>
                   <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>
-                    {meta.label} · by {isOwner ? 'you' : g.ownerName || 'a traveler'}
+                    {meta.label} · {c.by} {isOwner ? c.you : g.ownerName || c.aTraveler}
                   </p>
                   {g.description && (
                     <p className="text-xs mt-1.5 leading-relaxed" style={{ color: 'rgba(255,255,255,0.7)' }}>
@@ -181,21 +184,21 @@ export default function GroupsScreen() {
                       className="text-xs font-bold px-4 py-2 rounded-full"
                       style={{ background: '#7dd3fc', color: '#0b1a3b' }}
                     >
-                      💬 Open chat
+                      {c.openChat}
                     </button>
                     <button
                       onClick={() => navigate(`/groups/${g.groupId}/members`)}
                       className="text-xs font-bold px-4 py-2 rounded-full"
                       style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.25)', color: 'white' }}
                     >
-                      👥 Members
+                      {c.members}
                     </button>
                   </>
                 )}
                 {isOwner ? (
                   <span className="text-xs font-bold px-3 py-1.5 rounded-full inline-block"
                     style={{ background: 'rgba(125,245,192,0.15)', border: '1px solid rgba(125,245,192,0.4)', color: '#7df5c0' }}>
-                    ✓ Your group
+                    {c.yourGroup}
                   </span>
                 ) : isMember ? (
                   <button
@@ -204,12 +207,12 @@ export default function GroupsScreen() {
                     className="text-xs font-bold px-4 py-2 rounded-full"
                     style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.25)', color: 'white' }}
                   >
-                    {busyId === g.groupId ? '…' : 'Leave'}
+                    {busyId === g.groupId ? '…' : c.leave}
                   </button>
                 ) : full ? (
                   <span className="text-xs font-semibold px-4 py-2 rounded-full inline-block"
                     style={{ background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.4)' }}>
-                    Full
+                    {c.full}
                   </span>
                 ) : (
                   <button
@@ -218,7 +221,7 @@ export default function GroupsScreen() {
                     className="text-xs font-bold px-5 py-2 rounded-full"
                     style={{ background: '#7dd3fc', color: '#0b1a3b' }}
                   >
-                    {busyId === g.groupId ? '…' : 'Join'}
+                    {busyId === g.groupId ? '…' : c.join}
                   </button>
                 )}
               </div>

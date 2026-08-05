@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
+import { content } from '../../content';
 
 export default function SplashScreen() {
   const navigate = useNavigate();
@@ -47,14 +48,14 @@ export default function SplashScreen() {
           className="text-5xl font-black tracking-tight mb-2"
           style={{ fontFamily: 'Nunito, sans-serif', lineHeight: 1.1 }}
         >
-          <span className="text-white">Gate</span>
-          <span style={{ color: '#7dd3fc' }}>Mate</span>
+          <span className="text-white">{content.splash.brandFirst}</span>
+          <span style={{ color: '#7dd3fc' }}>{content.splash.brandSecond}</span>
         </h1>
         <p
           className="text-base font-medium"
           style={{ color: 'rgba(255,255,255,0.65)', letterSpacing: '0.02em' }}
         >
-          Meet people around your flight
+          {content.splash.tagline}
         </p>
       </div>
 

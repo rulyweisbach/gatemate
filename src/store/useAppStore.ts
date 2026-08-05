@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { Intent, User, Message } from '../types';
+import type { Intent, User, Message, Profile } from '../types';
 
 export type SearchMode = 'flight' | 'date' | 'event';
 export type EventType = 'concert' | 'sport' | 'conference' | 'other' | '';
@@ -29,7 +29,11 @@ interface AppState {
   currentUser: User | null;
   chatHistory: ChatHistory;
 
+  // The signed-in user's own profile (for showing their avatar app-wide).
+  myProfile: Profile | null;
+
   // Actions
+  setMyProfile: (profile: Profile | null) => void;
   setSearchMode: (mode: SearchMode) => void;
   setFlight: (flight: string, gate: string) => void;
   setDateSearch: (date: string, destination: string) => void;
@@ -51,7 +55,9 @@ export const useAppStore = create<AppState>((set, get) => ({
   selectedIntents: [],
   currentUser: null,
   chatHistory: {},
+  myProfile: null,
 
+  setMyProfile: (profile) => set({ myProfile: profile }),
   setSearchMode: (mode) => set({ searchMode: mode }),
   setFlight: (flight, gate) => set({ flightNumber: flight, gate }),
   setDateSearch: (date, destination) => set({ searchDate: date, searchDestination: destination }),

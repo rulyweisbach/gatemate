@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, UserCircle, UsersRound } from 'lucide-react';
+import { ArrowLeft, UsersRound } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
 import { useApi } from '../../api/client';
 import { content, fmt } from '../../content';
@@ -8,6 +8,7 @@ import type { Profile } from '../../types';
 import GlassCard from '../layout/GlassCard';
 import VerifiedBadge from '../ui/VerifiedBadge';
 import Avatar from '../ui/Avatar';
+import ProfileButton from '../ui/ProfileButton';
 import { intentMeta } from '../ui/IntentChip';
 
 export default function FeedScreen() {
@@ -83,14 +84,7 @@ export default function FeedScreen() {
         >
           <UsersRound size={18} style={{ color: '#7dd3fc' }} />
         </button>
-        <button
-          onClick={() => navigate('/me')}
-          className="flex items-center justify-center rounded-full"
-          style={{ width: 36, height: 36, background: 'rgba(125,211,252,0.2)', border: '1px solid rgba(125,211,252,0.4)' }}
-          aria-label="Edit my profile"
-        >
-          <UserCircle size={20} style={{ color: '#7dd3fc' }} />
-        </button>
+        <ProfileButton size={36} />
       </div>
 
       {/* Feed */}

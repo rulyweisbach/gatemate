@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plane, Hash, DoorOpen, Calendar, MapPin, Mic, UserCircle, UsersRound } from 'lucide-react';
+import { Plane, Hash, DoorOpen, Calendar, MapPin, Mic, UsersRound } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
 import type { SearchMode, EventType } from '../../store/useAppStore';
 import { content } from '../../content';
 import GlassCard from '../layout/GlassCard';
 import GlassInput from '../ui/GlassInput';
 import GlassButton from '../ui/GlassButton';
+import ProfileButton from '../ui/ProfileButton';
 
 const c = content.flight;
 
@@ -396,14 +397,7 @@ export default function FlightScreen() {
           >
             <UsersRound size={20} style={{ color: '#7dd3fc' }} />
           </button>
-          <button
-            onClick={() => navigate('/me')}
-            className="flex items-center justify-center rounded-full"
-            style={{ width: 40, height: 40, background: 'rgba(125,211,252,0.2)', border: '1px solid rgba(125,211,252,0.4)' }}
-            aria-label="Edit my profile"
-          >
-            <UserCircle size={22} style={{ color: '#7dd3fc' }} />
-          </button>
+          <ProfileButton size={40} />
         </div>
       </div>
 

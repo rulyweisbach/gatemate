@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Plus, X, LogOut, Trash2, UsersRound } from 'lucide-react';
 import { useAuth } from 'react-oidc-context';
 import { useApi } from '../../api/client';
+import { useAppStore } from '../../store/useAppStore';
 import type { Intent, Group } from '../../types';
 import { cognitoLogoutUrl } from '../../auth/authConfig';
 import { groupCategoryMeta } from '../../data/groupMeta';
@@ -23,6 +24,7 @@ export default function EditProfileScreen() {
   const auth = useAuth();
   const api = useApi();
   const fileInput = useRef<HTMLInputElement>(null);
+  const setMyProfile = useAppStore((s) => s.setMyProfile);
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -111,7 +113,7 @@ export default function EditProfileScreen() {
     setSaving(true);
     setError(null);
     try {
-      await api.updateMe({
+      const { profile } = await api.updateMe({
         name: name.trim() || undefined,
         age: age ? Number(age) : undefined,
         tagline: tagline.trim() || undefined,
@@ -120,6 +122,7 @@ export default function EditProfileScreen() {
         photo: photos[0], // keep the single-photo field in sync for avatars
         intents,
       });
+      setMyProfile(profile); // refresh cached avatar app-wide
       navigate(-1);
     } catch (err) {
       setError(err instanceof Error ? err.message : c.saveError);

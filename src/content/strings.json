@@ -7,6 +7,24 @@
     "logOut": "Log out"
   },
 
+  "nav": {
+    "groups": "Groups",
+    "interest": "Interest",
+    "matches": "Matches",
+    "discover": "Discover",
+    "profile": "Profile"
+  },
+
+  "matches": {
+    "title": "Matches",
+    "subtitle": "People you're connected with",
+    "loading": "Loading your matches…",
+    "emptyTitle": "No matches yet",
+    "emptyBody": "Say hi to someone in Discover or a group, and your conversations show up here.",
+    "emptyCta": "Discover people",
+    "openChat": "Chat"
+  },
+
   "splash": {
     "brandFirst": "Gate",
     "brandSecond": "Mate",

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, UsersRound } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
 import { useApi } from '../../api/client';
 import { content, fmt } from '../../content';
@@ -8,7 +7,6 @@ import type { Profile } from '../../types';
 import GlassCard from '../layout/GlassCard';
 import VerifiedBadge from '../ui/VerifiedBadge';
 import Avatar from '../ui/Avatar';
-import ProfileButton from '../ui/ProfileButton';
 import { intentMeta } from '../ui/IntentChip';
 
 export default function FeedScreen() {
@@ -53,42 +51,18 @@ export default function FeedScreen() {
         className="glass-dark sticky top-0 z-10 flex items-center gap-3 px-5 py-4"
         style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}
       >
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center justify-center rounded-full"
-          style={{
-            width: 36,
-            height: 36,
-            background: 'rgba(255,255,255,0.12)',
-            border: '1px solid rgba(255,255,255,0.2)',
-          }}
-          aria-label="Go back"
-        >
-          <ArrowLeft size={18} className="text-white" />
-        </button>
-
         <div className="flex-1">
           <p className="font-bold text-white text-base" style={{ fontFamily: 'Nunito, sans-serif' }}>
-            {content.feed.title}
+            {content.nav.discover}
           </p>
           <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
             {loading ? content.feed.lookingAround : fmt(content.feed.travelersNearby, { count: filtered.length })}
           </p>
         </div>
-
-        <button
-          onClick={() => navigate('/groups')}
-          className="flex items-center justify-center rounded-full"
-          style={{ width: 36, height: 36, background: 'rgba(125,211,252,0.2)', border: '1px solid rgba(125,211,252,0.4)' }}
-          aria-label="Browse and create groups"
-        >
-          <UsersRound size={18} style={{ color: '#7dd3fc' }} />
-        </button>
-        <ProfileButton size={36} />
       </div>
 
       {/* Feed */}
-      <div className="flex flex-col gap-3 px-4 py-4 pb-8">
+      <div className="flex flex-col gap-3 px-4 py-4" style={{ paddingBottom: 'calc(84px + env(safe-area-inset-bottom))' }}>
         {loading && (
           <div className="flex flex-col items-center justify-center py-20 gap-3">
             <div className="text-4xl anim-float-plane">✈️</div>

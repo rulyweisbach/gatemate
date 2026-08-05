@@ -9,6 +9,7 @@ import { handler as getUser } from './handlers/getUser.mjs';
 import { handler as sayHi } from './handlers/sayHi.mjs';
 import { handler as getMessages } from './handlers/getMessages.mjs';
 import { handler as sendMessage } from './handlers/sendMessage.mjs';
+import { handler as getMatches } from './handlers/getMatches.mjs';
 import { handler as uploadUrl } from './handlers/uploadUrl.mjs';
 import { handler as createGroup } from './handlers/createGroup.mjs';
 import { handler as listGroups } from './handlers/listGroups.mjs';
@@ -34,6 +35,7 @@ const routes = [
   { method: 'GET',    re: /^\/messages\/([^/]+)$/,        fn: getMessages, params: ['otherId'] },
   { method: 'POST',   re: /^\/messages\/([^/]+)$/,        fn: sendMessage, params: ['otherId'] },
   { method: 'POST',   re: /^\/upload-url$/,               fn: uploadUrl,   params: [] },
+  { method: 'GET',    re: /^\/matches$/,                 fn: getMatches,  params: [] },
   { method: 'POST',   re: /^\/groups$/,                   fn: createGroup, params: [] },
   { method: 'GET',    re: /^\/groups$/,                   fn: listGroups,  params: [] },
   { method: 'POST',   re: /^\/groups\/([^/]+)\/join$/,     fn: joinGroup,        params: ['id'] },

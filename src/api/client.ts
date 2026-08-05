@@ -4,7 +4,7 @@
 import { useMemo } from 'react';
 import { useAuth } from 'react-oidc-context';
 import { API_URL } from '../auth/authConfig';
-import type { Profile, ApiMessage, Group, AdminUser } from '../types';
+import type { Profile, ApiMessage, Group, AdminUser, Match } from '../types';
 
 export function useApi() {
   const auth = useAuth();
@@ -68,6 +68,8 @@ export function useApi() {
 
       sendMessage: (otherId: string, text: string): Promise<{ message: ApiMessage }> =>
         request(`/messages/${otherId}`, { method: 'POST', body: JSON.stringify({ text }) }),
+
+      getMatches: (): Promise<{ matches: Match[] }> => request('/matches'),
 
       // ── Groups ──
       listGroups: (q?: string, category?: string): Promise<{ groups: Group[]; count: number }> => {

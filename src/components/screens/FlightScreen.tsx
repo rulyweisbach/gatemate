@@ -1,13 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plane, Hash, DoorOpen, Calendar, MapPin, Mic, UsersRound } from 'lucide-react';
+import { Plane, Hash, DoorOpen, Calendar, MapPin, Mic } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
 import type { SearchMode, EventType } from '../../store/useAppStore';
 import { content } from '../../content';
 import GlassCard from '../layout/GlassCard';
 import GlassInput from '../ui/GlassInput';
 import GlassButton from '../ui/GlassButton';
-import ProfileButton from '../ui/ProfileButton';
 
 const c = content.flight;
 
@@ -375,30 +374,17 @@ export default function FlightScreen() {
       style={{
         minHeight: '100dvh',
         paddingTop: 'max(2rem, env(safe-area-inset-top))',
-        paddingBottom: 'max(2rem, env(safe-area-inset-bottom))',
+        paddingBottom: 'calc(84px + env(safe-area-inset-bottom))',
       }}
     >
       {/* Header */}
-      <div className="flex items-start justify-between gap-3 pt-6 anim-slide-up">
-        <div>
-          <h1 className="text-3xl font-black text-white" style={{ fontFamily: 'Nunito, sans-serif' }}>
-            {titles[searchMode]}
-          </h1>
-          <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.55)' }}>
-            {subtitles[searchMode]}
-          </p>
-        </div>
-        <div className="flex items-center gap-2 mt-1 shrink-0">
-          <button
-            onClick={() => navigate('/groups')}
-            className="flex items-center justify-center rounded-full"
-            style={{ width: 40, height: 40, background: 'rgba(125,211,252,0.2)', border: '1px solid rgba(125,211,252,0.4)' }}
-            aria-label="Browse and create groups"
-          >
-            <UsersRound size={20} style={{ color: '#7dd3fc' }} />
-          </button>
-          <ProfileButton size={40} />
-        </div>
+      <div className="pt-6 anim-slide-up">
+        <h1 className="text-3xl font-black text-white" style={{ fontFamily: 'Nunito, sans-serif' }}>
+          {titles[searchMode]}
+        </h1>
+        <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.55)' }}>
+          {subtitles[searchMode]}
+        </p>
       </div>
 
       {/* Mode switcher */}

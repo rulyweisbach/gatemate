@@ -75,6 +75,16 @@ export interface Group {
   createdAt: number;
 }
 
+// A person the user is connected with (for the Matches tab).
+export interface Match {
+  userId: string;
+  name?: string;
+  photo?: string;
+  tagline?: string;
+  connectedAt?: number;
+  initiatedByMe?: boolean;
+}
+
 // Admin view of a registered user (Cognito + merged profile).
 export interface AdminUser {
   username: string;

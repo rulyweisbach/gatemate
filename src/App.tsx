@@ -14,6 +14,7 @@ import CreateGroupScreen from './components/screens/CreateGroupScreen';
 import GroupChatScreen from './components/screens/GroupChatScreen';
 import GroupMembersScreen from './components/screens/GroupMembersScreen';
 import AdminScreen from './components/screens/AdminScreen';
+import MatchesScreen from './components/screens/MatchesScreen';
 
 export default function App() {
   return (
@@ -28,6 +29,7 @@ export default function App() {
           <Route path="/flight" element={<RequireAuth><FlightScreen /></RequireAuth>} />
           <Route path="/intent" element={<RequireAuth><IntentScreen /></RequireAuth>} />
           <Route path="/feed" element={<RequireAuth><FeedScreen /></RequireAuth>} />
+          <Route path="/matches" element={<RequireAuth><MatchesScreen /></RequireAuth>} />
           <Route path="/me" element={<RequireAuth><EditProfileScreen /></RequireAuth>} />
           <Route path="/groups" element={<RequireAuth><GroupsScreen /></RequireAuth>} />
           <Route path="/groups/new" element={<RequireAuth><CreateGroupScreen /></RequireAuth>} />

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Plus, Search, Users } from 'lucide-react';
+import { Plus, Search, Users } from 'lucide-react';
 import { useAuth } from 'react-oidc-context';
 import { useApi } from '../../api/client';
 import type { Group, GroupCategory } from '../../types';
@@ -63,14 +63,6 @@ export default function GroupsScreen() {
         className="glass-dark sticky top-0 z-10 flex items-center gap-3 px-5 py-4"
         style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}
       >
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center justify-center rounded-full shrink-0"
-          style={{ width: 36, height: 36, background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)' }}
-          aria-label="Go back"
-        >
-          <ArrowLeft size={18} className="text-white" />
-        </button>
         <span className="flex-1 font-bold text-white text-base" style={{ fontFamily: 'Nunito, sans-serif' }}>
           {c.title}
         </span>
@@ -116,7 +108,7 @@ export default function GroupsScreen() {
       </div>
 
       {/* List */}
-      <div className="flex flex-col gap-3 px-4 py-4 pb-8">
+      <div className="flex flex-col gap-3 px-4 py-4" style={{ paddingBottom: 'calc(84px + env(safe-area-inset-bottom))' }}>
         {loading && (
           <div className="flex flex-col items-center justify-center py-16 gap-3">
             <div className="text-4xl anim-float-plane">✈️</div>

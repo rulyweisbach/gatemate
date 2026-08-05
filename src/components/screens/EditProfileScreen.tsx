@@ -308,15 +308,8 @@ export default function EditProfileScreen() {
           </div>
 
           {error && <p className="text-xs text-center" style={{ color: '#ffb4b4' }}>{error}</p>}
-        </div>
-      )}
 
-      {/* Sticky save */}
-      {!loading && (
-        <div
-          className="fixed left-0 right-0 bottom-0 mx-auto px-5 pt-3 glass-dark"
-          style={{ maxWidth: 430, borderTop: '1px solid rgba(255,255,255,0.1)', paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}
-        >
+          {/* Save (inline; the bottom nav is fixed below) */}
           <GlassButton variant="solid" onClick={handleSave} disabled={saving} style={saving ? { opacity: 0.6, cursor: 'wait' } : {}}>
             {saving ? c.saving : c.save}
           </GlassButton>

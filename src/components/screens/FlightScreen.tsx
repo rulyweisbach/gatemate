@@ -357,17 +357,6 @@ export default function FlightScreen() {
     navigate('/intent');
   };
 
-  const titles: Record<SearchMode, string> = {
-    flight: c.titleFlight,
-    date:   c.titleDate,
-    event:  c.titleEvent,
-  };
-  const subtitles: Record<SearchMode, string> = {
-    flight: c.subtitleFlight,
-    date:   c.subtitleDate,
-    event:  c.subtitleEvent,
-  };
-
   return (
     <div
       className="flex flex-col px-5 gap-5"
@@ -377,16 +366,6 @@ export default function FlightScreen() {
         paddingBottom: 'calc(84px + env(safe-area-inset-bottom))',
       }}
     >
-      {/* Header */}
-      <div className="pt-6 anim-slide-up">
-        <h1 className="text-3xl font-black text-white" style={{ fontFamily: 'Nunito, sans-serif' }}>
-          {titles[searchMode]}
-        </h1>
-        <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.55)' }}>
-          {subtitles[searchMode]}
-        </p>
-      </div>
-
       {/* Mode switcher */}
       <div
         className="flex gap-2 p-1 rounded-2xl"

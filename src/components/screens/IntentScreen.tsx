@@ -24,7 +24,7 @@ export default function IntentScreen() {
   const navigate = useNavigate();
   const auth = useAuth();
   const api = useApi();
-  const { selectedIntents, toggleIntent, flightNumber, gate } = useAppStore();
+  const { selectedIntents, toggleIntent, flightNumber } = useAppStore();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -38,7 +38,6 @@ export default function IntentScreen() {
         name: (claims?.name as string) || (claims?.email as string) || 'Traveler',
         photo: (claims?.picture as string) || '',
         flight: flightNumber || undefined,
-        gate: gate || undefined,
         intents: selectedIntents,
       });
       navigate('/feed');

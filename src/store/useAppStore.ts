@@ -14,7 +14,9 @@ interface AppState {
 
   // Flight search
   flightNumber: string;
-  gate: string;
+  flightDate: string;
+  flightDestination: string;
+  returnDate: string;
 
   // Date search
   searchDate: string;
@@ -35,7 +37,7 @@ interface AppState {
   // Actions
   setMyProfile: (profile: Profile | null) => void;
   setSearchMode: (mode: SearchMode) => void;
-  setFlight: (flight: string, gate: string) => void;
+  setFlight: (patch: Partial<Pick<AppState, 'flightNumber' | 'flightDate' | 'flightDestination' | 'returnDate'>>) => void;
   setDateSearch: (date: string, destination: string) => void;
   setEventSearch: (type: EventType, text: string) => void;
   toggleIntent: (intent: Intent) => void;
@@ -47,7 +49,9 @@ interface AppState {
 export const useAppStore = create<AppState>((set, get) => ({
   searchMode: 'flight',
   flightNumber: '',
-  gate: '',
+  flightDate: '',
+  flightDestination: '',
+  returnDate: '',
   searchDate: '',
   searchDestination: '',
   eventType: '',
@@ -59,7 +63,7 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   setMyProfile: (profile) => set({ myProfile: profile }),
   setSearchMode: (mode) => set({ searchMode: mode }),
-  setFlight: (flight, gate) => set({ flightNumber: flight, gate }),
+  setFlight: (patch) => set(patch),
   setDateSearch: (date, destination) => set({ searchDate: date, searchDestination: destination }),
   setEventSearch: (type, text) => set({ eventType: type, eventText: text }),
 

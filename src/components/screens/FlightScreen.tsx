@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plane, Hash, DoorOpen, Calendar, MapPin, Mic } from 'lucide-react';
+import { Hash, Calendar, MapPin, Mic, RotateCcw } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
 import type { SearchMode, EventType } from '../../store/useAppStore';
 import { content } from '../../content';
-import GlassCard from '../layout/GlassCard';
 import GlassInput from '../ui/GlassInput';
 import GlassButton from '../ui/GlassButton';
 
@@ -41,22 +40,7 @@ const EVENT_TYPES: { id: EventType; label: string; emoji: string }[] = [
 // ─── Sub-panels ──────────────────────────────────────────────────────────────
 
 function FlightPanel() {
-  const { flightNumber, gate, setFlight } = useAppStore();
-  const [flight, setFlightLocal]   = useState(flightNumber || '');
-  const [gateLocal, setGateLocal]  = useState(gate || '');
-
-  // Keep store in sync as user types so parent can read on Continue
-  const handleFlightChange = (v: string) => {
-    setFlightLocal(v);
-    setFlight(v.toUpperCase(), gateLocal.toUpperCase());
-  };
-  const handleGateChange = (v: string) => {
-    setGateLocal(v);
-    setFlight(flight.toUpperCase(), v.toUpperCase());
-  };
-
-  const displayFlight = flight.trim().toUpperCase() || 'LY 002';
-  const displayGate   = gateLocal.trim().toUpperCase() || 'A14';
+  const { flightNumber, flightDate, flightDestination, returnDate, setFlight } = useAppStore();
 
   return (
     <div className="flex flex-col gap-4">
@@ -64,55 +48,38 @@ function FlightPanel() {
         label={c.flightNumberLabel}
         icon={Hash}
         placeholder={c.flightNumberPlaceholder}
-        value={flight}
-        onChange={(e) => handleFlightChange(e.target.value)}
+        value={flightNumber}
+        onChange={(e) => setFlight({ flightNumber: e.target.value.toUpperCase() })}
         maxLength={10}
       />
+
       <GlassInput
-        label={c.gateLabel}
-        icon={DoorOpen}
-        placeholder={c.gatePlaceholder}
-        value={gateLocal}
-        onChange={(e) => handleGateChange(e.target.value)}
-        maxLength={6}
+        label={c.flightDateLabel}
+        icon={Calendar}
+        type="date"
+        value={flightDate}
+        onChange={(e) => setFlight({ flightDate: e.target.value })}
+        style={{ colorScheme: 'dark' }}
       />
 
-      {/* Boarding pass preview */}
-      <GlassCard className="p-5 overflow-hidden" style={{ borderRadius: 20, position: 'relative' }}>
-        <div
-          className="absolute left-0 right-0"
-          style={{ top: '65%', borderTop: '1.5px dashed rgba(255,255,255,0.2)' }}
-        />
-        <div className="flex items-center justify-between mb-4">
-          <div className="text-center">
-            <p className="text-4xl font-black text-white" style={{ fontFamily: 'Nunito, sans-serif' }}>TLV</p>
-            <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>Tel Aviv</p>
-          </div>
-          <div className="flex-1 flex items-center justify-center gap-2">
-            <div className="h-px flex-1" style={{ background: 'rgba(255,255,255,0.25)' }} />
-            <Plane size={22} style={{ color: '#7dd3fc' }} fill="#7dd3fc" />
-            <div className="h-px flex-1" style={{ background: 'rgba(255,255,255,0.25)' }} />
-          </div>
-          <div className="text-center">
-            <p className="text-4xl font-black text-white" style={{ fontFamily: 'Nunito, sans-serif' }}>JFK</p>
-            <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>New York</p>
-          </div>
-        </div>
-        <div className="flex justify-between pt-3 mt-1">
-          <div className="text-center">
-            <p className="text-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>{c.boardingGate}</p>
-            <p className="font-bold text-white text-sm">{displayGate}</p>
-          </div>
-          <div className="text-center">
-            <p className="text-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>{c.boardingDeparts}</p>
-            <p className="font-bold text-white text-sm">14:30</p>
-          </div>
-          <div className="text-center">
-            <p className="text-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>{c.boardingFlight}</p>
-            <p className="font-bold text-white text-sm">{displayFlight}</p>
-          </div>
-        </div>
-      </GlassCard>
+      <GlassInput
+        label={c.flightDestinationLabel}
+        icon={MapPin}
+        placeholder={c.flightDestinationPlaceholder}
+        value={flightDestination}
+        onChange={(e) => setFlight({ flightDestination: e.target.value })}
+        maxLength={60}
+      />
+
+      <GlassInput
+        label={c.returnDateLabel}
+        icon={RotateCcw}
+        type="date"
+        value={returnDate}
+        min={flightDate || undefined}
+        onChange={(e) => setFlight({ returnDate: e.target.value })}
+        style={{ colorScheme: 'dark' }}
+      />
     </div>
   );
 }
@@ -340,7 +307,7 @@ function EventPanel() {
 
 export default function FlightScreen() {
   const navigate = useNavigate();
-  const { searchMode, setSearchMode, flightNumber, gate, setFlight,
+  const { searchMode, setSearchMode, flightNumber, setFlight,
           searchDate, searchDestination, eventType, eventText } = useAppStore();
 
   const canContinue = (() => {
@@ -352,7 +319,7 @@ export default function FlightScreen() {
 
   const handleContinue = () => {
     if (searchMode === 'flight') {
-      setFlight(flightNumber || 'LY 002', gate || 'A14');
+      setFlight({ flightNumber: flightNumber || 'LY 002' });
     }
     navigate('/intent');
   };

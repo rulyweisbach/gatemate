@@ -1,11 +1,6 @@
-export type Intent =
-  | 'networking'
-  | 'friendship'
-  | 'shared-travel'
-  | 'lounge'
-  | 'dating'
-  | 'local-guide'
-  | 'first-time';
+// An intent / "looking for" option id. Options are content-driven
+// (see src/content/interestOptions.json), so this is an open string.
+export type Intent = string;
 
 export interface User {
   id: string;

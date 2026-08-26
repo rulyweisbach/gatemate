@@ -4,7 +4,6 @@ import RequireAuth from './components/RequireAuth';
 import SplashScreen from './components/screens/SplashScreen';
 import OnboardScreen from './components/screens/OnboardScreen';
 import FlightScreen from './components/screens/FlightScreen';
-import IntentScreen from './components/screens/IntentScreen';
 import FeedScreen from './components/screens/FeedScreen';
 import ProfileScreen from './components/screens/ProfileScreen';
 import ChatScreen from './components/screens/ChatScreen';
@@ -27,7 +26,6 @@ export default function App() {
 
           {/* Authenticated app */}
           <Route path="/flight" element={<RequireAuth><FlightScreen /></RequireAuth>} />
-          <Route path="/intent" element={<RequireAuth><IntentScreen /></RequireAuth>} />
           <Route path="/feed" element={<RequireAuth><FeedScreen /></RequireAuth>} />
           <Route path="/matches" element={<RequireAuth><MatchesScreen /></RequireAuth>} />
           <Route path="/me" element={<RequireAuth><EditProfileScreen /></RequireAuth>} />

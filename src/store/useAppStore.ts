@@ -41,6 +41,7 @@ interface AppState {
   setDateSearch: (date: string, destination: string) => void;
   setEventSearch: (type: EventType, text: string) => void;
   toggleIntent: (intent: Intent) => void;
+  setSelectedIntents: (intents: Intent[]) => void;
   setCurrentUser: (user: User | null) => void;
   addMessage: (userId: string, message: Message) => void;
   getMessages: (userId: string) => Message[];
@@ -62,7 +63,8 @@ export const useAppStore = create<AppState>((set, get) => ({
   myProfile: null,
 
   setMyProfile: (profile) => set({ myProfile: profile }),
-  setSearchMode: (mode) => set({ searchMode: mode }),
+  // Switching mode clears the "looking for" picks — options differ per mode.
+  setSearchMode: (mode) => set({ searchMode: mode, selectedIntents: [] }),
   setFlight: (patch) => set(patch),
   setDateSearch: (date, destination) => set({ searchDate: date, searchDestination: destination }),
   setEventSearch: (type, text) => set({ eventType: type, eventText: text }),
@@ -73,6 +75,8 @@ export const useAppStore = create<AppState>((set, get) => ({
         ? state.selectedIntents.filter((i) => i !== intent)
         : [...state.selectedIntents, intent],
     })),
+
+  setSelectedIntents: (intents) => set({ selectedIntents: intents }),
 
   setCurrentUser: (user) => set({ currentUser: user }),
 

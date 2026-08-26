@@ -38,11 +38,13 @@ export default function FeedScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [flightNumber, searchMode]);
 
-  // Client-side intent filter (multi-select).
+  // Client-side intent filter (multi-select). Prefer people who share what
+  // you're looking for, but never show an empty feed — fall back to everyone.
+  const withSharedIntent = users.filter((u) =>
+    (u.intents ?? []).some((i) => selectedIntents.includes(i)),
+  );
   const filtered =
-    selectedIntents.length === 0
-      ? users
-      : users.filter((u) => (u.intents ?? []).some((i) => selectedIntents.includes(i)));
+    selectedIntents.length === 0 || withSharedIntent.length === 0 ? users : withSharedIntent;
 
   return (
     <div className="flex flex-col min-h-screen">

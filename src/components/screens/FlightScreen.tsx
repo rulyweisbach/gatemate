@@ -1,13 +1,17 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from 'react-oidc-context';
 import { Hash, Calendar, MapPin, Mic, RotateCcw } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
 import type { SearchMode, EventType } from '../../store/useAppStore';
-import { content } from '../../content';
+import { useApi } from '../../api/client';
+import { content, interestOptions } from '../../content';
 import GlassInput from '../ui/GlassInput';
 import GlassButton from '../ui/GlassButton';
+import IntentChip from '../ui/IntentChip';
 
 const c = content.flight;
+const io = interestOptions;
 
 // ─── Mode tab switcher ────────────────────────────────────────────────────────
 
@@ -28,14 +32,29 @@ const DESTINATIONS = [
   { code: 'LAX', city: 'Los Angeles', flag: '🇺🇸' },
 ];
 
-// ─── Event type options ───────────────────────────────────────────────────────
+// ─── "What are you looking for?" chips (content-driven per mode) ──────────────
 
-const EVENT_TYPES: { id: EventType; label: string; emoji: string }[] = [
-  { id: 'concert',    label: c.eventTypeConcert,    emoji: '🎵' },
-  { id: 'sport',      label: c.eventTypeSport,      emoji: '⚽' },
-  { id: 'conference', label: c.eventTypeConference, emoji: '💼' },
-  { id: 'other',      label: c.eventTypeOther,      emoji: '✏️' },
-];
+function LookingFor({ options }: { options: { id: string; label: string; emoji: string }[] }) {
+  const { selectedIntents, toggleIntent } = useAppStore();
+  if (!options.length) return null;
+  return (
+    <div className="flex flex-col gap-2.5 pt-1">
+      <label className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.7)' }}>
+        {io.lookingForLabel}
+      </label>
+      <div className="flex flex-wrap gap-2.5">
+        {options.map((o) => (
+          <IntentChip
+            key={o.id}
+            intent={o.id}
+            selected={selectedIntents.includes(o.id)}
+            onClick={() => toggleIntent(o.id)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 // ─── Sub-panels ──────────────────────────────────────────────────────────────
 
@@ -80,6 +99,8 @@ function FlightPanel() {
         onChange={(e) => setFlight({ returnDate: e.target.value })}
         style={{ colorScheme: 'dark' }}
       />
+
+      <LookingFor options={io.flight.options} />
     </div>
   );
 }
@@ -207,19 +228,25 @@ function DatePanel() {
           </p>
         </div>
       )}
+
+      <LookingFor options={io.date.options} />
     </div>
   );
 }
 
 function EventPanel() {
-  const { eventType, eventText, setEventSearch } = useAppStore();
+  const { eventType, eventText, setEventSearch, setSelectedIntents } = useAppStore();
   const [type, setType]   = useState<EventType>(eventType || '');
   const [text, setText]   = useState(eventText || '');
+
+  const selected = io.event.types.find((t) => t.id === type);
 
   const handleType = (t: EventType) => {
     const next = type === t ? '' : t;
     setType(next);
-    setEventSearch(next, text);
+    setText('');                 // details are per-type
+    setEventSearch(next, '');
+    setSelectedIntents([]);      // "looking for" options differ per event type
   };
   const handleText = (v: string) => {
     setText(v);
@@ -231,21 +258,21 @@ function EventPanel() {
       {/* Event type chips */}
       <div className="flex flex-col gap-1.5">
         <label className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.7)' }}>
-          {c.eventTypeLabel}
+          {io.event.typeLabel}
         </label>
         <div className="grid grid-cols-2 gap-2">
-          {EVENT_TYPES.map((et) => {
-            const selected = type === et.id;
+          {io.event.types.map((et) => {
+            const active = type === et.id;
             return (
               <button
                 key={et.id}
                 type="button"
-                onClick={() => handleType(et.id)}
+                onClick={() => handleType(et.id as EventType)}
                 className="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all"
                 style={{
-                  background: selected ? 'rgba(125,211,252,0.28)' : 'rgba(255,255,255,0.08)',
-                  border: selected ? '1.5px solid #7dd3fc' : '1.5px solid rgba(255,255,255,0.15)',
-                  boxShadow: selected ? '0 0 14px rgba(125,211,252,0.35)' : 'none',
+                  background: active ? 'rgba(125,211,252,0.28)' : 'rgba(255,255,255,0.08)',
+                  border: active ? '1.5px solid #7dd3fc' : '1.5px solid rgba(255,255,255,0.15)',
+                  boxShadow: active ? '0 0 14px rgba(125,211,252,0.35)' : 'none',
                 }}
               >
                 <span className="text-xl">{et.emoji}</span>
@@ -256,48 +283,31 @@ function EventPanel() {
         </div>
       </div>
 
-      {/* Free text — always visible, label changes with type */}
-      <div className="flex flex-col gap-1.5">
-        <label className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.7)' }}>
-          {type === 'concert'    ? c.eventArtist
-          : type === 'sport'    ? c.eventTeam
-          : type === 'conference' ? c.eventConference
-          : c.eventOther}
-        </label>
-        <div className="relative">
-          <Mic
-            size={16}
-            className="absolute top-1/2 -translate-y-1/2 left-4 pointer-events-none"
-            style={{ color: 'rgba(255,255,255,0.5)' }}
-          />
-          <input
-            className="glass-input pl-10"
-            placeholder={
-              type === 'concert'      ? c.eventArtistPlaceholder
-              : type === 'sport'     ? c.eventTeamPlaceholder
-              : type === 'conference' ? c.eventConferencePlaceholder
-              : c.eventOtherPlaceholder
-            }
-            value={text}
-            onChange={(e) => handleText(e.target.value)}
-            maxLength={80}
-          />
-        </div>
-      </div>
+      {/* Details + looking-for appear once a type is chosen */}
+      {selected && (
+        <>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.7)' }}>
+              {selected.detailsLabel}
+            </label>
+            <div className="relative">
+              <Mic
+                size={16}
+                className="absolute top-1/2 -translate-y-1/2 left-4 pointer-events-none"
+                style={{ color: 'rgba(255,255,255,0.5)' }}
+              />
+              <input
+                className="glass-input pl-10"
+                placeholder={selected.detailsPlaceholder}
+                value={text}
+                onChange={(e) => handleText(e.target.value)}
+                maxLength={80}
+              />
+            </div>
+          </div>
 
-      {/* Preview pill */}
-      {(type || text) && (
-        <div
-          className="flex items-center gap-2 px-4 py-2.5 rounded-2xl"
-          style={{ background: 'rgba(125,211,252,0.12)', border: '1px solid rgba(125,211,252,0.3)' }}
-        >
-          <span className="text-base">
-            {EVENT_TYPES.find((e) => e.id === type)?.emoji ?? '🎪'}
-          </span>
-          <p className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.8)' }}>
-            {text || EVENT_TYPES.find((e) => e.id === type)?.label || c.anyEvent}
-          </p>
-        </div>
+          <LookingFor options={selected.options} />
+        </>
       )}
     </div>
   );
@@ -307,21 +317,42 @@ function EventPanel() {
 
 export default function FlightScreen() {
   const navigate = useNavigate();
-  const { searchMode, setSearchMode, flightNumber, setFlight,
-          searchDate, searchDestination, eventType, eventText } = useAppStore();
+  const auth = useAuth();
+  const api = useApi();
+  const { searchMode, setSearchMode, flightNumber, setFlight, selectedIntents,
+          searchDate, searchDestination, eventType } = useAppStore();
+
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const canContinue = (() => {
     if (searchMode === 'flight') return true; // defaults fill in
     if (searchMode === 'date')   return !!(searchDate || searchDestination);
-    if (searchMode === 'event')  return !!(eventType || eventText.trim());
+    if (searchMode === 'event')  return !!eventType;
     return false;
   })();
 
-  const handleContinue = () => {
-    if (searchMode === 'flight') {
-      setFlight({ flightNumber: flightNumber || 'LY 002' });
+  const handleContinue = async () => {
+    const flight = searchMode === 'flight' ? (flightNumber || 'LY 002') : undefined;
+    if (flight) setFlight({ flightNumber: flight });
+
+    setSaving(true);
+    setError(null);
+    try {
+      // Save the caller's profile (name/photo from Google claims + what they're
+      // looking for) so they show up — with intent — in other travelers' feeds.
+      const claims = auth.user?.profile;
+      await api.updateMe({
+        name: (claims?.name as string) || (claims?.email as string) || 'Traveler',
+        photo: (claims?.picture as string) || '',
+        flight,
+        intents: selectedIntents,
+      });
+      navigate('/feed');
+    } catch (e) {
+      setError(e instanceof Error ? e.message : c.error);
+      setSaving(false);
     }
-    navigate('/intent');
   };
 
   return (
@@ -376,6 +407,12 @@ export default function FlightScreen() {
         {searchMode === 'event'  && <EventPanel />}
       </div>
 
+      {error && (
+        <p className="text-xs text-center" style={{ color: '#ffb4b4' }}>
+          {error}
+        </p>
+      )}
+
       {/* CTA — mt-auto pins it to the bottom */}
       <div
         className="mt-auto pt-4"
@@ -384,10 +421,10 @@ export default function FlightScreen() {
         <GlassButton
           variant="solid"
           onClick={handleContinue}
-          disabled={!canContinue}
-          style={!canContinue ? { opacity: 0.45, cursor: 'not-allowed', transform: 'none' } : {}}
+          disabled={!canContinue || saving}
+          style={!canContinue || saving ? { opacity: 0.5, cursor: saving ? 'wait' : 'not-allowed', transform: 'none' } : {}}
         >
-          {c.cta}
+          {saving ? c.ctaSaving : c.cta}
         </GlassButton>
       </div>
     </div>

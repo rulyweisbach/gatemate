@@ -1,8 +1,8 @@
 import type { Intent } from '../../types';
-import { content } from '../../content';
+import { lookingForMeta } from '../../content';
 
-// Intent labels/emojis come from the central content file.
-const intentMeta = content.intents as Record<Intent, { label: string; emoji: string }>;
+// Intent labels/emojis come from the central content files.
+const intentMeta = lookingForMeta;
 
 interface IntentChipProps {
   intent: Intent;
@@ -12,7 +12,7 @@ interface IntentChipProps {
 }
 
 export default function IntentChip({ intent, selected, onClick, readOnly }: IntentChipProps) {
-  const { label, emoji } = intentMeta[intent];
+  const { label, emoji } = intentMeta[intent] ?? { label: intent, emoji: '🎯' };
   return (
     <button
       className={`intent-chip ${selected ? 'selected' : ''}`}

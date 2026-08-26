@@ -1,0 +1,74 @@
+{
+  "_readme": "Controls the 'What are you looking for?' options on the Interest screen. Edit labels/emojis freely. Keep each option's \"id\" unique-ish and STABLE — reuse the same id across modes when it's the same concept (e.g. \"networking\") so people who want the same thing get matched. For 'By Event', each event type has its own \"detailsLabel\"/\"detailsPlaceholder\" (the text box shown when that type is picked) and its own list of options. Commit to Git; the next build shows your changes.",
+
+  "lookingForLabel": "What are you looking for?",
+
+  "flight": {
+    "options": [
+      { "id": "networking",    "label": "Networking",     "emoji": "🤝" },
+      { "id": "lounge-meeting", "label": "Lounge meeting", "emoji": "🛋️" },
+      { "id": "share-taxi",     "label": "Share taxi",     "emoji": "🚕" }
+    ]
+  },
+
+  "date": {
+    "options": [
+      { "id": "vacation-kids",   "label": "Vacation with kids", "emoji": "👨‍👩‍👧‍👦" },
+      { "id": "networking",      "label": "Networking",         "emoji": "🤝" },
+      { "id": "dating",          "label": "Dating",             "emoji": "💫" },
+      { "id": "travel-together", "label": "Travel together",    "emoji": "🧳" }
+    ]
+  },
+
+  "event": {
+    "typeLabel": "What kind of event?",
+    "types": [
+      {
+        "id": "concert",
+        "label": "Concert",
+        "emoji": "🎵",
+        "detailsLabel": "Artist or venue",
+        "detailsPlaceholder": "e.g. Coldplay at Wembley",
+        "options": [
+          { "id": "travel-together", "label": "Travel together",  "emoji": "🧳" },
+          { "id": "share-hotel",     "label": "Share hotel room", "emoji": "🏨" }
+        ]
+      },
+      {
+        "id": "sport",
+        "label": "Sport game",
+        "emoji": "⚽",
+        "detailsLabel": "Team, match or stadium",
+        "detailsPlaceholder": "e.g. Champions League Final",
+        "options": [
+          { "id": "going-together", "label": "Going together", "emoji": "🚶" },
+          { "id": "buy-tickets",    "label": "Buy tickets",    "emoji": "🎟️" }
+        ]
+      },
+      {
+        "id": "conference",
+        "label": "Conference",
+        "emoji": "💼",
+        "detailsLabel": "Conference name",
+        "detailsPlaceholder": "e.g. Web Summit Lisbon",
+        "options": [
+          { "id": "share-taxi",      "label": "Share taxi",      "emoji": "🚕" },
+          { "id": "travel-together", "label": "Travel together", "emoji": "🧳" },
+          { "id": "networking",      "label": "Networking",      "emoji": "🤝" }
+        ]
+      },
+      {
+        "id": "other",
+        "label": "Other",
+        "emoji": "✏️",
+        "detailsLabel": "Event name or description",
+        "detailsPlaceholder": "Describe your event…",
+        "options": [
+          { "id": "networking",   "label": "Networking",   "emoji": "🤝" },
+          { "id": "go-together",  "label": "Go together",  "emoji": "🚶" },
+          { "id": "friends",      "label": "Friends",      "emoji": "🫂" }
+        ]
+      }
+    ]
+  }
+}

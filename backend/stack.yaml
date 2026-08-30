@@ -157,6 +157,21 @@ Resources:
           KeySchema: [{ AttributeName: ownerId, KeyType: HASH }]
           Projection: { ProjectionType: ALL }
 
+  TripsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: gatemate-trips
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - { AttributeName: tripId, AttributeType: S }
+        - { AttributeName: userId, AttributeType: S }
+      KeySchema:
+        - { AttributeName: tripId, KeyType: HASH }
+      GlobalSecondaryIndexes:
+        - IndexName: owner-index
+          KeySchema: [{ AttributeName: userId, KeyType: HASH }]
+          Projection: { ProjectionType: ALL }
+
   # ── Lambda (single router) ─────────────────────────────────────
   ApiFunctionRole:
     Type: AWS::IAM::Role
@@ -177,6 +192,7 @@ Resources:
               - Effect: Allow
                 Action:
                   - dynamodb:GetItem
+                  - dynamodb:BatchGetItem
                   - dynamodb:PutItem
                   - dynamodb:UpdateItem
                   - dynamodb:DeleteItem
@@ -189,6 +205,8 @@ Resources:
                   - !GetAtt ConnectionsTable.Arn
                   - !GetAtt GroupsTable.Arn
                   - !Sub "${GroupsTable.Arn}/index/*"
+                  - !GetAtt TripsTable.Arn
+                  - !Sub "${TripsTable.Arn}/index/*"
               - Effect: Allow
                 Action: s3:PutObject
                 Resource: !Sub "${MediaBucket.Arn}/photos/*"
@@ -217,6 +235,7 @@ Resources:
           MESSAGES_TABLE: !Ref MessagesTable
           CONNECTIONS_TABLE: !Ref ConnectionsTable
           GROUPS_TABLE: !Ref GroupsTable
+          TRIPS_TABLE: !Ref TripsTable
           MEDIA_BUCKET: !Ref MediaBucket
           USER_POOL_ID: !Ref UserPool
           ADMIN_EMAILS: !Ref AdminEmails
@@ -412,6 +431,78 @@ Resources:
     Properties:
       ApiId: !Ref HttpApi
       RouteKey: "POST /groups/{id}/messages"
+      AuthorizationType: JWT
+      AuthorizerId: !Ref JwtAuthorizer
+      Target: !Sub "integrations/${Integration}"
+
+  RouteCreateTrip:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: "POST /trips"
+      AuthorizationType: JWT
+      AuthorizerId: !Ref JwtAuthorizer
+      Target: !Sub "integrations/${Integration}"
+
+  RouteListTrips:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: "GET /trips"
+      AuthorizationType: JWT
+      AuthorizerId: !Ref JwtAuthorizer
+      Target: !Sub "integrations/${Integration}"
+
+  RouteGetTrip:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: "GET /trips/{id}"
+      AuthorizationType: JWT
+      AuthorizerId: !Ref JwtAuthorizer
+      Target: !Sub "integrations/${Integration}"
+
+  RouteUpdateTrip:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: "PUT /trips/{id}"
+      AuthorizationType: JWT
+      AuthorizerId: !Ref JwtAuthorizer
+      Target: !Sub "integrations/${Integration}"
+
+  RouteDeleteTrip:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: "DELETE /trips/{id}"
+      AuthorizationType: JWT
+      AuthorizerId: !Ref JwtAuthorizer
+      Target: !Sub "integrations/${Integration}"
+
+  RouteGetTripPeople:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: "GET /trips/{id}/people"
+      AuthorizationType: JWT
+      AuthorizerId: !Ref JwtAuthorizer
+      Target: !Sub "integrations/${Integration}"
+
+  RouteGetTripGroups:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: "GET /trips/{id}/groups"
+      AuthorizationType: JWT
+      AuthorizerId: !Ref JwtAuthorizer
+      Target: !Sub "integrations/${Integration}"
+
+  RouteCreateTripGroup:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: "POST /trips/{id}/groups"
       AuthorizationType: JWT
       AuthorizerId: !Ref JwtAuthorizer
       Target: !Sub "integrations/${Integration}"

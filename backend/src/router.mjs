@@ -20,6 +20,13 @@ import { handler as getGroup } from './handlers/getGroup.mjs';
 import { handler as getGroupMessages } from './handlers/getGroupMessages.mjs';
 import { handler as sendGroupMessage } from './handlers/sendGroupMessage.mjs';
 import { handler as removeMember } from './handlers/removeMember.mjs';
+import { handler as createTrip } from './handlers/createTrip.mjs';
+import { handler as listTrips } from './handlers/listTrips.mjs';
+import { handler as getTrip } from './handlers/getTrip.mjs';
+import { handler as updateTrip } from './handlers/updateTrip.mjs';
+import { handler as deleteTrip } from './handlers/deleteTrip.mjs';
+import { handler as getTripPeople } from './handlers/getTripPeople.mjs';
+import { handler as getTripGroups } from './handlers/getTripGroups.mjs';
 import { handler as adminListUsers } from './handlers/adminListUsers.mjs';
 import { handler as adminDeleteUser } from './handlers/adminDeleteUser.mjs';
 import { handler as adminListGroups } from './handlers/adminListGroups.mjs';
@@ -45,6 +52,15 @@ const routes = [
   { method: 'DELETE', re: /^\/groups\/([^/]+)\/members\/([^/]+)$/, fn: removeMember, params: ['id', 'memberId'] },
   { method: 'GET',    re: /^\/groups\/([^/]+)$/,           fn: getGroup,         params: ['id'] },
   { method: 'DELETE', re: /^\/groups\/([^/]+)$/,           fn: deleteGroup,      params: ['id'] },
+  // Trips (more specific sub-paths before /trips/{id})
+  { method: 'POST',   re: /^\/trips$/,                      fn: createTrip,       params: [] },
+  { method: 'GET',    re: /^\/trips$/,                      fn: listTrips,        params: [] },
+  { method: 'GET',    re: /^\/trips\/([^/]+)\/people$/,     fn: getTripPeople,    params: ['id'] },
+  { method: 'GET',    re: /^\/trips\/([^/]+)\/groups$/,     fn: getTripGroups,    params: ['id'] },
+  { method: 'POST',   re: /^\/trips\/([^/]+)\/groups$/,     fn: createGroup,      params: ['id'] },
+  { method: 'GET',    re: /^\/trips\/([^/]+)$/,             fn: getTrip,          params: ['id'] },
+  { method: 'PUT',    re: /^\/trips\/([^/]+)$/,             fn: updateTrip,       params: ['id'] },
+  { method: 'DELETE', re: /^\/trips\/([^/]+)$/,             fn: deleteTrip,       params: ['id'] },
   // Admin (server-side admin-email gated)
   { method: 'GET',    re: /^\/admin\/users$/,              fn: adminListUsers,   params: [] },
   { method: 'DELETE', re: /^\/admin\/users\/([^/]+)$/,     fn: adminDeleteUser,  params: ['id'] },

@@ -276,7 +276,9 @@
     "continue": "Continue",
     "flightLookup": "Finding your flight…",
     "flightNotFound": "We couldn't find that flight. Check the number or add your destination and date instead.",
-    "error": "Could not save your trip"
+    "error": "Could not save your trip",
+    "deleteTrip": "Delete this trip",
+    "confirmDelete": "Delete this trip? Its groups will stay open."
   },
 
   "trips": {
@@ -303,5 +305,43 @@
     "filterSameEvent": "Same event",
     "filterNearby": "Nearby",
     "clearFilters": "Clear filters"
+  },
+
+  "intentScreen": {
+    "title": "What are you looking for?",
+    "subtitle": "Pick anything that fits — you can change it later.",
+    "cta": "Create Trip",
+    "ctaSaving": "Creating your trip…"
+  },
+
+  "peopleFeed": {
+    "title": "People",
+    "loading": "Finding travelers for this trip…",
+    "errorTitle": "Couldn't load people",
+    "emptyTitle": "No one matches yet",
+    "emptyBody": "More travelers may appear as your trip gets closer. Check back soon.",
+    "count": "{count} travelers",
+    "relevant": "{percent}% relevant",
+    "reasonSameFlight": "Same flight",
+    "reasonSameDate": "Same travel date",
+    "reasonSameEvent": "Same event",
+    "reasonSameDestination": "Same destination",
+    "reasonNearby": "Nearby",
+    "sayHi": "Say Hi 👋",
+    "viewProfile": "View profile"
+  },
+
+  "connections": {
+    "title": "Chats",
+    "subtitle": "Your people and group conversations",
+    "peopleTab": "People",
+    "groupsTab": "Groups",
+    "loading": "Loading your chats…",
+    "emptyPeopleTitle": "No conversations yet",
+    "emptyPeopleBody": "Say hi to someone from one of your trips.",
+    "emptyGroupsTitle": "No groups yet",
+    "emptyGroupsBody": "Join or create a group from one of your trips.",
+    "discoverCta": "Discover people",
+    "open": "Open"
   }
 }

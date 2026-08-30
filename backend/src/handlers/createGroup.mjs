@@ -28,10 +28,15 @@ export const handler = async (event) => {
     photo: claims.picture || '',
   };
 
+  // A group belongs to a trip. The tripId comes from the path
+  // (POST /trips/{id}/groups) or the body (POST /groups).
+  const tripId = (event.pathParameters?.id || body.tripId || '').toString().trim();
+
   const group = {
     groupId: randomUUID(),
     ownerId: userId,
     ownerName: owner.name,
+    tripId,
     title: title.slice(0, 80),
     description: (body.description || '').toString().slice(0, 500),
     category,

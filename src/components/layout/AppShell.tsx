@@ -5,7 +5,7 @@ import { useAuth } from 'react-oidc-context';
 import { useApi } from '../../api/client';
 import { useAppStore } from '../../store/useAppStore';
 import SkyBackground from './SkyBackground';
-import BottomNav, { NAV_ROUTES } from './BottomNav';
+import BottomNav, { isNavRoute } from './BottomNav';
 
 interface AppShellProps {
   children: ReactNode;
@@ -26,7 +26,7 @@ export default function AppShell({ children }: AppShellProps) {
     }
   }, [auth.isAuthenticated, myProfile, api, setMyProfile]);
 
-  const showNav = auth.isAuthenticated && NAV_ROUTES.includes(pathname);
+  const showNav = auth.isAuthenticated && isNavRoute(pathname);
 
   return (
     <>

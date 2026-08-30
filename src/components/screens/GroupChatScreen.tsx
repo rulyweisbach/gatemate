@@ -117,7 +117,7 @@ export default function GroupChatScreen() {
           <div className="flex flex-col items-center justify-center flex-1 gap-3 text-center py-12">
             <div className="text-5xl">🔒</div>
             <p className="font-bold text-white">{c.lockedTitle}</p>
-            <button onClick={() => navigate('/groups')} className="btn-glass mt-2" style={{ width: 'auto', padding: '10px 24px' }}>
+            <button onClick={() => navigate('/chats')} className="btn-glass mt-2" style={{ width: 'auto', padding: '10px 24px' }}>
               {c.backToGroups}
             </button>
           </div>

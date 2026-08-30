@@ -4,6 +4,10 @@
   "common": {
     "back": "Go back",
     "loading": "Loading…",
+    "continue": "Continue",
+    "cancel": "Cancel",
+    "done": "Done",
+    "save": "Save",
     "logOut": "Log out"
   },
 
@@ -17,10 +21,12 @@
 
   "matches": {
     "title": "Matches",
-    "subtitle": "People you're connected with",
-    "loading": "Loading your matches…",
+    "subtitle": "Your conversations and connections",
+    "peopleTab": "People",
+    "groupsTab": "Groups",
+    "loading": "Loading your chats…",
     "emptyTitle": "No matches yet",
-    "emptyBody": "Say hi to someone in Discover or a group, and your conversations show up here.",
+    "emptyBody": "Say hi to someone or join a group from your trip.",
     "emptyCta": "Discover people",
     "openChat": "Chat"
   },
@@ -28,20 +34,21 @@
   "splash": {
     "brandFirst": "Gate",
     "brandSecond": "Mate",
-    "tagline": "Meet people around your flight"
+    "tagline": "Meet the right people around your trip"
   },
 
   "onboard": {
     "titleLine1": "Your next connection",
     "titleLine2": "is waiting at your",
     "titleHighlight": "Gate",
-    "subtitle": "Connect with fellow travelers at your gate, lounge, or terminal on your terms.",
+    "subtitle": "Meet travelers who share your flight, destination, event, or plans.",
     "continueGoogle": "Continue with Google",
     "continueInstagram": "Continue with Instagram",
     "continueFacebook": "Continue with Facebook",
     "comingSoon": "{provider} login is coming soon — Google works now!",
     "or": "or",
     "getStarted": "Get Started",
+    "startTrip": "Start your trip",
     "terms": "By continuing you agree to our Terms & Privacy Policy"
   },
 
@@ -71,11 +78,22 @@
     "title": "Near Your Gate",
     "lookingAround": "Looking around…",
     "travelersNearby": "{count} travelers nearby",
-    "loading": "Finding travelers nearby…",
-    "errorTitle": "Couldn't load the feed",
-    "emptyTitle": "No one here yet",
-    "emptyBody": "No travelers match your flight and filters right now. Check back closer to boarding!",
-    "mutual": "{count} mutual"
+    "loading": "Finding travelers for your trip…",
+    "errorTitle": "Couldn't load travelers",
+    "emptyTitle": "No one matches yet",
+    "emptyBody": "More travelers may appear as your trip gets closer. Check back soon.",
+    "mutual": "{count} mutual",
+    "sameFlightTitle": "On your flight",
+    "sameDateTitle": "Traveling the same day",
+    "sameEventTitle": "Going to the same event",
+    "aroundDatesTitle": "Around your travel dates",
+    "matchReasonSameFlight": "Same flight",
+    "matchReasonSameDate": "Same travel date",
+    "matchReasonSameEvent": "Same event",
+    "matchReasonSameDestination": "Same destination",
+    "matchReasonNearby": "Nearby",
+    "relevant": "{percent}% relevant",
+    "viewProfile": "View profile"
   },
 
   "profile": {
@@ -88,7 +106,9 @@
     "gate": "Gate",
     "departs": "Departs",
     "route": "Route",
-    "lookingFor": "LOOKING FOR",
+    "lookingFor": "OPEN TO",
+    "trip": "Trip",
+    "whyYouMatch": "WHY YOU MATCH",
     "pass": "Pass",
     "sayHi": "Say Hi 👋"
   },
@@ -96,19 +116,21 @@
   "chat": {
     "sayHiTo": "Say hi to {name}!",
     "bothAtAirport": "You're both at the airport ✈️",
+    "sameTrip": "You're connected through the same trip ✈️",
     "atTheAirport": "at the airport",
     "placeholder": "Message {name}…",
     "userNotFound": "User not found"
   },
 
   "groups": {
-    "title": "Groups",
+    "title": "Groups for your trip",
+    "subtitle": "Join a plan or create your own.",
     "create": "Create",
-    "searchPlaceholder": "Search groups — concert, cab to hotel, Greece…",
+    "searchPlaceholder": "Search groups — ride, concert, dinner, families…",
     "all": "All",
     "loading": "Loading groups…",
     "emptyTitle": "No groups yet",
-    "emptyBody": "Be the first — create a group for your concert, cab share, or family trip!",
+    "emptyBody": "Start one for a ride, event, meal, family trip, or anything else.",
     "emptyCta": "+ Create a Group",
     "by": "by",
     "you": "you",
@@ -124,13 +146,13 @@
   "createGroup": {
     "header": "Create a Group",
     "titleLabel": "What's the plan?",
-    "titlePlaceholder": "e.g. Rock concert in LA — looking for 5",
+    "titlePlaceholder": "e.g. Taxi from CDG to central Paris",
     "typeLabel": "Type",
     "detailsLabel": "Details",
-    "detailsPlaceholder": "Who are you looking for and what's the plan? e.g. Sharing a cab from LAX to downtown hotels around 6pm.",
+    "detailsPlaceholder": "Tell travelers what you're planning and who you'd like to join.",
     "dateLabel": "Date",
     "whereLabel": "Where",
-    "wherePlaceholder": "e.g. Los Angeles, Athens, LAX",
+    "wherePlaceholder": "e.g. CDG Airport, Paris, Accor Arena",
     "sizeLabel": "Group size — up to {count} people",
     "sizeHint": "You count as the first member, so {count} more can join.",
     "cta": "Create Group",
@@ -177,7 +199,7 @@
     "taglinePlaceholder": "One line about you",
     "bioLabel": "Bio ({count}/300)",
     "bioPlaceholder": "Who are you? What are you traveling for? Say hi 👋",
-    "lookingFor": "LOOKING FOR",
+    "lookingFor": "OPEN TO",
     "myGroups": "MY GROUPS",
     "createGroup": "Create",
     "createFirstGroup": "Create your first group",
@@ -214,8 +236,8 @@
   "intents": {
     "networking": { "label": "Networking", "emoji": "💼" },
     "friendship": { "label": "Friendship", "emoji": "🤝" },
-    "shared-travel": { "label": "Shared Travel", "emoji": "🧳" },
-    "lounge": { "label": "Lounge Partner", "emoji": "🛋️" },
+    "shared-travel": { "label": "Travel Buddy", "emoji": "🧳" },
+    "lounge": { "label": "Lounge", "emoji": "🛋️" },
     "dating": { "label": "Dating", "emoji": "💫" },
     "local-guide": { "label": "Local Guide", "emoji": "🗺️" },
     "first-time": { "label": "First Flight Support", "emoji": "✈️" }
@@ -226,7 +248,60 @@
     "sport": { "label": "Sport Event", "emoji": "🏟️" },
     "travel": { "label": "Travel Buddy", "emoji": "🧳" },
     "cab": { "label": "Share a Ride", "emoji": "🚕" },
+    "food": { "label": "Food / Drinks", "emoji": "🍽️" },
     "family": { "label": "Family Travel", "emoji": "👨‍👩‍👧‍👦" },
     "other": { "label": "Other", "emoji": "✨" }
+  },
+
+  "tripSetup": {
+    "title": "Where are you going?",
+    "subtitle": "Add your flight, or start with your destination and date.",
+    "flightOptionTitle": "Flight Number",
+    "flightOptionHint": "Best option",
+    "flightNumberLabel": "Flight Number",
+    "flightNumberPlaceholder": "e.g. LY 325",
+    "destinationOptionTitle": "Destination + Date",
+    "destinationOptionHint": "If you don't have a flight yet",
+    "destinationLabel": "Destination",
+    "destinationPlaceholder": "e.g. Paris",
+    "dateLabel": "Travel Date",
+    "eventQuestion": "Going for something special?",
+    "eventOptional": "Optional",
+    "eventTypeConcert": "Concert",
+    "eventTypeSport": "Sport Event",
+    "eventTypeConference": "Conference",
+    "eventTypeOther": "Other",
+    "eventNameLabel": "Event",
+    "eventNamePlaceholder": "e.g. Celine Dion in Paris",
+    "continue": "Continue",
+    "flightLookup": "Finding your flight…",
+    "flightNotFound": "We couldn't find that flight. Check the number or add your destination and date instead.",
+    "error": "Could not save your trip"
+  },
+
+  "trips": {
+    "title": "My Trips",
+    "active": "Active Trip",
+    "upcoming": "Upcoming Trips",
+    "past": "Past Trips",
+    "addTrip": "+ Add a Trip",
+    "emptyTitle": "No trips yet",
+    "emptyBody": "Add your next trip to discover people and groups around it.",
+    "emptyCta": "Start your trip"
+  },
+
+  "tripHub": {
+    "title": "My Trip",
+    "peopleTab": "People",
+    "groupsTab": "Groups",
+    "peopleSubtitle": "Travelers relevant to this trip",
+    "groupsSubtitle": "Chats & plans around this trip",
+    "editTrip": "Edit trip",
+    "filterTitle": "Filters",
+    "filterSameFlight": "Same flight",
+    "filterSameDate": "Same date",
+    "filterSameEvent": "Same event",
+    "filterNearby": "Nearby",
+    "clearFilters": "Clear filters"
   }
 }

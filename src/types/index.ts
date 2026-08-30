@@ -48,6 +48,46 @@ export interface Profile {
   mutualConnections?: number;
 }
 
+// ── Trips ──────────────────────────────────────────────────────────
+export type TripEventType = 'concert' | 'sport' | 'conference' | 'other';
+export type TripStatus = 'active' | 'upcoming' | 'past';
+
+export interface TripEvent {
+  type: TripEventType;
+  name: string;
+}
+
+export interface Trip {
+  tripId: string;
+  userId: string;
+  flightNumber?: string;
+  destination?: string;
+  travelDate?: string;
+  returnDate?: string;
+  origin?: string;
+  event?: TripEvent | null;
+  intents: string[];
+  label: string;
+  status?: TripStatus;
+  createdAt?: number;
+}
+
+// A trip a user is creating/editing (no server-assigned fields yet).
+export type TripInput = Omit<Trip, 'tripId' | 'userId' | 'label' | 'status' | 'createdAt'>;
+
+// A matched traveler in a trip's People feed.
+export type MatchReason = 'sameFlight' | 'sameEvent' | 'sameDate' | 'sameDestination' | 'nearby';
+
+export interface TripPerson {
+  userId: string;
+  name?: string;
+  photo?: string;
+  tagline?: string;
+  intents?: string[];
+  reasons: MatchReason[];
+  relevance: number;
+}
+
 export type GroupCategory = 'concert' | 'sport' | 'travel' | 'cab' | 'family' | 'other';
 
 export interface GroupMember {
@@ -60,6 +100,7 @@ export interface Group {
   groupId: string;
   ownerId: string;
   ownerName?: string;
+  tripId?: string;
   title: string;
   description?: string;
   category: GroupCategory;

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Calendar, MapPin, Users } from 'lucide-react';
 import { useApi } from '../../api/client';
 import type { GroupCategory } from '../../types';
@@ -11,6 +11,7 @@ const c = content.createGroup;
 
 export default function CreateGroupScreen() {
   const navigate = useNavigate();
+  const { tripId } = useParams();
   const api = useApi();
 
   const [title, setTitle] = useState('');
@@ -30,15 +31,21 @@ export default function CreateGroupScreen() {
     setSaving(true);
     setError(null);
     try {
-      await api.createGroup({
+      const payload = {
         title: title.trim(),
         category,
         description: description.trim() || undefined,
         date: date || undefined,
         location: location.trim() || undefined,
         maxMembers,
-      });
-      navigate('/groups');
+      };
+      if (tripId) {
+        await api.createTripGroup(tripId, payload);
+        navigate(`/trips/${tripId}`);
+      } else {
+        await api.createGroup(payload);
+        navigate('/chats');
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : c.error);
       setSaving(false);

@@ -1,20 +1,24 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
-import { UsersRound, Search, MessageCircle, Compass, User } from 'lucide-react';
+import { Luggage, Compass, MessageCircle, User } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
 import { content } from '../../content';
 
-// The five core tabs. The bar shows only on these routes (see AppShell).
-export const NAV_ROUTES = ['/groups', '/flight', '/matches', '/feed', '/me'];
-
-const TABS: { to: string; label: string; icon: LucideIcon }[] = [
-  { to: '/groups',  label: content.nav.groups,   icon: UsersRound },
-  { to: '/flight',  label: content.nav.interest, icon: Search },
-  { to: '/matches', label: content.nav.matches,  icon: MessageCircle },
-  { to: '/feed',    label: content.nav.discover, icon: Compass },
-  { to: '/me',      label: content.nav.profile,  icon: User },
+// The four core tabs.
+const TABS: { to: string; label: string; icon: LucideIcon; match: (p: string) => boolean }[] = [
+  { to: '/trips',    label: content.trips.title,       icon: Luggage,       match: (p) => p === '/trips' || p.startsWith('/trips/') },
+  { to: '/discover', label: content.nav.discover,      icon: Compass,       match: (p) => p === '/discover' },
+  { to: '/chats',    label: content.connections.title, icon: MessageCircle, match: (p) => p === '/chats' },
+  { to: '/me',       label: content.nav.profile,       icon: User,          match: (p) => p === '/me' },
 ];
+
+// The bar shows on the four tab routes plus the trip hub (/trips/:id), but not
+// the full-screen trip-creation flow (/trips/new).
+export function isNavRoute(pathname: string): boolean {
+  if (pathname === '/trips/new') return false;
+  return TABS.some((t) => t.match(pathname));
+}
 
 export default function BottomNav() {
   const navigate = useNavigate();
@@ -41,7 +45,7 @@ export default function BottomNav() {
     >
       <div className="flex items-stretch justify-around px-1 pt-1.5 pb-1">
         {TABS.map((t) => {
-          const active = pathname === t.to;
+          const active = t.match(pathname);
           const color = active ? '#7dd3fc' : 'rgba(255,255,255,0.55)';
           const Icon = t.icon;
           return (

@@ -4,7 +4,7 @@
 import { useMemo } from 'react';
 import { useAuth } from 'react-oidc-context';
 import { API_URL } from '../auth/authConfig';
-import type { Profile, ApiMessage, Group, AdminUser, Match } from '../types';
+import type { Profile, ApiMessage, Group, AdminUser, Match, Trip, TripInput, TripPerson } from '../types';
 
 export function useApi() {
   const auth = useAuth();
@@ -70,6 +70,36 @@ export function useApi() {
         request(`/messages/${otherId}`, { method: 'POST', body: JSON.stringify({ text }) }),
 
       getMatches: (): Promise<{ matches: Match[] }> => request('/matches'),
+
+      // ── Trips ──
+      listTrips: (): Promise<{ trips: Trip[]; count: number }> => request('/trips'),
+
+      getTrip: (id: string): Promise<{ trip: Trip }> => request(`/trips/${id}`),
+
+      createTrip: (trip: TripInput): Promise<{ trip: Trip }> =>
+        request('/trips', { method: 'POST', body: JSON.stringify(trip) }),
+
+      updateTrip: (id: string, trip: TripInput): Promise<{ trip: Trip }> =>
+        request(`/trips/${id}`, { method: 'PUT', body: JSON.stringify(trip) }),
+
+      deleteTrip: (id: string): Promise<{ ok: boolean }> =>
+        request(`/trips/${id}`, { method: 'DELETE' }),
+
+      getTripPeople: (id: string, filter?: string): Promise<{ people: TripPerson[]; count: number }> => {
+        const q = filter ? `?filter=${encodeURIComponent(filter)}` : '';
+        return request(`/trips/${id}/people${q}`);
+      },
+
+      getTripGroups: (id: string, q?: string, category?: string): Promise<{ groups: Group[]; count: number }> => {
+        const qs = new URLSearchParams();
+        if (q) qs.set('q', q);
+        if (category) qs.set('category', category);
+        const s = qs.toString();
+        return request(`/trips/${id}/groups${s ? `?${s}` : ''}`);
+      },
+
+      createTripGroup: (id: string, group: Partial<Group>): Promise<{ group: Group }> =>
+        request(`/trips/${id}/groups`, { method: 'POST', body: JSON.stringify(group) }),
 
       // ── Groups ──
       listGroups: (q?: string, category?: string): Promise<{ groups: Group[]; count: number }> => {

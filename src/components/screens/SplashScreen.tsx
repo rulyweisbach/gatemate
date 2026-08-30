@@ -18,7 +18,7 @@ export default function SplashScreen() {
         navigate('/welcome');
         return;
       }
-      let dest = '/flight';
+      let dest = '/trips';
       try {
         const rt = localStorage.getItem('gm_returnTo');
         if (rt) {

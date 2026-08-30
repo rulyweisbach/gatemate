@@ -149,6 +149,10 @@ export function useApi() {
 
       adminListTrips: (): Promise<{ trips: AdminTrip[]; count: number }> => request('/admin/trips'),
 
+      // Pass null to reset all content back to the bundled defaults.
+      adminUpdateContent: (strings: object | null): Promise<{ ok: boolean }> =>
+        request('/admin/content', { method: 'PUT', body: JSON.stringify({ strings }) }),
+
       adminDeleteTrip: (id: string): Promise<{ ok: boolean }> =>
         request(`/admin/trips/${id}`, { method: 'DELETE' }),
     };

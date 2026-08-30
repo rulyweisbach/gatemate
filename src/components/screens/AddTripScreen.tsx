@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Plane, Hash, Calendar, MapPin, RotateCcw, ArrowLeft, Mic, Trash2 } from 'lucide-react';
 import { useApi } from '../../api/client';
-import { content } from '../../content';
+import { content, tripIntentOptions } from '../../content';
 import type { TripEventType } from '../../types';
 import GlassInput from '../ui/GlassInput';
 import GlassButton from '../ui/GlassButton';
@@ -10,9 +10,6 @@ import IntentChip from '../ui/IntentChip';
 
 const c = content.tripSetup;
 const ci = content.intentScreen;
-
-// Fixed intent options for the "Choose Intent" step (matches the flow design).
-const INTENTS = ['friendship', 'networking', 'shared-travel', 'lounge', 'local-guide', 'first-time'];
 
 const EVENT_TYPES: { id: TripEventType; label: string }[] = [
   { id: 'concert',    label: c.eventTypeConcert },
@@ -235,8 +232,8 @@ export default function AddTripScreen() {
           <label className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.7)' }}>{ci.title}</label>
           <p className="text-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>{ci.subtitle}</p>
           <div className="flex flex-wrap gap-2.5 mt-1">
-            {INTENTS.map((id) => (
-              <IntentChip key={id} intent={id} selected={intents.includes(id)} onClick={() => toggleIntent(id)} />
+            {tripIntentOptions().map((o) => (
+              <IntentChip key={o.id} intent={o.id} selected={intents.includes(o.id)} onClick={() => toggleIntent(o.id)} />
             ))}
           </div>
         </div>

@@ -9,10 +9,12 @@ import { cognitoLogoutUrl } from '../../auth/authConfig';
 import { content, fmt } from '../../content';
 import Avatar from '../ui/Avatar';
 import GlassCard from '../layout/GlassCard';
+import AdminTextsTab from '../admin/AdminTextsTab';
+import AdminOptionsTab from '../admin/AdminOptionsTab';
 
 const c = content.admin;
 
-type Tab = 'users' | 'trips' | 'groups';
+type Tab = 'users' | 'trips' | 'groups' | 'texts' | 'options';
 
 export default function AdminScreen() {
   const navigate = useNavigate();
@@ -145,17 +147,19 @@ export default function AdminScreen() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 mt-3">
-          {(['users', 'trips', 'groups'] as Tab[]).map((t) => {
+        <div className="flex gap-1.5 mt-3">
+          {(['users', 'trips', 'groups', 'texts', 'options'] as Tab[]).map((t) => {
             const label =
               t === 'users' ? `${c.usersTab} (${users.length})`
               : t === 'trips' ? `${c.tripsTab} (${trips.length})`
-              : `${c.groupsTab} (${groups.length})`;
+              : t === 'groups' ? `${c.groupsTab} (${groups.length})`
+              : t === 'texts' ? c.textsTab
+              : c.optionsTab;
             return (
               <button
                 key={t}
                 onClick={() => setTab(t)}
-                className="flex-1 py-2 rounded-xl text-sm font-bold capitalize transition-all"
+                className="flex-1 py-2 rounded-xl text-xs font-bold capitalize transition-all"
                 style={{
                   background: tab === t ? 'rgba(125,211,252,0.25)' : 'rgba(255,255,255,0.08)',
                   border: tab === t ? '1px solid #7dd3fc' : '1px solid rgba(255,255,255,0.15)',
@@ -170,7 +174,7 @@ export default function AdminScreen() {
       </div>
 
       <div className="flex flex-col gap-3 px-4 py-4 pb-10">
-        {loading && (
+        {loading && (tab === 'users' || tab === 'trips' || tab === 'groups') && (
           <div className="flex flex-col items-center justify-center py-20 gap-3">
             <div className="text-4xl anim-float-plane">✈️</div>
             <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>Loading…</p>
@@ -322,6 +326,10 @@ export default function AdminScreen() {
         {!loading && tab === 'groups' && groups.length === 0 && (
           <p className="text-center text-sm py-16" style={{ color: 'rgba(255,255,255,0.5)' }}>{c.noGroups}</p>
         )}
+
+        {/* TEXTS / OPTIONS (content editors — don't need the admin lists) */}
+        {tab === 'texts' && <AdminTextsTab />}
+        {tab === 'options' && <AdminOptionsTab />}
       </div>
     </div>
   );

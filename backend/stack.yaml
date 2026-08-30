@@ -172,6 +172,16 @@ Resources:
           KeySchema: [{ AttributeName: userId, KeyType: HASH }]
           Projection: { ProjectionType: ALL }
 
+  ContentTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: gatemate-content
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - { AttributeName: contentId, AttributeType: S }
+      KeySchema:
+        - { AttributeName: contentId, KeyType: HASH }
+
   # ── Lambda (single router) ─────────────────────────────────────
   ApiFunctionRole:
     Type: AWS::IAM::Role
@@ -207,6 +217,7 @@ Resources:
                   - !Sub "${GroupsTable.Arn}/index/*"
                   - !GetAtt TripsTable.Arn
                   - !Sub "${TripsTable.Arn}/index/*"
+                  - !GetAtt ContentTable.Arn
               - Effect: Allow
                 Action: s3:PutObject
                 Resource: !Sub "${MediaBucket.Arn}/photos/*"
@@ -236,6 +247,7 @@ Resources:
           CONNECTIONS_TABLE: !Ref ConnectionsTable
           GROUPS_TABLE: !Ref GroupsTable
           TRIPS_TABLE: !Ref TripsTable
+          CONTENT_TABLE: !Ref ContentTable
           MEDIA_BUCKET: !Ref MediaBucket
           USER_POOL_ID: !Ref UserPool
           ADMIN_EMAILS: !Ref AdminEmails
@@ -566,6 +578,24 @@ Resources:
     Properties:
       ApiId: !Ref HttpApi
       RouteKey: "DELETE /admin/trips/{id}"
+      AuthorizationType: JWT
+      AuthorizerId: !Ref JwtAuthorizer
+      Target: !Sub "integrations/${Integration}"
+
+  # Public: content overrides ship in the JS bundle anyway — no auth.
+  RouteGetContent:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: "GET /content"
+      AuthorizationType: NONE
+      Target: !Sub "integrations/${Integration}"
+
+  RouteAdminUpdateContent:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: "PUT /admin/content"
       AuthorizationType: JWT
       AuthorizerId: !Ref JwtAuthorizer
       Target: !Sub "integrations/${Integration}"

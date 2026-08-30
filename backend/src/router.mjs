@@ -34,6 +34,8 @@ import { handler as adminDeleteGroup } from './handlers/adminDeleteGroup.mjs';
 import { handler as adminListTrips } from './handlers/adminListTrips.mjs';
 import { handler as adminDeleteTrip } from './handlers/adminDeleteTrip.mjs';
 import { handler as adminRemoveMember } from './handlers/adminRemoveMember.mjs';
+import { handler as getContent } from './handlers/getContent.mjs';
+import { handler as adminUpdateContent } from './handlers/adminUpdateContent.mjs';
 import { json } from './lib/http.mjs';
 
 const routes = [
@@ -72,6 +74,8 @@ const routes = [
   { method: 'DELETE', re: /^\/admin\/groups\/([^/]+)$/,    fn: adminDeleteGroup, params: ['id'] },
   { method: 'GET',    re: /^\/admin\/trips$/,              fn: adminListTrips,   params: [] },
   { method: 'DELETE', re: /^\/admin\/trips\/([^/]+)$/,     fn: adminDeleteTrip,  params: ['id'] },
+  { method: 'GET',    re: /^\/content$/,                   fn: getContent,       params: [] },
+  { method: 'PUT',    re: /^\/admin\/content$/,            fn: adminUpdateContent, params: [] },
 ];
 
 export const handler = async (event) => {

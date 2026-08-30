@@ -226,6 +226,20 @@
     "ownerBadge": "owner",
     "confirmRemoveMember": "Remove {who} from \"{title}\"?",
     "removeMemberError": "Failed to remove member",
+    "textsTab": "Texts",
+    "optionsTab": "Options",
+    "textsHint": "Edit any text and press Save. Changes go live for everyone on their next app load — no deploy needed. Keep {placeholders} exactly as they are.",
+    "optionsHint": "The \"What are you looking for?\" choices shown when creating a trip. Changes go live on the next app load.",
+    "optionLabel": "Label",
+    "optionEmoji": "Emoji",
+    "addOption": "+ Add option",
+    "newOptionPlaceholder": "New option label",
+    "saveContent": "Save changes",
+    "savingContent": "Saving…",
+    "savedContent": "Saved — live on next app load ✓",
+    "saveContentError": "Could not save",
+    "resetContent": "Reset all to defaults",
+    "confirmResetContent": "Discard ALL edited texts and options and go back to the built-in defaults?",
     "deniedTitle": "Access denied",
     "deniedBody": "You're signed in as {email}, which isn't an admin account.",
     "switchAccount": "Switch account",
@@ -241,6 +255,8 @@
     "confirmCloseGroup": "Close the group \"{title}\"? This permanently removes it.",
     "closeGroupError": "Failed to close group"
   },
+
+  "tripIntents": ["friendship", "networking", "shared-travel", "lounge", "local-guide", "first-time"],
 
   "intents": {
     "networking": { "label": "Networking", "emoji": "💼" },

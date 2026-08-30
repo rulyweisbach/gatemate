@@ -40,6 +40,13 @@ export default function EditProfileScreen() {
   const [myGroups, setMyGroups] = useState<Group[]>([]);
   const myId = auth.user?.profile?.sub;
 
+  // Clear the locally stored OIDC session BEFORE the Cognito logout redirect —
+  // otherwise the app finds the old token in localStorage and stays signed in.
+  const logOut = async () => {
+    await auth.removeUser().catch(() => {});
+    window.location.href = cognitoLogoutUrl();
+  };
+
   // Load groups I own.
   const loadMyGroups = () => {
     api.listGroups()
@@ -152,7 +159,7 @@ export default function EditProfileScreen() {
           {c.header}
         </span>
         <button
-          onClick={() => { window.location.href = cognitoLogoutUrl(); }}
+          onClick={() => void logOut()}
           className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full"
           style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: 'rgba(255,255,255,0.7)' }}
         >

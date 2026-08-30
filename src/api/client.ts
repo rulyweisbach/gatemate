@@ -4,7 +4,7 @@
 import { useMemo } from 'react';
 import { useAuth } from 'react-oidc-context';
 import { API_URL } from '../auth/authConfig';
-import type { Profile, ApiMessage, Group, AdminUser, Match, Trip, TripInput, TripPerson } from '../types';
+import type { Profile, ApiMessage, Group, AdminUser, AdminTrip, Match, Trip, TripInput, TripPerson } from '../types';
 
 export function useApi() {
   const auth = useAuth();
@@ -143,6 +143,14 @@ export function useApi() {
 
       adminDeleteGroup: (id: string): Promise<{ ok: boolean }> =>
         request(`/admin/groups/${id}`, { method: 'DELETE' }),
+
+      adminRemoveMember: (groupId: string, memberId: string): Promise<{ group: Group }> =>
+        request(`/admin/groups/${groupId}/members/${encodeURIComponent(memberId)}`, { method: 'DELETE' }),
+
+      adminListTrips: (): Promise<{ trips: AdminTrip[]; count: number }> => request('/admin/trips'),
+
+      adminDeleteTrip: (id: string): Promise<{ ok: boolean }> =>
+        request(`/admin/trips/${id}`, { method: 'DELETE' }),
     };
   }, [token]);
 }

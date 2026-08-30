@@ -121,6 +121,12 @@ export interface Match {
   initiatedByMe?: boolean;
 }
 
+// Admin view of a trip (owner details merged in).
+export interface AdminTrip extends Trip {
+  ownerName?: string | null;
+  ownerEmail?: string | null;
+}
+
 // Admin view of a registered user (Cognito + merged profile).
 export interface AdminUser {
   username: string;

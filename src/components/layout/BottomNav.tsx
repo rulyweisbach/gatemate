@@ -14,9 +14,9 @@ const TABS: { to: string; label: string; icon: LucideIcon; match: (p: string) =>
 ];
 
 // The bar shows on the four tab routes plus the trip hub (/trips/:id), but not
-// the full-screen trip-creation flow (/trips/new).
+// the full-screen creation flows (/trips/new, /trips/:id/groups/new).
 export function isNavRoute(pathname: string): boolean {
-  if (pathname === '/trips/new') return false;
+  if (pathname === '/trips/new' || pathname.endsWith('/groups/new')) return false;
   return TABS.some((t) => t.match(pathname));
 }
 

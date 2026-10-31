@@ -1,4 +1,4 @@
-import { GetCommand, ScanCommand, BatchGetCommand } from '@aws-sdk/lib-dynamodb';
+import { GetCommand, ScanCommand, BatchGetCommand, QueryCommand } from '@aws-sdk/lib-dynamodb';
 import { ddb, TABLES } from '../lib/dynamo.mjs';
 import { json, getUserId } from '../lib/http.mjs';
 import { scoreMatch } from '../lib/trip.mjs';
@@ -22,10 +22,23 @@ export const handler = async (event) => {
   const meRes = await ddb.send(new GetCommand({ TableName: TABLES.users, Key: { userId } }));
   const wide = meRes.Item?.discovery !== 'focused';
 
+  // People the caller already connected with (said hi / opened a chat) live
+  // in the Chats tab — keep the discovery feed to new faces only.
+  const connRes = await ddb.send(
+    new QueryCommand({
+      TableName: TABLES.connections,
+      KeyConditionExpression: 'userId = :u',
+      ExpressionAttributeValues: { ':u': userId },
+    })
+  );
+  const connected = new Set((connRes.Items ?? []).map((c) => c.otherUserId));
+
   // Small scale (≈100 users) — a scan of the trips table is cheap and avoids
   // maintaining several match GSIs.
   const scan = await ddb.send(new ScanCommand({ TableName: TABLES.trips }));
-  const trips = (scan.Items ?? []).filter((t) => t.userId && t.userId !== userId);
+  const trips = (scan.Items ?? []).filter(
+    (t) => t.userId && t.userId !== userId && !connected.has(t.userId)
+  );
 
   // Best-scoring trip per other traveler.
   const best = new Map(); // userId -> { score, reasons, trip }

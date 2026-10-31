@@ -158,6 +158,18 @@ export interface Group {
   createdAt: number;
 }
 
+// A trip as shown on someone else's public profile (current + upcoming only).
+export interface ProfileTrip {
+  tripId: string;
+  label: string;
+  destination?: string;
+  travelDate?: string;
+  returnDate?: string;
+  flightNumber?: string;
+  planning?: boolean;
+  event?: TripEvent | null;
+}
+
 // A person the user is connected with (for the Matches tab).
 export interface Match {
   userId: string;

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Plane, DoorOpen, Clock, MapPin } from 'lucide-react';
+import { ArrowLeft, Plane, DoorOpen, Clock, MapPin, Ticket, Calendar } from 'lucide-react';
 import { useApi } from '../../api/client';
 import { content, fmt } from '../../content';
-import type { Profile } from '../../types';
+import type { Profile, ProfileTrip } from '../../types';
 
 const c = content.profile;
 import GlassCard from '../layout/GlassCard';
@@ -18,6 +18,7 @@ export default function ProfileScreen() {
   const api = useApi();
 
   const [user, setUser] = useState<Profile | null>(null);
+  const [trips, setTrips] = useState<ProfileTrip[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -26,7 +27,11 @@ export default function ProfileScreen() {
     setLoading(true);
     api
       .getUser(id)
-      .then((res) => !cancelled && setUser(res.profile))
+      .then((res) => {
+        if (cancelled) return;
+        setUser(res.profile);
+        setTrips(res.trips ?? []);
+      })
       .catch(() => !cancelled && setUser(null))
       .finally(() => !cancelled && setLoading(false));
     return () => {
@@ -52,6 +57,12 @@ export default function ProfileScreen() {
       </div>
     );
   }
+
+  const fmtDate = (iso?: string) => {
+    if (!iso) return '';
+    const d = new Date(`${iso}T00:00:00`);
+    return Number.isNaN(d.getTime()) ? '' : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  };
 
   const route =
     user.origin && user.destination ? `${user.origin} → ${user.destination}` : '—';
@@ -138,21 +149,59 @@ export default function ProfileScreen() {
           </GlassCard>
         )}
 
-        {/* Info grid */}
-        <div
-          className="grid grid-cols-2 gap-3"
-          style={{ animation: 'slide-up 0.45s ease-out forwards', animationDelay: '0.15s', opacity: 0 }}
-        >
-          {infoCards.map(({ icon: Icon, label, value }) => (
-            <GlassCard key={label} className="p-3" style={{ borderRadius: 14 }}>
-              <div className="flex items-center gap-2 mb-1">
-                <Icon size={14} style={{ color: '#7dd3fc' }} />
-                <span className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>{label}</span>
-              </div>
-              <p className="font-bold text-white text-sm">{value}</p>
-            </GlassCard>
-          ))}
-        </div>
+        {/* Trips (people can have several) — falls back to the legacy
+            single-flight info grid for profiles with no trips yet. */}
+        {trips.length > 0 ? (
+          <div style={{ animation: 'slide-up 0.45s ease-out forwards', animationDelay: '0.15s', opacity: 0 }}>
+            <p className="text-xs font-semibold mb-2" style={{ color: 'rgba(255,255,255,0.5)' }}>{c.tripsLabel}</p>
+            <div className="flex flex-col gap-2">
+              {trips.map((t) => {
+                const dateBits = [fmtDate(t.travelDate), t.returnDate ? `→ ${fmtDate(t.returnDate)}` : '']
+                  .filter(Boolean)
+                  .join(' ');
+                const Icon = t.event ? Ticket : t.flightNumber ? Plane : MapPin;
+                return (
+                  <GlassCard key={t.tripId} className="p-3 flex items-center gap-3" style={{ borderRadius: 14 }}>
+                    <Icon size={18} style={{ color: '#7dd3fc' }} className="shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <p className="font-bold text-white text-sm truncate">{t.label}</p>
+                        {t.planning && (
+                          <span
+                            className="text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0"
+                            style={{ background: 'rgba(125,211,252,0.18)', color: '#7dd3fc' }}
+                          >
+                            {content.trips.planningBadge}
+                          </span>
+                        )}
+                      </div>
+                      {dateBits && (
+                        <p className="flex items-center gap-1 text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.55)' }}>
+                          <Calendar size={12} /> {dateBits}
+                        </p>
+                      )}
+                    </div>
+                  </GlassCard>
+                );
+              })}
+            </div>
+          </div>
+        ) : (
+          <div
+            className="grid grid-cols-2 gap-3"
+            style={{ animation: 'slide-up 0.45s ease-out forwards', animationDelay: '0.15s', opacity: 0 }}
+          >
+            {infoCards.map(({ icon: Icon, label, value }) => (
+              <GlassCard key={label} className="p-3" style={{ borderRadius: 14 }}>
+                <div className="flex items-center gap-2 mb-1">
+                  <Icon size={14} style={{ color: '#7dd3fc' }} />
+                  <span className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>{label}</span>
+                </div>
+                <p className="font-bold text-white text-sm">{value}</p>
+              </GlassCard>
+            ))}
+          </div>
+        )}
 
         {/* Looking for */}
         {primaryIntent && (
@@ -170,7 +219,9 @@ export default function ProfileScreen() {
           style={{ animation: 'slide-up 0.45s ease-out forwards', animationDelay: '0.25s', opacity: 0 }}
         >
           <GlassButton variant="glass" onClick={() => navigate(-1)}>{c.pass}</GlassButton>
-          <GlassButton variant="solid" onClick={() => navigate(`/chat/${user.userId}`)}>{c.sayHi}</GlassButton>
+          {/* Replace the profile in history so Back from the chat returns
+              straight to where the person was found (hub / discover). */}
+          <GlassButton variant="solid" onClick={() => navigate(`/chat/${user.userId}`, { replace: true })}>{c.sayHi}</GlassButton>
         </div>
       </div>
     </div>

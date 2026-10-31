@@ -4,7 +4,7 @@
 import { useMemo } from 'react';
 import { useAuth } from 'react-oidc-context';
 import { API_URL } from '../auth/authConfig';
-import type { Profile, ApiMessage, Group, AdminUser, AdminTrip, Match, Trip, TripInput, TripPerson, ContextType } from '../types';
+import type { Profile, ApiMessage, Group, AdminUser, AdminTrip, Match, Trip, TripInput, TripPerson, ContextType, ProfileTrip } from '../types';
 
 // Group creation payload: group fields plus the shared context to attach to.
 type GroupInput = Partial<Group> & { contextType?: ContextType };
@@ -61,7 +61,8 @@ export function useApi() {
         return request(`/feed${q ? `?${q}` : ''}`);
       },
 
-      getUser: (id: string): Promise<{ profile: Profile }> => request(`/users/${id}`),
+      getUser: (id: string): Promise<{ profile: Profile; trips?: ProfileTrip[] }> =>
+        request(`/users/${id}`),
 
       sayHi: (id: string): Promise<{ ok: boolean }> =>
         request(`/connections/${id}`, { method: 'POST' }),

@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="What GateMate is, the new trip-centric concept, and an animated tour of the onboarding flow.">
+<title>The New GateMate</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600;700&display=swap">
+<style>
+/* Layout: a single scrolling story — hero, who it's for, the new concept, then a phone "movie" of onboarding. Committed single-theme night-sky look, matching the app itself. */
+:root {
+  --sky-top: #0b1a3b;
+  --sky-mid: #16305e;
+  --sky-low: #3b6db0;
+  --ink: #ffffff;
+  --ink-soft: rgba(255,255,255,0.68);
+  --ink-faint: rgba(255,255,255,0.45);
+  --accent: #7dd3fc;
+  --accent-ink: #0b1a3b;
+  --glass: rgba(255,255,255,0.09);
+  --glass-edge: rgba(255,255,255,0.18);
+  --display: 'Nunito', 'Trebuchet MS', sans-serif;
+  --body: 'Nunito Sans', 'Segoe UI', sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 55%, var(--sky-low) 100%) fixed, var(--sky-top);
+  background-color: var(--sky-top);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.6;
+}
+.wrap {
+  max-width: 880px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 72px;
+}
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; line-height: 1.15; margin: 0; }
+p { margin: 0; }
+
+/* Stars */
+.stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+.stars span { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: #fff; opacity: .5; animation: twinkle 2.6s ease-in-out infinite; }
+@keyframes twinkle { 0%,100%{opacity:.18} 50%{opacity:.7} }
+@media (prefers-reduced-motion: reduce) { .stars span { animation: none; } }
+main { position: relative; z-index: 1; }
+
+/* Hero */
+.hero { text-align: center; padding-block: 72px 48px; display: flex; flex-direction: column; gap: 18px; align-items: center; }
+.hero .plane { font-size: 44px; }
+.wordmark { font-size: clamp(44px, 9vw, 72px); font-weight: 900; letter-spacing: -0.02em; }
+.wordmark b { color: var(--accent); }
+.hero .tagline { font-size: clamp(18px, 3.5vw, 22px); color: var(--ink-soft); max-width: 34ch; }
+.hero .note {
+  font-size: 13px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--accent); font-weight: 700; font-family: var(--display);
+}
+
+/* Sections */
+section { padding-block: 44px; }
+.eyebrow { font-family: var(--display); font-weight: 800; font-size: 13px; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+section > h2 { font-size: clamp(26px, 5vw, 36px); font-weight: 900; margin-bottom: 14px; }
+.lede { color: var(--ink-soft); max-width: 62ch; font-size: 17px; }
+
+/* Use-case cards */
+.cases { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; margin-top: 26px; }
+.case {
+  background: var(--glass); border: 1px solid var(--glass-edge); border-radius: 18px;
+  padding: 18px; display: flex; flex-direction: column; gap: 8px; min-width: 0;
+}
+.case .emoji { font-size: 26px; }
+.case h3 { font-size: 16px; font-weight: 800; }
+.case p { font-size: 14px; color: var(--ink-soft); }
+
+/* Concept */
+.concept-flow { display: flex; flex-direction: column; gap: 14px; margin-top: 26px; }
+.step { display: flex; gap: 16px; align-items: flex-start; }
+.step .dot {
+  flex: none; width: 34px; height: 34px; border-radius: 50%;
+  background: rgba(125,211,252,0.16); border: 1px solid rgba(125,211,252,0.45);
+  color: var(--accent); font-family: var(--display); font-weight: 900; font-size: 15px;
+  display: flex; align-items: center; justify-content: center; margin-top: 2px;
+}
+.step .txt { min-width: 0; }
+.step h3 { font-size: 17px; font-weight: 800; margin-bottom: 3px; }
+.step p { font-size: 15px; color: var(--ink-soft); max-width: 58ch; }
+.ctx-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.chip {
+  font-family: var(--display); font-weight: 700; font-size: 13px;
+  background: rgba(125,211,252,0.14); border: 1px solid rgba(125,211,252,0.4);
+  color: var(--accent); border-radius: 999px; padding: 6px 14px;
+}
+.before-after { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-top: 26px; }
+.ba {
+  border-radius: 18px; padding: 18px; min-width: 0;
+  background: var(--glass); border: 1px solid var(--glass-edge);
+}
+.ba.now { border-color: rgba(125,211,252,0.5); background: rgba(125,211,252,0.08); }
+.ba .tag { font-family: var(--display); font-weight: 800; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint); }
+.ba.now .tag { color: var(--accent); }
+.ba p { font-size: 14.5px; color: var(--ink-soft); margin-top: 8px; }
+
+/* Tabs row */
+.tabs { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 22px; }
+.tab { background: var(--glass); border: 1px solid var(--glass-edge); border-radius: 14px; padding: 14px; min-width: 0; }
+.tab b { font-family: var(--display); font-size: 15px; display: block; margin-bottom: 3px; }
+.tab span { font-size: 13px; color: var(--ink-soft); }
+
+/* ——— The movie ——— */
+.cinema { display: flex; flex-direction: column; align-items: center; gap: 20px; margin-top: 26px; }
+.phone {
+  width: min(330px, 86vw); aspect-ratio: 330 / 640; max-width: 100%;
+  border-radius: 38px; border: 2px solid rgba(255,255,255,0.25);
+  background: linear-gradient(180deg, #0b1a3b 0%, #1a3a6b 70%, #35619e 100%);
+  box-shadow: 0 30px 70px rgba(2,8,26,0.6), inset 0 0 0 6px #050d20;
+  position: relative; overflow: hidden;
+}
+.phone .notch {
+  position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+  width: 34%; height: 16px; border-radius: 999px; background: #050d20; z-index: 30;
+}
+.frame {
+  position: absolute; inset: 0; padding: 40px 18px 18px;
+  display: flex; flex-direction: column; gap: 10px;
+  opacity: 0; transition: opacity .5s ease; pointer-events: none;
+}
+.frame.on { opacity: 1; }
+.frame .f-center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; }
+.fw { font-family: var(--display); font-weight: 900; font-size: 30px; }
+.fw b { color: var(--accent); }
+.f-tag { color: var(--ink-soft); font-size: 13.5px; max-width: 24ch; }
+.g-btn {
+  font-family: var(--display); font-weight: 700; font-size: 13.5px;
+  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 999px; padding: 10px 20px; color: #fff; width: 82%;
+}
+.g-btn.solid { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 800; }
+.f-h { font-family: var(--display); font-weight: 800; font-size: 15px; padding-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.14); }
+.mini-card {
+  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 14px; padding: 10px 12px; font-size: 12.5px; text-align: left;
+}
+.mini-card .t { font-family: var(--display); font-weight: 800; font-size: 13px; }
+.mini-card .s { color: var(--ink-soft); font-size: 11.5px; }
+.seg { display: flex; gap: 6px; }
+.seg span {
+  flex: 1; text-align: center; font-family: var(--display); font-weight: 700; font-size: 11px;
+  border: 1px solid rgba(255,255,255,0.22); border-radius: 999px; padding: 7px 4px; color: var(--ink-soft);
+}
+.seg .sel { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.mchips { display: flex; flex-wrap: wrap; gap: 5px; }
+.mchip { font-size: 10.5px; font-weight: 700; font-family: var(--display); border-radius: 999px; padding: 3px 9px; background: rgba(125,211,252,0.16); border: 1px solid rgba(125,211,252,0.4); color: var(--accent); }
+.sec-h { display: flex; align-items: baseline; justify-content: space-between; margin-top: 4px; }
+.sec-h .t { font-family: var(--display); font-weight: 800; font-size: 12.5px; color: var(--accent); }
+.sec-h .c { font-size: 10.5px; color: var(--ink-faint); }
+.person { display: flex; gap: 9px; align-items: center; }
+.person .av { flex: none; width: 34px; height: 34px; border-radius: 11px; background: rgba(125,211,252,0.2); display: flex; align-items: center; justify-content: center; font-size: 17px; }
+.person .pct { margin-left: auto; font-family: var(--display); font-weight: 800; font-size: 11px; color: var(--accent); white-space: nowrap; }
+.bubble { max-width: 80%; border-radius: 15px 15px 15px 4px; padding: 8px 12px; font-size: 12px; background: rgba(255,255,255,0.13); border: 1px solid rgba(255,255,255,0.2); align-self: flex-start; }
+.bubble.me { border-radius: 15px 15px 4px 15px; background: rgba(125,211,252,0.35); border-color: rgba(125,211,252,0.5); align-self: flex-end; }
+.f-nav {
+  margin-top: auto; display: flex; justify-content: space-around;
+  background: rgba(5,13,32,0.55); border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 16px; padding: 8px 4px; font-size: 9.5px; font-family: var(--display); font-weight: 700; color: var(--ink-faint);
+}
+.f-nav span { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.f-nav .ico { font-size: 14px; }
+.f-nav .on-tab { color: var(--accent); }
+
+/* Movie controls + caption */
+.caption {
+  min-height: 3.6em; text-align: center; max-width: 46ch;
+  font-size: 15.5px; color: var(--ink-soft);
+}
+.caption b { color: var(--ink); font-family: var(--display); display: block; font-size: 17px; margin-bottom: 2px; }
+.controls { display: flex; align-items: center; gap: 14px; }
+.playbtn {
+  width: 46px; height: 46px; border-radius: 50%; border: 1px solid rgba(125,211,252,0.6);
+  background: rgba(125,211,252,0.15); color: var(--accent); font-size: 17px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.playbtn:focus-visible, .pip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.pips { display: flex; gap: 8px; }
+.pip { width: 10px; height: 10px; border-radius: 50%; border: none; padding: 0; background: rgba(255,255,255,0.25); cursor: pointer; transition: transform .2s, background .2s; }
+.pip.on { background: var(--accent); transform: scale(1.3); }
+
+/* Footer */
+footer { text-align: center; padding-block: 40px 20px; color: var(--ink-faint); font-size: 14px; }
+footer a { color: var(--accent); font-weight: 700; text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+
+/* ——— Present mode ——— */
+.present-launch {
+  position: fixed; z-index: 50;
+  top: calc(14px + env(safe-area-inset-top, 0px));
+  right: max(16px, env(safe-area-inset-right, 0px));
+  font-family: var(--display); font-weight: 800; font-size: 14px;
+  background: rgba(125,211,252,0.16); color: var(--accent);
+  border: 1px solid rgba(125,211,252,0.55); border-radius: 999px;
+  padding: 9px 18px; cursor: pointer; backdrop-filter: blur(8px);
+  display: flex; align-items: center; gap: 7px;
+}
+.present-launch:hover { background: rgba(125,211,252,0.28); }
+.present-launch:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+body.presenting .present-launch, body.presenting footer { display: none; }
+body.presenting .slide { display: none; }
+body.presenting .slide.slide-on {
+  display: flex; flex-direction: column; justify-content: center;
+  min-height: 100dvh; max-height: 100dvh; overflow-y: auto;
+  padding-block: 28px 86px;
+  animation: slide-in .35s ease-out;
+}
+@keyframes slide-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { body.presenting .slide.slide-on { animation: none; } }
+.present-bar {
+  position: fixed; z-index: 60; display: none;
+  left: 50%; transform: translateX(-50%);
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  align-items: center; gap: 12px;
+  background: rgba(5,13,32,0.75); border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 999px; padding: 8px 14px; backdrop-filter: blur(10px);
+}
+body.presenting .present-bar { display: flex; }
+.pb-btn {
+  width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
+  border: 1px solid rgba(125,211,252,0.5); background: rgba(125,211,252,0.14);
+  color: var(--accent); font-size: 16px; display: flex; align-items: center; justify-content: center;
+}
+.pb-btn:disabled { opacity: .35; cursor: default; }
+.pb-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.pb-count { font-family: var(--display); font-weight: 800; font-size: 13px; color: var(--ink-soft); min-width: 44px; text-align: center; font-variant-numeric: tabular-nums; }
+.pb-exit { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); color: var(--ink-soft); }
+</style>
+</head>
+<body>
+
+
+<div class="stars" aria-hidden="true">
+  <span style="top:6%;left:12%"></span><span style="top:14%;left:78%;animation-delay:.6s"></span>
+  <span style="top:24%;left:34%;animation-delay:1.2s"></span><span style="top:9%;left:55%;animation-delay:1.8s"></span>
+  <span style="top:31%;left:88%;animation-delay:.3s"></span><span style="top:19%;left:5%;animation-delay:.9s"></span>
+  <span style="top:38%;left:62%;animation-delay:1.5s"></span><span style="top:45%;left:20%;animation-delay:2.1s"></span>
+</div>
+
+<button class="present-launch" id="presentLaunch">▶ Present</button>
+
+<div class="present-bar" aria-label="Presentation controls">
+  <button class="pb-btn" id="pbPrev" aria-label="Previous slide">←</button>
+  <span class="pb-count" id="pbCount">1 / 5</span>
+  <button class="pb-btn" id="pbNext" aria-label="Next slide">→</button>
+  <button class="pb-btn pb-exit" id="pbExit" aria-label="Exit presentation">✕</button>
+</div>
+
+<main class="wrap">
+
+  <header class="hero slide">
+    <div class="plane">✈️</div>
+    <h1 class="wordmark">Gate<b>Mate</b></h1>
+    <p class="tagline">Meet the right people around your trip — before, during, and after takeoff.</p>
+    <p class="note">What's new · October 2026</p>
+  </header>
+
+  <section class="slide">
+    <p class="eyebrow">The idea</p>
+    <h2>Travel is full of people you were meant to meet</h2>
+    <p class="lede">
+      You're rarely the only one on your flight, at your conference, or on that beach with kids the same
+      age as yours. GateMate finds those people from one simple thing: your trip. Anyone who travels can
+      use it — solo flyers, couples, families, friends, business travelers.
+    </p>
+    <div class="cases">
+      <div class="case"><span class="emoji">🚕</span><h3>Share the ride</h3><p>Same flight, same landing time. Split a taxi from the airport instead of paying alone.</p></div>
+      <div class="case"><span class="emoji">🎤</span><h3>Arrive connected</h3><p>Flying to a conference? Meet attendees before you land, not at the coffee break.</p></div>
+      <div class="case"><span class="emoji">👨‍👩‍👧</span><h3>Kids the same age</h3><p>Families at the same resort, same week, kids 6 and 9. The vacation makes itself.</p></div>
+      <div class="case"><span class="emoji">💭</span><h3>Plan it together</h3><p>Nothing booked yet? Find similar families planning the same destination and pick dates together.</p></div>
+      <div class="case"><span class="emoji">🎸</span><h3>Don't go alone</h3><p>A concert abroad is better with company. Find others going to the same show.</p></div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <p class="eyebrow">The new concept</p>
+    <h2>Your trip is the heart of everything</h2>
+    <p class="lede">
+      We rebuilt the app around one object: the trip. You tell GateMate where you're going — everything
+      else is derived from it automatically.
+    </p>
+
+    <div class="concept-flow">
+      <div class="step">
+        <div class="dot">1</div>
+        <div class="txt">
+          <h3>Add a trip, any way you like</h3>
+          <p>With a flight number, with just a destination and dates — or in "Still planning" mode when
+          nothing is booked yet and you want people to plan with.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="dot">2</div>
+        <div class="txt">
+          <h3>GateMate derives your shared contexts</h3>
+          <p>Each trip places you in up to three circles of people, from most to least specific:</p>
+          <div class="ctx-chips">
+            <span class="chip">✈️ Everyone on your flight</span>
+            <span class="chip">🎟️ Everyone at your event</span>
+            <span class="chip">📍 Everyone at your destination on your dates</span>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="dot">3</div>
+        <div class="txt">
+          <h3>The trip hub shows who's there</h3>
+          <p>One screen per trip, one section per circle: matched travelers with the reasons they match
+          ("Same flight", "Kids same age", "Still planning"), and the groups living in each circle.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="dot">4</div>
+        <div class="txt">
+          <h3>Groups belong to the circle, not to a person</h3>
+          <p>Open "Taxi from the airport" on your flight and every traveler on that flight sees it —
+          whoever they are, whenever they add their trip. Join a group and the chat opens.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <p class="eyebrow">Before &amp; after</p>
+    <h2>What changed</h2>
+    <div class="before-after">
+      <div class="ba">
+        <p class="tag">Before</p>
+        <p>Groups and people hung off one person's trip. A taxi group was invisible to the very
+        passengers it was meant for, and matching needed an exact overlap — so a new app felt empty.</p>
+      </div>
+      <div class="ba now">
+        <p class="tag">Now</p>
+        <p>Groups live in shared circles everyone's trip can reach. And while the community grows,
+        discovery is wide by default: same origin or shared interests is enough to see each other.
+        Each person can switch to focused matching in their profile.</p>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab"><b>🧳 My Trips</b><span>Your trips — each one opens its hub</span></div>
+      <div class="tab"><b>🧭 Discover</b><span>Jumps into your most relevant trip</span></div>
+      <div class="tab"><b>💬 Chats</b><span>Your people and group conversations</span></div>
+      <div class="tab"><b>👤 Profile</b><span>Photos, interests, discovery range</span></div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <p class="eyebrow">See it happen</p>
+    <h2>From first open to first hello</h2>
+    <p class="lede">A 20-second tour of what a brand-new user goes through.</p>
+
+    <div class="cinema">
+      <div class="phone" id="phone" aria-label="Animated walkthrough of the GateMate onboarding flow">
+        <div class="notch"></div>
+
+        <!-- 1 · Welcome -->
+        <div class="frame on">
+          <div class="f-center">
+            <div style="font-size:40px">✈️</div>
+            <div class="fw">Gate<b>Mate</b></div>
+            <p class="f-tag">Your next connection is waiting at your Gate</p>
+            <button class="g-btn" tabindex="-1">Continue with Google</button>
+            <button class="g-btn solid" tabindex="-1">Get Started</button>
+          </div>
+        </div>
+
+        <!-- 2 · Profile -->
+        <div class="frame">
+          <p class="f-h">Set up your profile</p>
+          <div class="f-center" style="justify-content:flex-start;padding-top:16px">
+            <div style="width:72px;height:72px;border-radius:22px;background:rgba(125,211,252,0.2);display:flex;align-items:center;justify-content:center;font-size:36px">🧑‍🦱</div>
+            <div class="mini-card" style="width:86%"><span class="t">Dana, 38</span><br><span class="s">Two kids, always planning the next escape</span></div>
+            <div class="mchips">
+              <span class="mchip">🧳 Travel Buddy</span><span class="mchip">🤝 Friendship</span><span class="mchip">💼 Networking</span>
+            </div>
+            <button class="g-btn solid" style="margin-top:8px" tabindex="-1">Save Profile</button>
+          </div>
+        </div>
+
+        <!-- 3 · Add trip -->
+        <div class="frame">
+          <p class="f-h">Where are you headed?</p>
+          <div class="seg"><span>✈️ Flight</span><span class="sel">📍 Destination</span><span>💭 Planning</span></div>
+          <div class="mini-card"><span class="s">Destination</span><br><span class="t">Crete</span></div>
+          <div class="mini-card"><span class="s">Dates</span><br><span class="t">Apr 20 → Apr 27</span></div>
+          <div class="mini-card"><span class="s">Traveling with</span><br><span class="t">👨‍👩‍👧 Family · kids 6, 9</span></div>
+          <div class="f-center" style="flex:0 0 auto;margin-top:6px"><button class="g-btn solid" tabindex="-1">Create Trip</button></div>
+        </div>
+
+        <!-- 4 · Trip hub -->
+        <div class="frame">
+          <p class="f-h">Crete · Apr 20</p>
+          <div class="sec-h"><span class="t">📍 In Crete while you're there</span><span class="c">2 travelers</span></div>
+          <div class="mini-card person"><span class="av">🧑‍🎨</span><span><span class="t">Lior Ben-David</span><br><span class="s">💭 planning · 👧 kids 7, 10</span></span><span class="pct">100%</span></div>
+          <div class="mini-card person"><span class="av">👩‍💼</span><span><span class="t">Maya Cohen</span><br><span class="s">Same travel dates</span></span><span class="pct">82%</span></div>
+          <div class="sec-h"><span class="t">✨ More travelers</span><span class="c">5 travelers</span></div>
+          <div class="mini-card person"><span class="av">🧑‍💻</span><span><span class="t">Tom Kessler</span><br><span class="s">Same origin</span></span><span class="pct">41%</span></div>
+          <div class="f-nav"><span class="on-tab"><span class="ico">🧳</span>My Trips</span><span><span class="ico">🧭</span>Discover</span><span><span class="ico">💬</span>Chats</span><span><span class="ico">👤</span>Profile</span></div>
+        </div>
+
+        <!-- 5 · Group -->
+        <div class="frame">
+          <p class="f-h">Families planning Crete</p>
+          <div class="mini-card"><span class="t">👨‍👩‍👧 Families planning Crete — book together</span><br><span class="s">📍 Everyone in Crete on your dates · 3/8 members</span></div>
+          <div class="f-center">
+            <div style="font-size:34px">🔓</div>
+            <p class="f-tag">Members can chat and plan together. Join to be part of it.</p>
+            <button class="g-btn solid" tabindex="-1">Join group</button>
+          </div>
+        </div>
+
+        <!-- 6 · Chat -->
+        <div class="frame">
+          <p class="f-h">🧑‍🎨 Lior Ben-David<br><span style="font-weight:400;font-size:10.5px;color:var(--ink-faint)">View profile</span></p>
+          <div class="f-center" style="justify-content:flex-end;align-items:stretch;gap:8px;padding-bottom:6px">
+            <div class="bubble me">Hi! Saw you're planning Crete in April too 👋</div>
+            <div class="bubble">Yes! Kids are 7 and 10 — perfect match 😄</div>
+            <div class="bubble me">Let's compare weeks and book together?</div>
+            <div class="mini-card" style="text-align:center;color:var(--ink-faint)">Message Lior…</div>
+          </div>
+        </div>
+      </div>
+
+      <p class="caption" id="caption"><b>1 · Welcome</b>Sign in with Google — no forms, no passwords.</p>
+
+      <div class="controls">
+        <button class="playbtn" id="playbtn" aria-label="Pause walkthrough">❚❚</button>
+        <div class="pips" id="pips"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Made for the people behind GateMate · the live app is at <a href="https://gatemate.vip">gatemate.vip</a>
+  </footer>
+</main>
+
+<script>
+(function () {
+  const frames = Array.from(document.querySelectorAll('.frame'));
+  const captionEl = document.getElementById('caption');
+  const playbtn = document.getElementById('playbtn');
+  const pipsBox = document.getElementById('pips');
+  const captions = [
+    ['1 · Welcome', 'Sign in with Google — no forms, no passwords.'],
+    ['2 · Your profile', 'A photo, a line about you, and what you’re open to.'],
+    ['3 · Add a trip', 'Flight, destination, or still-planning mode — plus who’s coming with you.'],
+    ['4 · The trip hub', 'Instantly see who overlaps with your trip, and why each person matches.'],
+    ['5 · Groups', 'Join a group living in your circle — a taxi share, a families plan, a show.'],
+    ['6 · Say Hi', 'One tap opens a chat. The trip did the introductions.'],
+  ];
+  let idx = 0, timer = null;
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let playing = !reduced;
+
+  frames.forEach((_, i) => {
+    const b = document.createElement('button');
+    b.className = 'pip' + (i === 0 ? ' on' : '');
+    b.setAttribute('aria-label', 'Go to step ' + (i + 1));
+    b.addEventListener('click', () => { show(i); stop(); updateBtn(); });
+    pipsBox.appendChild(b);
+  });
+  const pips = Array.from(pipsBox.children);
+
+  function show(i) {
+    idx = (i + frames.length) % frames.length;
+    frames.forEach((f, k) => f.classList.toggle('on', k === idx));
+    pips.forEach((p, k) => p.classList.toggle('on', k === idx));
+    captionEl.innerHTML = '<b>' + captions[idx][0] + '</b>' + captions[idx][1];
+  }
+  function tick() { show(idx + 1); }
+  function start() { if (!timer) timer = setInterval(tick, 3400); playing = true; }
+  function stop() { clearInterval(timer); timer = null; playing = false; }
+  function updateBtn() {
+    playbtn.textContent = playing ? '❚❚' : '▶';
+    playbtn.setAttribute('aria-label', playing ? 'Pause walkthrough' : 'Play walkthrough');
+  }
+  playbtn.addEventListener('click', () => { playing ? stop() : start(); updateBtn(); });
+
+  if (playing) start();
+  updateBtn();
+})();
+
+/* ——— Present mode: fullscreen slide-by-slide ——— */
+(function () {
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const launch = document.getElementById('presentLaunch');
+  const prev = document.getElementById('pbPrev');
+  const next = document.getElementById('pbNext');
+  const exit = document.getElementById('pbExit');
+  const count = document.getElementById('pbCount');
+  let cur = 0, on = false;
+
+  function show(i) {
+    cur = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach((s, k) => s.classList.toggle('slide-on', k === cur));
+    count.textContent = (cur + 1) + ' / ' + slides.length;
+    prev.disabled = cur === 0;
+    next.disabled = cur === slides.length - 1;
+    window.scrollTo(0, 0);
+  }
+  function enter() {
+    on = true;
+    document.body.classList.add('presenting');
+    show(0);
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    }
+  }
+  function leave() {
+    on = false;
+    document.body.classList.remove('presenting');
+    slides.forEach((s) => s.classList.remove('slide-on'));
+    if (document.fullscreenElement && document.exitFullscreen) {
+      document.exitFullscreen().catch(() => {});
+    }
+  }
+  launch.addEventListener('click', enter);
+  exit.addEventListener('click', leave);
+  prev.addEventListener('click', () => show(cur - 1));
+  next.addEventListener('click', () => show(cur + 1));
+  document.addEventListener('keydown', (e) => {
+    if (!on) return;
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); show(cur + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); show(cur - 1); }
+    else if (e.key === 'Escape') leave();
+  });
+  // Leaving browser fullscreen (e.g. via Esc handled by the browser) exits present mode too.
+  document.addEventListener('fullscreenchange', () => {
+    if (on && !document.fullscreenElement) leave();
+  });
+})();
+</script>
+
+</body>
+</html>

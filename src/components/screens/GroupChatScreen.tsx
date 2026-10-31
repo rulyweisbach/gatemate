@@ -109,7 +109,7 @@ export default function GroupChatScreen() {
     <div className="flex flex-col min-h-screen">
       {/* Header */}
       <div
-        className="glass-dark flex items-center gap-3 px-5 py-4 sticky top-0 z-10"
+        className="glass-dark flex items-center gap-3 px-5 safe-header sticky top-0 z-10"
         style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}
       >
         <button

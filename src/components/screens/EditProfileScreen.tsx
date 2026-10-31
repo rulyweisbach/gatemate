@@ -152,7 +152,7 @@ export default function EditProfileScreen() {
     <div className="flex flex-col min-h-screen">
       {/* Header */}
       <div
-        className="glass-dark sticky top-0 z-10 flex items-center gap-3 px-5 py-4"
+        className="glass-dark sticky top-0 z-10 flex items-center gap-3 px-5 safe-header"
         style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}
       >
         <button

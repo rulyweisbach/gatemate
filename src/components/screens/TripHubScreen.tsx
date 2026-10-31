@@ -162,8 +162,12 @@ export default function TripHubScreen() {
     <div className="flex flex-col min-h-screen">
       {/* Header */}
       <div
-        className="glass-dark sticky top-0 z-10 px-5 py-4"
-        style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}
+        className="glass-dark sticky top-0 z-10 px-5 pb-4"
+        style={{
+          borderBottom: '1px solid rgba(255,255,255,0.1)',
+          // Keep the title and trip switcher below the iOS status bar.
+          paddingTop: 'calc(1rem + env(safe-area-inset-top))',
+        }}
       >
         <div className="flex items-center gap-3">
           <button

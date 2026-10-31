@@ -128,7 +128,7 @@ export default function AdminScreen() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Header */}
-      <div className="glass-dark sticky top-0 z-10 px-5 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+      <div className="glass-dark sticky top-0 z-10 px-5 safe-header" style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/')}

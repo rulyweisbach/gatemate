@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
-import { ArrowLeft, Send, Users } from 'lucide-react';
+import { ArrowLeft, Send, Users, MessageCircle } from 'lucide-react';
 import { useApi } from '../../api/client';
 import type { Group, ApiMessage } from '../../types';
-import { groupCategoryMeta } from '../../data/groupMeta';
+import { groupCategoryIcon } from '../../data/groupMeta';
 import { content, fmt } from '../../content';
 import Avatar from '../ui/Avatar';
 import GroupContextLine from '../ui/GroupContextLine';
@@ -122,10 +122,13 @@ export default function GroupChatScreen() {
           <ArrowLeft size={18} className="text-white" />
         </button>
         <div
-          className="flex items-center justify-center text-xl shrink-0"
+          className="flex items-center justify-center shrink-0"
           style={{ width: 40, height: 40, background: 'rgba(255,255,255,0.12)', borderRadius: 12 }}
         >
-          {group ? groupCategoryMeta[group.category].emoji : '💬'}
+          {(() => {
+            const Icon = (group && groupCategoryIcon[group.category]) || MessageCircle;
+            return <Icon size={19} style={{ color: '#7dd3fc' }} />;
+          })()}
         </div>
         <button
           className="flex-1 min-w-0 text-left"

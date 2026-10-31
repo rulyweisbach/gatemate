@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Plus, X, LogOut, Trash2, UsersRound } from 'lucide-react';
+import { ArrowLeft, Plus, X, LogOut, Trash2, UsersRound, MessageCircle } from 'lucide-react';
 import { useAuth } from 'react-oidc-context';
 import { useApi } from '../../api/client';
 import { useAppStore } from '../../store/useAppStore';
 import type { Intent, Group, DiscoveryMode } from '../../types';
 import { cognitoLogoutUrl } from '../../auth/authConfig';
 import { isNativeApp, nativeSignOut } from '../../auth/nativeAuth';
-import { groupCategoryMeta } from '../../data/groupMeta';
+import { groupCategoryIcon } from '../../data/groupMeta';
 import { content, fmt } from '../../content';
 import GlassButton from '../ui/GlassButton';
 import IntentChip from '../ui/IntentChip';
@@ -329,7 +329,7 @@ export default function EditProfileScreen() {
                     className="flex items-center gap-3 p-3 rounded-2xl"
                     style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}
                   >
-                    <span className="text-xl">{groupCategoryMeta[g.category].emoji}</span>
+                    {(() => { const Icon = groupCategoryIcon[g.category] ?? MessageCircle; return <Icon size={20} className="shrink-0" style={{ color: '#7dd3fc' }} />; })()}
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-bold text-white truncate">{g.title}</p>
                       <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>

@@ -4,7 +4,6 @@ import { useAuth } from 'react-oidc-context';
 import { ArrowLeft, Crown, UserMinus } from 'lucide-react';
 import { useApi } from '../../api/client';
 import type { Group } from '../../types';
-import { groupCategoryMeta } from '../../data/groupMeta';
 import { content, fmt } from '../../content';
 import Avatar from '../ui/Avatar';
 import GlassCard from '../layout/GlassCard';
@@ -88,7 +87,7 @@ export default function GroupMembersScreen() {
           <>
             {isOwner && (
               <p className="text-xs px-1 pb-1" style={{ color: 'rgba(255,255,255,0.45)' }}>
-                {fmt(c.ownerHint, { emoji: groupCategoryMeta[group.category]?.emoji ?? '' })}
+                {fmt(c.ownerHint, { emoji: '' }).replace(/\s+/g, ' ')}
               </p>
             )}
             {group.members?.map((m) => {

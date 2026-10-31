@@ -171,7 +171,7 @@
   "members": {
     "fallbackTitle": "Members",
     "count": "{count}/{max} members",
-    "ownerHint": "You're the {emoji} organizer — you can remove members below.",
+    "ownerHint": "You're the organizer — you can remove members below.",
     "organizer": "Organizer",
     "you": "you",
     "remove": "Remove",

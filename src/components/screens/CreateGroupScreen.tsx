@@ -3,7 +3,7 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, Calendar, MapPin, Users } from 'lucide-react';
 import { useApi } from '../../api/client';
 import type { GroupCategory, ContextType, Trip } from '../../types';
-import { groupCategoryMeta, GROUP_CATEGORIES } from '../../data/groupMeta';
+import { groupCategoryMeta, groupCategoryIcon, GROUP_CATEGORIES } from '../../data/groupMeta';
 import { content, fmt } from '../../content';
 import GlassButton from '../ui/GlassButton';
 
@@ -152,7 +152,8 @@ export default function CreateGroupScreen() {
                 className="intent-chip"
                 style={category === c ? { background: 'rgba(125,211,252,0.28)', borderColor: '#7dd3fc' } : {}}
               >
-                {groupCategoryMeta[c].emoji} {groupCategoryMeta[c].label}
+                {(() => { const Icon = groupCategoryIcon[c]; return <Icon size={14} className="inline mr-1.5 -mt-0.5" />; })()}
+                {groupCategoryMeta[c].label}
               </button>
             ))}
           </div>

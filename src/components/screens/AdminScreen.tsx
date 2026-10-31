@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
-import { ArrowLeft, Trash2, Users as UsersIcon, ShieldCheck, LogOut, Plane, X } from 'lucide-react';
+import { ArrowLeft, Trash2, Users as UsersIcon, ShieldCheck, LogOut, Plane, X, Sparkles } from 'lucide-react';
 import { useApi } from '../../api/client';
 import type { AdminUser, AdminTrip, Group } from '../../types';
-import { groupCategoryMeta } from '../../data/groupMeta';
+import { groupCategoryMeta, groupCategoryIcon } from '../../data/groupMeta';
 import { cognitoLogoutUrl } from '../../auth/authConfig';
 import { isNativeApp, nativeSignOut } from '../../auth/nativeAuth';
 import { content, fmt } from '../../content';
@@ -269,7 +269,7 @@ export default function AdminScreen() {
             <GlassCard key={g.groupId} className="p-4" style={{ borderRadius: 16 }}>
               <div className="flex items-start gap-3">
                 <div className="flex items-center justify-center text-xl shrink-0" style={{ width: 44, height: 44, background: 'rgba(255,255,255,0.12)', borderRadius: 12 }}>
-                  {groupCategoryMeta[g.category]?.emoji ?? '✨'}
+                  {(() => { const Icon = groupCategoryIcon[g.category] ?? Sparkles; return <Icon size={20} style={{ color: '#7dd3fc' }} />; })()}
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-bold text-white text-sm">{g.title}</p>

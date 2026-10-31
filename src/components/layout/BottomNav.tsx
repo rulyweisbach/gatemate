@@ -86,8 +86,6 @@ export default function BottomNav() {
                 >
                   {photoIsUrl ? (
                     <img src={photo} referrerPolicy="no-referrer" alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  ) : photo ? (
-                    <span style={{ fontSize: 15 }}>{photo}</span>
                   ) : (
                     <User size={20} style={{ color }} />
                   )}

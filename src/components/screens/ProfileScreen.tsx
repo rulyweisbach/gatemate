@@ -46,7 +46,7 @@ export default function ProfileScreen() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center gap-3" style={{ minHeight: '100dvh' }}>
-        <div className="text-4xl anim-float-plane">✈️</div>
+        <div className="anim-float-plane"><Plane size={38} style={{ color: '#7dd3fc' }} /></div>
         <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>{c.loading}</p>
       </div>
     );

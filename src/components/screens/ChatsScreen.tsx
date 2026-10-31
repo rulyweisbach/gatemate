@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
-import { MessageCircle, Users } from 'lucide-react';
+import { MessageCircle, Users, Plane } from 'lucide-react';
 import { useApi } from '../../api/client';
 import { content } from '../../content';
 import type { Match, Group } from '../../types';
@@ -75,7 +75,7 @@ export default function ChatsScreen() {
       <div className="flex flex-col gap-3 px-4 py-4" style={{ paddingBottom: 'calc(84px + env(safe-area-inset-bottom))' }}>
         {loading && (
           <div className="flex flex-col items-center justify-center py-20 gap-3">
-            <div className="text-4xl anim-float-plane">✈️</div>
+            <div className="anim-float-plane"><Plane size={38} style={{ color: '#7dd3fc' }} /></div>
             <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>{c.loading}</p>
           </div>
         )}
@@ -84,7 +84,7 @@ export default function ChatsScreen() {
         {!loading && tab === 'people' && (
           matches.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 gap-3 text-center">
-              <div className="text-5xl">💬</div>
+              <MessageCircle size={44} style={{ color: 'rgba(255,255,255,0.4)' }} />
               <p className="font-bold text-white">{c.emptyPeopleTitle}</p>
               <p className="text-sm px-6" style={{ color: 'rgba(255,255,255,0.5)' }}>{c.emptyPeopleBody}</p>
               <button onClick={() => navigate('/discover')} className="btn-solid mt-2" style={{ width: 'auto', padding: '12px 28px' }}>
@@ -118,7 +118,7 @@ export default function ChatsScreen() {
         {!loading && tab === 'groups' && (
           groups.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 gap-3 text-center">
-              <div className="text-5xl">👥</div>
+              <Users size={44} style={{ color: 'rgba(255,255,255,0.4)' }} />
               <p className="font-bold text-white">{c.emptyGroupsTitle}</p>
               <p className="text-sm px-6" style={{ color: 'rgba(255,255,255,0.5)' }}>{c.emptyGroupsBody}</p>
               <button onClick={() => navigate('/trips')} className="btn-solid mt-2" style={{ width: 'auto', padding: '12px 28px' }}>

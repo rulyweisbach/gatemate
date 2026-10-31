@@ -1,3 +1,4 @@
+import { Plane } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
@@ -13,7 +14,7 @@ export default function RequireAuth({ children }: { children: ReactNode }) {
   if (auth.isLoading) {
     return (
       <div className="flex flex-col items-center justify-center" style={{ minHeight: '100dvh' }}>
-        <div className="text-5xl anim-float-plane">✈️</div>
+        <div className="anim-float-plane"><Plane size={38} style={{ color: '#7dd3fc' }} /></div>
         <p className="mt-4 text-sm" style={{ color: 'rgba(255,255,255,0.6)' }}>
           Signing you in…
         </p>

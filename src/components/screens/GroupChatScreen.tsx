@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
-import { ArrowLeft, Send, Users, MessageCircle } from 'lucide-react';
+import { ArrowLeft, Send, Users, MessageCircle, Lock, Hand } from 'lucide-react';
 import { useApi } from '../../api/client';
 import type { Group, ApiMessage } from '../../types';
 import { groupCategoryIcon } from '../../data/groupMeta';
@@ -147,7 +147,7 @@ export default function GroupChatScreen() {
       <div className="flex-1 overflow-y-auto px-4 py-5 flex flex-col gap-2.5">
         {denied && (
           <div className="flex flex-col items-center justify-center flex-1 gap-3 text-center py-12">
-            <div className="text-5xl">🔒</div>
+            <Lock size={44} style={{ color: 'rgba(255,255,255,0.4)' }} />
             <p className="font-bold text-white">{c.lockedTitle}</p>
             <p className="text-sm px-8" style={{ color: 'rgba(255,255,255,0.5)' }}>{c.lockedBody}</p>
             {joinError && <p className="text-xs" style={{ color: '#ffb4b4' }}>{joinError}</p>}
@@ -167,7 +167,7 @@ export default function GroupChatScreen() {
 
         {!denied && messages.length === 0 && (
           <div className="flex flex-col items-center justify-center flex-1 gap-3 text-center py-12">
-            <div className="text-5xl">👋</div>
+            <Hand size={44} style={{ color: 'rgba(255,255,255,0.4)' }} />
             <p className="font-bold text-white">{c.emptyTitle}</p>
             <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>{c.emptyBody}</p>
           </div>

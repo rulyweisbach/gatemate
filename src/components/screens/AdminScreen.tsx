@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
-import { ArrowLeft, Trash2, Users as UsersIcon, ShieldCheck, LogOut, Plane, X, Sparkles } from 'lucide-react';
+import { ArrowLeft, Trash2, Users as UsersIcon, ShieldCheck, LogOut, Plane, X, Sparkles, Luggage } from 'lucide-react';
 import { useApi } from '../../api/client';
 import type { AdminUser, AdminTrip, Group } from '../../types';
 import { groupCategoryMeta, groupCategoryIcon } from '../../data/groupMeta';
@@ -181,7 +181,7 @@ export default function AdminScreen() {
       <div className="flex flex-col gap-3 px-4 py-4 pb-10">
         {loading && (tab === 'users' || tab === 'trips' || tab === 'groups') && (
           <div className="flex flex-col items-center justify-center py-20 gap-3">
-            <div className="text-4xl anim-float-plane">✈️</div>
+            <div className="anim-float-plane"><Plane size={38} style={{ color: '#7dd3fc' }} /></div>
             <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>Loading…</p>
           </div>
         )}
@@ -206,7 +206,7 @@ export default function AdminScreen() {
                   <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1.5">
                     <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>🔑 {u.provider === 'social' ? c.loginGoogle : c.loginEmail}</span>
                     <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>● {u.status}</span>
-                    {tripCount > 0 && <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>🧳 {tripCount}</span>}
+                    {tripCount > 0 && <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}><Luggage size={11} style={{ display: 'inline', verticalAlign: '-1px' }} /> {tripCount}</span>}
                     {p?.intents?.length ? <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>🎯 {p.intents.length}</span> : null}
                     {u.createdAt && <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>📅 {new Date(u.createdAt).toLocaleDateString()}</span>}
                   </div>

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Plus, Users, MessageCircle, Plane, Ticket, MapPin, Compass, ChevronDown, Pencil, Check } from 'lucide-react';
+import { ArrowLeft, Plus, Users, MessageCircle, Plane, Ticket, MapPin, Compass, ChevronDown, Pencil, Check, Frown } from 'lucide-react';
 import { useApi } from '../../api/client';
 import { content, fmt } from '../../content';
 import type { Trip, TripPerson, Group, MatchReason, ContextType } from '../../types';
@@ -284,21 +284,21 @@ export default function TripHubScreen() {
       <div className="flex flex-col gap-4 px-4 py-4" style={{ paddingBottom: 'calc(84px + env(safe-area-inset-bottom))' }}>
         {loading && (
           <div className="flex flex-col items-center justify-center py-16 gap-3">
-            <div className="text-4xl anim-float-plane">✈️</div>
+            <div className="anim-float-plane"><Plane size={38} style={{ color: '#7dd3fc' }} /></div>
             <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>{cp.loading}</p>
           </div>
         )}
 
         {!loading && error && (
           <div className="flex flex-col items-center justify-center py-16 gap-2 text-center">
-            <div className="text-4xl">😕</div>
+            <Frown size={40} style={{ color: 'rgba(255,255,255,0.4)' }} />
             <p className="font-bold text-white">{cp.errorTitle}</p>
           </div>
         )}
 
         {!loading && !error && sections.length === 0 && (
           <div className="flex flex-col items-center justify-center py-16 gap-2 text-center">
-            <div className="text-5xl">🧭</div>
+            <Compass size={44} style={{ color: 'rgba(255,255,255,0.4)' }} />
             <p className="text-sm px-6" style={{ color: 'rgba(255,255,255,0.5)' }}>{c.noSections}</p>
           </div>
         )}

@@ -101,7 +101,7 @@
     "trip": "Trip",
     "whyYouMatch": "WHY YOU MATCH",
     "pass": "Pass",
-    "sayHi": "Say Hi 👋",
+    "sayHi": "Say Hi",
     "tripsLabel": "Trips"
   },
   "chat": {
@@ -193,7 +193,7 @@
     "taglineLabel": "Tagline",
     "taglinePlaceholder": "One line about you",
     "bioLabel": "Bio ({count}/300)",
-    "bioPlaceholder": "Who are you? What are you traveling for? Say hi 👋",
+    "bioPlaceholder": "Who are you? What are you traveling for? Say hi!",
     "lookingFor": "OPEN TO",
     "myGroups": "MY GROUPS",
     "createGroup": "Create",
@@ -420,7 +420,7 @@
     "reasonNearby": "Nearby",
     "reasonFamilies": "Kids same age",
     "reasonPlanning": "Still planning",
-    "sayHi": "Say Hi 👋",
+    "sayHi": "Say Hi",
     "viewProfile": "View profile",
     "reasonSameOrigin": "Same origin",
     "reasonSharedInterests": "Shared interests"

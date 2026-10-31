@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
-import { ArrowLeft, Send } from 'lucide-react';
+import { ArrowLeft, Send, Plane } from 'lucide-react';
 import { useApi } from '../../api/client';
 import { content, fmt } from '../../content';
 import type { Profile, ApiMessage } from '../../types';
@@ -143,7 +143,7 @@ export default function ChatScreen() {
       <div className="flex-1 overflow-y-auto px-4 py-5 flex flex-col gap-3">
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center flex-1 gap-3 text-center py-12">
-            <div className="text-5xl">✈️</div>
+            <Plane size={44} style={{ color: 'rgba(255,255,255,0.4)' }} />
             <p className="font-bold text-white">{fmt(c.sayHiTo, { name: firstName })}</p>
             <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>
               {c.bothAtAirport}

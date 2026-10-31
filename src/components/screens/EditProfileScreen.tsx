@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Plus, X, LogOut, Trash2, UsersRound, MessageCircle } from 'lucide-react';
+import { ArrowLeft, Plus, X, LogOut, Trash2, UsersRound, MessageCircle, Plane } from 'lucide-react';
 import { useAuth } from 'react-oidc-context';
 import { useApi } from '../../api/client';
 import { useAppStore } from '../../store/useAppStore';
@@ -177,7 +177,7 @@ export default function EditProfileScreen() {
 
       {loading ? (
         <div className="flex flex-col items-center justify-center flex-1 gap-3">
-          <div className="text-4xl anim-float-plane">✈️</div>
+          <div className="anim-float-plane"><Plane size={38} style={{ color: '#7dd3fc' }} /></div>
           <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>{c.loading}</p>
         </div>
       ) : (

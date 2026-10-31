@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plane, MapPin, Calendar, Ticket, ChevronRight, Plus } from 'lucide-react';
+import { Plane, MapPin, Calendar, Ticket, ChevronRight, Plus, Luggage } from 'lucide-react';
 import { useApi } from '../../api/client';
 import { content } from '../../content';
 import type { Trip, TripStatus } from '../../types';
@@ -111,14 +111,14 @@ export default function TripsListScreen() {
       <div className="flex flex-col gap-5 px-4 py-4" style={{ paddingBottom: 'calc(84px + env(safe-area-inset-bottom))' }}>
         {loading && (
           <div className="flex flex-col items-center justify-center py-20 gap-3">
-            <div className="text-4xl anim-float-plane">✈️</div>
+            <div className="anim-float-plane"><Plane size={38} style={{ color: '#7dd3fc' }} /></div>
             <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>{content.common.loading}</p>
           </div>
         )}
 
         {!loading && trips.length === 0 && (
           <div className="flex flex-col items-center justify-center py-20 gap-3 text-center">
-            <div className="text-5xl">🧳</div>
+            <Luggage size={44} style={{ color: 'rgba(255,255,255,0.4)' }} />
             <p className="font-bold text-white">{c.emptyTitle}</p>
             <p className="text-sm px-6" style={{ color: 'rgba(255,255,255,0.5)' }}>{c.emptyBody}</p>
             <button onClick={() => navigate('/trips/new')} className="btn-solid mt-2" style={{ width: 'auto', padding: '12px 28px' }}>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
-import { ArrowLeft, Crown, UserMinus } from 'lucide-react';
+import { ArrowLeft, Crown, UserMinus, Plane } from 'lucide-react';
 import { useApi } from '../../api/client';
 import type { Group } from '../../types';
 import { content, fmt } from '../../content';
@@ -75,7 +75,7 @@ export default function GroupMembersScreen() {
       <div className="flex flex-col gap-2.5 px-4 py-4">
         {loading && (
           <div className="flex flex-col items-center justify-center py-16 gap-3">
-            <div className="text-4xl anim-float-plane">✈️</div>
+            <div className="anim-float-plane"><Plane size={38} style={{ color: '#7dd3fc' }} /></div>
           </div>
         )}
 

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Plane, Hash, Calendar, MapPin, RotateCcw, ArrowLeft, Mic, Trash2 } from 'lucide-react';
+import { Plane, Hash, Calendar, MapPin, RotateCcw, ArrowLeft, Mic, Trash2, Lightbulb } from 'lucide-react';
 import { useApi } from '../../api/client';
 import { content, tripIntentOptions } from '../../content';
-import type { TripEventType } from '../../types';
+import type { TripEventType, CompanionType } from '../../types';
 import GlassInput from '../ui/GlassInput';
 import GlassButton from '../ui/GlassButton';
 import IntentChip from '../ui/IntentChip';
@@ -18,7 +18,14 @@ const EVENT_TYPES: { id: TripEventType; label: string }[] = [
   { id: 'other',      label: c.eventTypeOther },
 ];
 
-type Method = 'flight' | 'destination';
+type Method = 'flight' | 'destination' | 'planning';
+
+const COMPANIONS: { id: CompanionType; label: string }[] = [
+  { id: 'solo',    label: c.companionSolo },
+  { id: 'partner', label: c.companionPartner },
+  { id: 'family',  label: c.companionFamily },
+  { id: 'friends', label: c.companionFriends },
+];
 
 export default function AddTripScreen() {
   const navigate = useNavigate();
@@ -34,6 +41,8 @@ export default function AddTripScreen() {
   const [eventType, setEventType] = useState<TripEventType | ''>('');
   const [eventName, setEventName] = useState('');
   const [intents, setIntents] = useState<string[]>([]);
+  const [companionType, setCompanionType] = useState<CompanionType | ''>('');
+  const [kidsAges, setKidsAges] = useState('');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -45,7 +54,7 @@ export default function AddTripScreen() {
     if (!editId) return;
     api.getTrip(editId)
       .then(({ trip }) => {
-        setMethod(trip.flightNumber ? 'flight' : 'destination');
+        setMethod(trip.planning ? 'planning' : trip.flightNumber ? 'flight' : 'destination');
         setFlightNumber(trip.flightNumber ?? '');
         setDestination(trip.destination ?? '');
         setTravelDate(trip.travelDate ?? '');
@@ -53,12 +62,15 @@ export default function AddTripScreen() {
         setEventType(trip.event?.type ?? '');
         setEventName(trip.event?.name ?? '');
         setIntents(trip.intents ?? []);
+        setCompanionType(trip.companions?.type ?? '');
+        setKidsAges(trip.companions?.kidsAges ?? '');
       })
       .catch(() => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editId]);
 
   const canCreate = method === 'flight' ? !!flightNumber.trim() : !!destination.trim();
+  const isPlanning = method === 'planning';
 
   const create = async () => {
     setSaving(true);
@@ -72,6 +84,10 @@ export default function AddTripScreen() {
         origin: 'TLV',
         event: eventType && eventName.trim() ? { type: eventType, name: eventName.trim() } : null,
         intents,
+        planning: method === 'planning',
+        companions: companionType
+          ? { type: companionType, kidsAges: companionType === 'family' ? kidsAges.trim() : undefined }
+          : null,
       };
       const { trip } = editId ? await api.updateTrip(editId, input) : await api.createTrip(input);
       navigate(`/trips/${trip.tripId}`, { replace: true });
@@ -121,6 +137,7 @@ export default function AddTripScreen() {
           {([
             { id: 'flight' as Method, title: c.flightOptionTitle, hint: c.flightOptionHint, Icon: Plane },
             { id: 'destination' as Method, title: c.destinationOptionTitle, hint: c.destinationOptionHint, Icon: Calendar },
+            { id: 'planning' as Method, title: c.planningOptionTitle, hint: c.planningOptionHint, Icon: Lightbulb },
           ]).map((opt) => {
             const active = method === opt.id;
             const Icon = opt.Icon;
@@ -137,8 +154,8 @@ export default function AddTripScreen() {
                 }}
               >
                 <Icon size={20} style={{ color: active ? '#7dd3fc' : 'rgba(255,255,255,0.6)' }} />
-                <span className="text-sm font-bold" style={{ color: active ? 'white' : 'rgba(255,255,255,0.6)' }}>{opt.title}</span>
-                <span className="text-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>{opt.hint}</span>
+                <span className="text-xs font-bold text-center" style={{ color: active ? 'white' : 'rgba(255,255,255,0.6)' }}>{opt.title}</span>
+                <span className="text-[10px] text-center px-1" style={{ color: 'rgba(255,255,255,0.45)' }}>{opt.hint}</span>
               </button>
             );
           })}
@@ -166,6 +183,14 @@ export default function AddTripScreen() {
           </>
         ) : (
           <>
+            {isPlanning && (
+              <p
+                className="text-xs rounded-2xl px-4 py-3"
+                style={{ background: 'rgba(125,211,252,0.1)', border: '1px solid rgba(125,211,252,0.3)', color: 'rgba(255,255,255,0.75)', lineHeight: 1.5 }}
+              >
+                {c.planningBanner}
+              </p>
+            )}
             <GlassInput
               label={c.destinationLabel}
               icon={MapPin}
@@ -175,7 +200,7 @@ export default function AddTripScreen() {
               maxLength={60}
             />
             <GlassInput
-              label={c.dateLabel}
+              label={isPlanning ? `${c.dateLabel} · ${c.planningDatesHint}` : c.dateLabel}
               icon={Calendar}
               type="date"
               value={travelDate}
@@ -224,6 +249,36 @@ export default function AddTripScreen() {
                 maxLength={80}
               />
             </div>
+          )}
+        </div>
+
+        {/* Traveling with */}
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.7)' }}>
+            {c.companionsLabel} <span style={{ color: 'rgba(255,255,255,0.4)', fontWeight: 400 }}>· {c.eventOptional}</span>
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {COMPANIONS.map((co) => (
+              <button
+                key={co.id}
+                type="button"
+                onClick={() => setCompanionType(companionType === co.id ? '' : co.id)}
+                className="intent-chip"
+                style={companionType === co.id ? { background: 'rgba(125,211,252,0.28)', borderColor: '#7dd3fc' } : {}}
+              >
+                {co.label}
+              </button>
+            ))}
+          </div>
+          {companionType === 'family' && (
+            <input
+              className="glass-input mt-1"
+              placeholder={c.kidsAgesPlaceholder}
+              aria-label={c.kidsAgesLabel}
+              value={kidsAges}
+              onChange={(e) => setKidsAges(e.target.value)}
+              maxLength={40}
+            />
           )}
         </div>
 

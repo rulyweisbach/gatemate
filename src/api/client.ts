@@ -4,7 +4,10 @@
 import { useMemo } from 'react';
 import { useAuth } from 'react-oidc-context';
 import { API_URL } from '../auth/authConfig';
-import type { Profile, ApiMessage, Group, AdminUser, AdminTrip, Match, Trip, TripInput, TripPerson } from '../types';
+import type { Profile, ApiMessage, Group, AdminUser, AdminTrip, Match, Trip, TripInput, TripPerson, ContextType } from '../types';
+
+// Group creation payload: group fields plus the shared context to attach to.
+type GroupInput = Partial<Group> & { contextType?: ContextType };
 
 export function useApi() {
   const auth = useAuth();
@@ -98,7 +101,7 @@ export function useApi() {
         return request(`/trips/${id}/groups${s ? `?${s}` : ''}`);
       },
 
-      createTripGroup: (id: string, group: Partial<Group>): Promise<{ group: Group }> =>
+      createTripGroup: (id: string, group: GroupInput): Promise<{ group: Group }> =>
         request(`/trips/${id}/groups`, { method: 'POST', body: JSON.stringify(group) }),
 
       // ── Groups ──
@@ -110,7 +113,7 @@ export function useApi() {
         return request(`/groups${s ? `?${s}` : ''}`);
       },
 
-      createGroup: (group: Partial<Group>): Promise<{ group: Group }> =>
+      createGroup: (group: GroupInput): Promise<{ group: Group }> =>
         request('/groups', { method: 'POST', body: JSON.stringify(group) }),
 
       joinGroup: (id: string): Promise<{ group: Group }> =>

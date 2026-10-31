@@ -1,19 +1,33 @@
-import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, Calendar, MapPin, Users } from 'lucide-react';
 import { useApi } from '../../api/client';
-import type { GroupCategory } from '../../types';
+import type { GroupCategory, ContextType, Trip } from '../../types';
 import { groupCategoryMeta, GROUP_CATEGORIES } from '../../data/groupMeta';
 import { content, fmt } from '../../content';
 import GlassButton from '../ui/GlassButton';
 
 const c = content.createGroup;
 
+// The contexts a trip offers, with the "who will see this" label.
+function contextOptions(trip: Trip): { id: ContextType; label: string }[] {
+  const opts: { id: ContextType; label: string }[] = [];
+  if (trip.flightNumber) opts.push({ id: 'flight', label: fmt(c.attachFlight, { label: trip.flightNumber }) });
+  if (trip.event?.name) opts.push({ id: 'event', label: fmt(c.attachEvent, { label: trip.event.name }) });
+  if (trip.destination) opts.push({ id: 'destination', label: fmt(c.attachDestination, { label: trip.destination }) });
+  return opts;
+}
+
 export default function CreateGroupScreen() {
   const navigate = useNavigate();
   const { tripId } = useParams();
+  const [searchParams] = useSearchParams();
   const api = useApi();
 
+  const [trip, setTrip] = useState<Trip | null>(null);
+  const [contextType, setContextType] = useState<ContextType | ''>(
+    (searchParams.get('context') as ContextType) || ''
+  );
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState<GroupCategory>('travel');
   const [description, setDescription] = useState('');
@@ -22,6 +36,21 @@ export default function CreateGroupScreen() {
   const [maxMembers, setMaxMembers] = useState(5);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // The trip supplies the available contexts; default to the most specific.
+  useEffect(() => {
+    if (!tripId) return;
+    api.getTrip(tripId)
+      .then(({ trip }) => {
+        setTrip(trip);
+        setContextType((cur) => {
+          const opts = contextOptions(trip);
+          return opts.some((o) => o.id === cur) ? cur : (opts[0]?.id ?? '');
+        });
+      })
+      .catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tripId]);
 
   const handleCreate = async () => {
     if (!title.trim()) {
@@ -38,6 +67,7 @@ export default function CreateGroupScreen() {
         date: date || undefined,
         location: location.trim() || undefined,
         maxMembers,
+        contextType: contextType || undefined,
       };
       if (tripId) {
         await api.createTripGroup(tripId, payload);
@@ -71,6 +101,34 @@ export default function CreateGroupScreen() {
       </div>
 
       <div className="flex flex-col gap-5 px-5 py-5 pb-28">
+        {/* Context — who should see this group */}
+        {trip && contextOptions(trip).length > 0 && (
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.7)' }}>{c.attachLabel}</label>
+            <div className="flex flex-col gap-2">
+              {contextOptions(trip).map((o) => {
+                const active = contextType === o.id;
+                return (
+                  <button
+                    key={o.id}
+                    type="button"
+                    onClick={() => setContextType(o.id)}
+                    className="text-left text-sm px-4 py-3 rounded-2xl transition-all"
+                    style={{
+                      background: active ? 'rgba(125,211,252,0.18)' : 'rgba(255,255,255,0.06)',
+                      border: active ? '1px solid #7dd3fc' : '1px solid rgba(255,255,255,0.12)',
+                      color: active ? 'white' : 'rgba(255,255,255,0.65)',
+                      fontWeight: active ? 700 : 500,
+                    }}
+                  >
+                    {o.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {/* Title */}
         <Field label={c.titleLabel}>
           <input

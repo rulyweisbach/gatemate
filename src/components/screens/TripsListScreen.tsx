@@ -44,7 +44,17 @@ function TripCard({ trip, delay, onClick }: { trip: Trip; delay: number; onClick
         {trip.event ? <Ticket size={22} style={{ color: '#7dd3fc' }} /> : trip.flightNumber ? <Plane size={22} style={{ color: '#7dd3fc' }} /> : <MapPin size={22} style={{ color: '#7dd3fc' }} />}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="font-bold text-white text-sm truncate">{trip.label}</p>
+        <div className="flex items-center gap-2">
+          <p className="font-bold text-white text-sm truncate">{trip.label}</p>
+          {trip.planning && (
+            <span
+              className="text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0"
+              style={{ background: 'rgba(125,211,252,0.18)', color: '#7dd3fc' }}
+            >
+              {content.trips.planningBadge}
+            </span>
+          )}
+        </div>
         <div className="flex items-center gap-2 mt-0.5 text-xs" style={{ color: 'rgba(255,255,255,0.55)' }}>
           {dateBits && (
             <span className="flex items-center gap-1">

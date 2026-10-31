@@ -69,7 +69,9 @@ export const handler = async (event) => {
   const people = ids
     .map((uid) => {
       const p = profiles.get(uid);
-      if (!p) return null;
+      // No name = the traveler never finished onboarding; their trips would
+      // show up as ghost cards, so keep them out of discovery entirely.
+      if (!p?.name) return null;
       const { score, reasons, trip } = best.get(uid);
       return {
         userId: uid,

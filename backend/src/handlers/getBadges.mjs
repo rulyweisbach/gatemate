@@ -1,4 +1,4 @@
-import { GetCommand, QueryCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
+import { BatchGetCommand, GetCommand, QueryCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
 import { ddb, TABLES, conversationId } from '../lib/dynamo.mjs';
 import { json, getUserId } from '../lib/http.mjs';
 import { scoreMatch } from '../lib/trip.mjs';
@@ -76,5 +76,19 @@ export const handler = async (event) => {
     }
   }
 
-  return json(200, { chats, discover: newMatches.size });
+  // Travelers without a completed profile never appear in discovery
+  // (getTripPeople filters them), so they shouldn't light the badge either.
+  let discover = 0;
+  const matchIds = [...newMatches];
+  for (let i = 0; i < matchIds.length; i += 100) {
+    const chunk = matchIds.slice(i, i + 100);
+    const res = await ddb.send(
+      new BatchGetCommand({
+        RequestItems: { [TABLES.users]: { Keys: chunk.map((uid) => ({ userId: uid })) } },
+      })
+    );
+    discover += (res.Responses?.[TABLES.users] ?? []).filter((p) => p.name).length;
+  }
+
+  return json(200, { chats, discover });
 };

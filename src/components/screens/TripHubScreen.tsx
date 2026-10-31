@@ -265,7 +265,7 @@ export default function TripHubScreen() {
                   <div className="flex items-center gap-3">
                     <Avatar photo={p.photo} size={46} radius={13} />
                     <div className="flex-1 min-w-0">
-                      <p className="font-bold text-white text-sm truncate">{p.name}</p>
+                      <p className="font-bold text-white text-sm truncate">{p.name || 'Traveler'}</p>
                       {(p.trip?.label || p.tagline) && (
                         <p className="text-xs mt-0.5 truncate" style={{ color: 'rgba(255,255,255,0.55)' }}>
                           {p.trip?.label || p.tagline}

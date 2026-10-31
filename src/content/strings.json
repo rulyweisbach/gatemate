@@ -158,6 +158,10 @@
     "cta": "Create Group",
     "ctaSaving": "Creating…",
     "titleRequired": "Give your group a title",
+    "attachLabel": "Who should see this group?",
+    "attachFlight": "✈️ Everyone on {label}",
+    "attachEvent": "🎟️ Everyone going to {label}",
+    "attachDestination": "📍 Everyone in {label} on your dates",
     "error": "Could not create group"
   },
 
@@ -303,7 +307,18 @@
     "flightNotFound": "We couldn't find that flight. Check the number or add your destination and date instead.",
     "error": "Could not save your trip",
     "deleteTrip": "Delete this trip",
-    "confirmDelete": "Delete this trip? Its groups will stay open."
+    "confirmDelete": "Delete this trip? Its groups will stay open.",
+    "planningOptionTitle": "Still planning",
+    "planningOptionHint": "Find people to plan with",
+    "planningDatesHint": "Flexible — a rough window is enough",
+    "planningBanner": "💭 A planning trip matches you with people going (or planning to go) to the same place. Book it later and your flight matches light up.",
+    "companionsLabel": "Traveling with",
+    "companionSolo": "Solo",
+    "companionPartner": "Partner",
+    "companionFamily": "Kids",
+    "companionFriends": "Friends",
+    "kidsAgesLabel": "Kids' ages",
+    "kidsAgesPlaceholder": "e.g. 5, 8"
   },
 
   "trips": {
@@ -314,7 +329,8 @@
     "addTrip": "+ Add a Trip",
     "emptyTitle": "No trips yet",
     "emptyBody": "Add your next trip to discover people and groups around it.",
-    "emptyCta": "Start your trip"
+    "emptyCta": "Start your trip",
+    "planningBadge": "Planning"
   },
 
   "tripHub": {
@@ -329,6 +345,18 @@
     "filterSameDate": "Same date",
     "filterSameEvent": "Same event",
     "filterNearby": "Nearby",
+    "sectionFlight": "On your flight — {label}",
+    "sectionEvent": "At {label}",
+    "sectionDestination": "In {label} while you're there",
+    "sectionPlanners": "Planning {label} too",
+    "sectionNearby": "Nearby travelers",
+    "sectionCounts": "{people} travelers · {groups} groups",
+    "sectionPeopleOnly": "{people} travelers",
+    "sectionEmpty": "You're first here — open a group so the next traveler who adds this finds it.",
+    "sectionAddGroup": "+ Group",
+    "planningChip": "planning",
+    "kidsChip": "kids {ages}",
+    "noSections": "Add a flight, event, or destination to this trip to start matching.",
     "clearFilters": "Clear filters"
   },
 
@@ -352,6 +380,8 @@
     "reasonSameEvent": "Same event",
     "reasonSameDestination": "Same destination",
     "reasonNearby": "Nearby",
+    "reasonFamilies": "Kids same age",
+    "reasonPlanning": "Still planning",
     "sayHi": "Say Hi 👋",
     "viewProfile": "View profile"
   },

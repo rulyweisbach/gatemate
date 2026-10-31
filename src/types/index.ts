@@ -57,6 +57,13 @@ export interface TripEvent {
   name: string;
 }
 
+export type CompanionType = 'solo' | 'partner' | 'family' | 'friends';
+
+export interface TripCompanions {
+  type: CompanionType;
+  kidsAges?: string;
+}
+
 export interface Trip {
   tripId: string;
   userId: string;
@@ -69,6 +76,9 @@ export interface Trip {
   intents: string[];
   label: string;
   status?: TripStatus;
+  // Still planning — dates are a flexible window, nothing booked yet.
+  planning?: boolean;
+  companions?: TripCompanions | null;
   createdAt?: number;
 }
 
@@ -76,7 +86,14 @@ export interface Trip {
 export type TripInput = Omit<Trip, 'tripId' | 'userId' | 'label' | 'status' | 'createdAt'>;
 
 // A matched traveler in a trip's People feed.
-export type MatchReason = 'sameFlight' | 'sameEvent' | 'sameDate' | 'sameDestination' | 'nearby';
+export type MatchReason =
+  | 'sameFlight'
+  | 'sameEvent'
+  | 'sameDate'
+  | 'sameDestination'
+  | 'families'
+  | 'planning'
+  | 'nearby';
 
 export interface TripPerson {
   userId: string;
@@ -86,6 +103,14 @@ export interface TripPerson {
   intents?: string[];
   reasons: MatchReason[];
   relevance: number;
+  // The other traveler's matching trip (what overlaps, and how).
+  trip?: {
+    label?: string;
+    travelDate?: string;
+    returnDate?: string;
+    planning?: boolean;
+    companions?: TripCompanions | null;
+  };
 }
 
 export type GroupCategory = 'concert' | 'sport' | 'travel' | 'cab' | 'family' | 'other';
@@ -96,11 +121,27 @@ export interface GroupMember {
   photo?: string;
 }
 
+// The shared context a group lives in: everyone whose trip matches it sees
+// the group, regardless of who created it.
+export type ContextType = 'flight' | 'event' | 'destination';
+
+export interface GroupContext {
+  type: ContextType;
+  label?: string;
+  flightNumber?: string;
+  flightDate?: string;
+  eventKey?: string;
+  destination?: string;
+  from?: string;
+  to?: string;
+}
+
 export interface Group {
   groupId: string;
   ownerId: string;
   ownerName?: string;
   tripId?: string;
+  context?: GroupContext | null;
   title: string;
   description?: string;
   category: GroupCategory;

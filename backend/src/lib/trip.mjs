@@ -27,7 +27,20 @@ export function normalizeTrip(body) {
     ? body.intents.filter((i) => typeof i === 'string').slice(0, 12)
     : [];
 
-  return { flightNumber, destination, travelDate, returnDate, origin, event, intents };
+  // Planning trips have flexible dates and no flight yet — they exist to find
+  // people to plan with before anything is booked.
+  const planning = body.planning === true;
+
+  // Who the traveler is going with (drives family matching).
+  const COMPANION_TYPES = ['solo', 'partner', 'family', 'friends'];
+  let companions = null;
+  if (body.companions && COMPANION_TYPES.includes(lc(body.companions.type))) {
+    companions = { type: lc(body.companions.type) };
+    const ages = (body.companions.kidsAges || '').toString().trim().slice(0, 40);
+    if (companions.type === 'family' && ages) companions.kidsAges = ages;
+  }
+
+  return { flightNumber, destination, travelDate, returnDate, origin, event, intents, planning, companions };
 }
 
 // Short human label, e.g. "Paris · Sep 12 · LY325 · Celine Dion".
@@ -61,6 +74,27 @@ const daysApart = (a, b) => {
   return Math.abs((da - db) / 86400000);
 };
 
+// Do two travel windows [travelDate, returnDate] overlap? A missing return
+// date means a single day; a missing start means unknown (no overlap claim).
+export function windowsOverlap(a, b) {
+  if (!a.travelDate || !b.travelDate) return false;
+  const aEnd = a.returnDate || a.travelDate;
+  const bEnd = b.returnDate || b.travelDate;
+  return a.travelDate <= bEnd && b.travelDate <= aEnd;
+}
+
+// "5, 8" -> [5, 8]; tolerant of free text.
+const parseAges = (s) => ((s || '').match(/\d{1,2}/g) || []).map(Number);
+
+// Both traveling with kids, and at least one pair of ages within 2 years.
+export function kidsOverlap(a, b) {
+  if (a?.type !== 'family' || b?.type !== 'family') return false;
+  const ka = parseAges(a.kidsAges);
+  const kb = parseAges(b.kidsAges);
+  if (!ka.length || !kb.length) return true; // both families, ages unknown
+  return ka.some((x) => kb.some((y) => Math.abs(x - y) <= 2));
+}
+
 // Score how relevant `other` is to `mine`. Returns { score, reasons }.
 // Reason keys map to peopleFeed.matchReason* strings on the client.
 export function scoreMatch(mine, other) {
@@ -73,18 +107,29 @@ export function scoreMatch(mine, other) {
   if (eventKey(mine.event) && eventKey(mine.event) === eventKey(other.event)) {
     score += 60; reasons.push('sameEvent');
   }
-  if (mine.travelDate && other.travelDate && mine.travelDate === other.travelDate) {
+  if (windowsOverlap(mine, other)) {
     score += 40; reasons.push('sameDate');
   }
   if (mine.destination && other.destination && lc(mine.destination) === lc(other.destination)) {
     score += 30; reasons.push('sameDestination');
   }
-  // Nearby: same origin airport, or travel dates within 2 days, when nothing
-  // stronger already matched.
+  if (kidsOverlap(mine.companions, other.companions)) {
+    score += 15; reasons.push('families');
+  }
+  // Someone still planning the same destination — a co-planning match even
+  // when dates don't line up yet.
+  if (
+    (mine.planning || other.planning) &&
+    mine.destination && other.destination &&
+    lc(mine.destination) === lc(other.destination)
+  ) {
+    reasons.push('planning');
+  }
+  // Nearby: travel dates within 2 days, when nothing stronger already
+  // matched. (Same origin alone is NOT a match — in practice everyone shares
+  // the home airport, so it floods the hub with 10-point noise.)
   if (!reasons.length) {
-    const closeDates = daysApart(mine.travelDate, other.travelDate) <= 2;
-    const sameOrigin = mine.origin && other.origin && lc(mine.origin) === lc(other.origin);
-    if (closeDates || sameOrigin) { score += 10; reasons.push('nearby'); }
+    if (daysApart(mine.travelDate, other.travelDate) <= 2) { score += 10; reasons.push('nearby'); }
   }
 
   return { score, reasons };

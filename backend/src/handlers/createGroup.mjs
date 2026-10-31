@@ -1,7 +1,8 @@
 import { randomUUID } from 'node:crypto';
-import { PutCommand } from '@aws-sdk/lib-dynamodb';
+import { PutCommand, GetCommand } from '@aws-sdk/lib-dynamodb';
 import { ddb, TABLES } from '../lib/dynamo.mjs';
 import { json, getUserId, getClaims, parseBody } from '../lib/http.mjs';
+import { buildGroupContext, CONTEXT_TYPES } from '../lib/context.mjs';
 
 const CATEGORIES = ['concert', 'sport', 'travel', 'cab', 'family', 'other'];
 
@@ -28,15 +29,32 @@ export const handler = async (event) => {
     photo: claims.picture || '',
   };
 
-  // A group belongs to a trip. The tripId comes from the path
-  // (POST /trips/{id}/groups) or the body (POST /groups).
+  // A group lives in a shared CONTEXT (flight / event / destination) derived
+  // from the creator's trip, so everyone whose trip hits that context sees it.
+  // tripId is kept only as provenance.
   const tripId = (event.pathParameters?.id || body.tripId || '').toString().trim();
+  let context = null;
+  if (tripId) {
+    const tripRes = await ddb.send(new GetCommand({ TableName: TABLES.trips, Key: { tripId } }));
+    const trip = tripRes.Item;
+    if (!trip) return json(404, { error: 'trip not found' });
+    if (trip.userId !== userId) return json(403, { error: 'not your trip' });
+    const wanted = CONTEXT_TYPES.includes(body.contextType) ? body.contextType : null;
+    context =
+      (wanted && buildGroupContext(wanted, trip)) ||
+      // Default to the most specific context the trip has.
+      buildGroupContext('flight', trip) ||
+      buildGroupContext('event', trip) ||
+      buildGroupContext('destination', trip);
+    if (!context) return json(400, { error: 'trip has no context to attach the group to' });
+  }
 
   const group = {
     groupId: randomUUID(),
     ownerId: userId,
     ownerName: owner.name,
     tripId,
+    context,
     title: title.slice(0, 80),
     description: (body.description || '').toString().slice(0, 500),
     category,

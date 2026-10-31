@@ -23,13 +23,13 @@ export const handler = async (event) => {
   const trips = (scan.Items ?? []).filter((t) => t.userId && t.userId !== userId);
 
   // Best-scoring trip per other traveler.
-  const best = new Map(); // userId -> { score, reasons }
+  const best = new Map(); // userId -> { score, reasons, trip }
   for (const t of trips) {
     const { score, reasons } = scoreMatch(mine, t);
     if (score <= 0) continue;
     if (filter && !reasons.includes(filter)) continue;
     const prev = best.get(t.userId);
-    if (!prev || score > prev.score) best.set(t.userId, { score, reasons });
+    if (!prev || score > prev.score) best.set(t.userId, { score, reasons, trip: t });
   }
 
   const ids = [...best.keys()];
@@ -52,7 +52,7 @@ export const handler = async (event) => {
     .map((uid) => {
       const p = profiles.get(uid);
       if (!p) return null;
-      const { score, reasons } = best.get(uid);
+      const { score, reasons, trip } = best.get(uid);
       return {
         userId: uid,
         name: p.name,
@@ -61,6 +61,14 @@ export const handler = async (event) => {
         intents: p.intents ?? [],
         reasons,
         relevance: Math.round((score / (maxScore || 1)) * 100),
+        // The matched trip, so the hub can say what overlaps and how.
+        trip: {
+          label: trip.label,
+          travelDate: trip.travelDate || '',
+          returnDate: trip.returnDate || '',
+          planning: trip.planning === true,
+          companions: trip.companions ?? null,
+        },
       };
     })
     .filter(Boolean)

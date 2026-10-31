@@ -97,27 +97,24 @@ export default function OnboardScreen() {
         paddingBottom: 'max(2rem, env(safe-area-inset-bottom))',
       }}
     >
-      {/* Logo + title */}
-      <div className="anim-slide-up pt-4 pb-2">
-        <div className="flex justify-center mb-3">
-          <img
-            src="/gatemate-logo.png"
-            alt="GateMate logo"
-            style={{ width: 90, height: 90, objectFit: 'contain' }}
-          />
+      {/* Plane + wordmark + caption */}
+      <div className="anim-slide-up pt-8 pb-2 text-center">
+        <div
+          aria-hidden="true"
+          style={{ fontSize: 72, lineHeight: 1, transform: 'rotate(-8deg)', display: 'inline-block' }}
+        >
+          ✈️
         </div>
         <h1
-          className="text-5xl font-black text-center text-white leading-tight"
-          style={{ fontFamily: 'Nunito, sans-serif' }}
+          className="text-6xl font-black leading-tight mt-2"
+          style={{ fontFamily: 'Nunito, sans-serif', letterSpacing: '-0.5px' }}
         >
-          {content.onboard.titleLine1}
-          <br />
-          {content.onboard.titleLine2}{' '}
-          <span style={{ color: '#7dd3fc' }}>{content.onboard.titleHighlight}</span>
+          <span className="text-white">{content.onboard.brandWhite}</span>
+          <span style={{ color: '#7dd3fc' }}>{content.onboard.brandAccent}</span>
         </h1>
         <p
-          className="text-center mt-3 text-sm font-medium leading-relaxed px-4"
-          style={{ color: 'rgba(255,255,255,0.65)' }}
+          className="mt-4 text-base font-semibold leading-relaxed px-6"
+          style={{ color: 'rgba(255,255,255,0.78)' }}
         >
           {content.onboard.subtitle}
         </p>

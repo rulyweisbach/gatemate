@@ -6,6 +6,7 @@ import { useApi } from '../../api/client';
 import { useAppStore } from '../../store/useAppStore';
 import type { Intent, Group, DiscoveryMode } from '../../types';
 import { cognitoLogoutUrl } from '../../auth/authConfig';
+import { isNativeApp, nativeSignOut } from '../../auth/nativeAuth';
 import { groupCategoryMeta } from '../../data/groupMeta';
 import { content, fmt } from '../../content';
 import GlassButton from '../ui/GlassButton';
@@ -45,6 +46,10 @@ export default function EditProfileScreen() {
   // otherwise the app finds the old token in localStorage and stays signed in.
   const logOut = async () => {
     await auth.removeUser().catch(() => {});
+    if (isNativeApp) {
+      await nativeSignOut();
+      return;
+    }
     window.location.href = cognitoLogoutUrl();
   };
 

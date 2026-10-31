@@ -6,6 +6,7 @@ import { useApi } from '../../api/client';
 import type { AdminUser, AdminTrip, Group } from '../../types';
 import { groupCategoryMeta } from '../../data/groupMeta';
 import { cognitoLogoutUrl } from '../../auth/authConfig';
+import { isNativeApp, nativeSignOut } from '../../auth/nativeAuth';
 import { content, fmt } from '../../content';
 import Avatar from '../ui/Avatar';
 import GlassCard from '../layout/GlassCard';
@@ -34,6 +35,10 @@ export default function AdminScreen() {
   // otherwise the app finds the old token in localStorage and stays signed in.
   const logOut = async () => {
     await auth.removeUser().catch(() => {});
+    if (isNativeApp) {
+      await nativeSignOut();
+      return;
+    }
     window.location.href = cognitoLogoutUrl();
   };
 

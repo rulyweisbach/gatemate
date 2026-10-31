@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAuth } from 'react-oidc-context';
+import { isNativeApp, nativeSignIn } from '../../auth/nativeAuth';
 import { content, fmt } from '../../content';
 
 // ── Inline SVG brand logos ────────────────────────────────────────────────────
@@ -74,8 +75,13 @@ export default function OnboardScreen() {
 
   const handleSocial = (provider: SocialProvider) => {
     if (provider === 'google') {
-      // Real Cognito Hosted-UI login, jumping straight to Google.
-      void auth.signinRedirect({ extraQueryParams: { identity_provider: 'Google' } });
+      // Real Cognito Hosted-UI login, jumping straight to Google. In the
+      // native app this must go through the system browser sheet.
+      if (isNativeApp) {
+        void nativeSignIn({ identity_provider: 'Google' });
+      } else {
+        void auth.signinRedirect({ extraQueryParams: { identity_provider: 'Google' } });
+      }
       return;
     }
     // Facebook / Apple aren't configured as identity providers yet.
@@ -176,7 +182,7 @@ export default function OnboardScreen() {
         <button
           type="button"
           className="btn-solid w-full"
-          onClick={() => void auth.signinRedirect()}
+          onClick={() => void (isNativeApp ? nativeSignIn() : auth.signinRedirect())}
         >
           {content.onboard.getStarted}
         </button>

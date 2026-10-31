@@ -18,6 +18,8 @@ const REASON_LABEL: Record<MatchReason, string> = {
   families: cp.reasonFamilies,
   planning: cp.reasonPlanning,
   nearby: cp.reasonNearby,
+  sameOrigin: cp.reasonSameOrigin,
+  sharedInterests: cp.reasonSharedInterests,
 };
 
 type SectionId = ContextType | 'nearby';

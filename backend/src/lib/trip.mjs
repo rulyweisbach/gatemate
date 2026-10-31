@@ -97,7 +97,10 @@ export function kidsOverlap(a, b) {
 
 // Score how relevant `other` is to `mine`. Returns { score, reasons }.
 // Reason keys map to peopleFeed.matchReason* strings on the client.
-export function scoreMatch(mine, other) {
+// `wide` (the default, while the community is small) adds weak cold-start
+// signals — same origin, shared interests — so early users see each other.
+// Users can switch to focused matching via the profile `discovery` setting.
+export function scoreMatch(mine, other, { wide = true } = {}) {
   const reasons = [];
   let score = 0;
 
@@ -126,10 +129,21 @@ export function scoreMatch(mine, other) {
     reasons.push('planning');
   }
   // Nearby: travel dates within 2 days, when nothing stronger already
-  // matched. (Same origin alone is NOT a match — in practice everyone shares
-  // the home airport, so it floods the hub with 10-point noise.)
+  // matched.
   if (!reasons.length) {
     if (daysApart(mine.travelDate, other.travelDate) <= 2) { score += 10; reasons.push('nearby'); }
+  }
+
+  // Wide-discovery signals, deliberately weak so they rank below real
+  // overlaps but still surface people while the community is small.
+  if (wide) {
+    if (mine.origin && other.origin && lc(mine.origin) === lc(other.origin)) {
+      score += 5; reasons.push('sameOrigin');
+    }
+    const mineIntents = new Set((mine.intents ?? []).map(lc));
+    if ((other.intents ?? []).some((i) => mineIntents.has(lc(i)))) {
+      score += 8; reasons.push('sharedInterests');
+    }
   }
 
   return { score, reasons };

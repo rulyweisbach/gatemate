@@ -27,9 +27,13 @@ export interface Message {
   timestamp: number;
 }
 
+// How widely the trip hub matches other travelers for this user.
+export type DiscoveryMode = 'wide' | 'focused';
+
 // Profile as stored/returned by the backend API (userId key, intents array).
 export interface Profile {
   userId: string;
+  discovery?: DiscoveryMode;
   name?: string;
   email?: string;
   photo?: string;
@@ -93,7 +97,9 @@ export type MatchReason =
   | 'sameDestination'
   | 'families'
   | 'planning'
-  | 'nearby';
+  | 'nearby'
+  | 'sameOrigin'
+  | 'sharedInterests';
 
 export interface TripPerson {
   userId: string;

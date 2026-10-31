@@ -1,6 +1,5 @@
 {
   "_readme": "All user-facing text for GateMate. Edit the values (right of each colon, inside quotes), keep the keys and any {placeholders}. Commit to Git; the next build shows your text.",
-
   "common": {
     "back": "Go back",
     "loading": "Loading…",
@@ -10,7 +9,6 @@
     "save": "Save",
     "logOut": "Log out"
   },
-
   "nav": {
     "groups": "Groups",
     "interest": "Interest",
@@ -18,7 +16,6 @@
     "discover": "Discover",
     "profile": "Profile"
   },
-
   "matches": {
     "title": "Matches",
     "subtitle": "Your conversations and connections",
@@ -30,13 +27,11 @@
     "emptyCta": "Discover people",
     "openChat": "Chat"
   },
-
   "splash": {
     "brandFirst": "Gate",
     "brandSecond": "Mate",
     "tagline": "Meet the right people around your trip"
   },
-
   "onboard": {
     "titleLine1": "Your next connection",
     "titleLine2": "is waiting at your",
@@ -51,7 +46,6 @@
     "startTrip": "Start your trip",
     "terms": "By continuing you agree to our Terms & Privacy Policy"
   },
-
   "flight": {
     "modeFlight": "By Flight",
     "modeDate": "By Date",
@@ -73,7 +67,6 @@
     "ctaSaving": "Finding your match…",
     "error": "Could not save your profile"
   },
-
   "feed": {
     "title": "Near Your Gate",
     "lookingAround": "Looking around…",
@@ -95,7 +88,6 @@
     "relevant": "{percent}% relevant",
     "viewProfile": "View profile"
   },
-
   "profile": {
     "header": "Profile",
     "notFound": "Profile not found",
@@ -112,7 +104,6 @@
     "pass": "Pass",
     "sayHi": "Say Hi 👋"
   },
-
   "chat": {
     "sayHiTo": "Say hi to {name}!",
     "bothAtAirport": "You're both at the airport ✈️",
@@ -121,7 +112,6 @@
     "placeholder": "Message {name}…",
     "userNotFound": "User not found"
   },
-
   "groups": {
     "title": "Groups for your trip",
     "subtitle": "Join a plan or create your own.",
@@ -142,7 +132,6 @@
     "full": "Full",
     "join": "Join"
   },
-
   "createGroup": {
     "header": "Create a Group",
     "titleLabel": "What's the plan?",
@@ -164,7 +153,6 @@
     "attachDestination": "📍 Everyone in {label} on your dates",
     "error": "Could not create group"
   },
-
   "groupChat": {
     "fallbackTitle": "Group chat",
     "membersTapToView": "{count}/{max} members · tap to view",
@@ -175,7 +163,6 @@
     "placeholder": "Message the group…",
     "notFound": "Group not found"
   },
-
   "members": {
     "fallbackTitle": "Members",
     "count": "{count}/{max} members",
@@ -187,7 +174,6 @@
     "notFound": "Group not found.",
     "removeError": "Could not remove member"
   },
-
   "editProfile": {
     "header": "Edit Profile",
     "loading": "Loading your profile…",
@@ -214,9 +200,14 @@
     "badImageType": "Please choose a JPG, PNG, or WebP image.",
     "imageTooLarge": "Image must be under 8 MB.",
     "uploadFailed": "Upload failed",
-    "saveError": "Could not save"
+    "saveError": "Could not save",
+    "discoveryLabel": "DISCOVERY",
+    "discoveryHint": "How widely your trips match other travelers.",
+    "discoveryWideTitle": "Wide",
+    "discoveryWideHint": "Also show travelers who share your origin, destination, or interests — great while the community is growing.",
+    "discoveryFocusedTitle": "Focused",
+    "discoveryFocusedHint": "Only close matches: same flight, same event, or overlapping travel dates."
   },
-
   "admin": {
     "title": "Admin",
     "usersTab": "Users",
@@ -259,29 +250,74 @@
     "confirmCloseGroup": "Close the group \"{title}\"? This permanently removes it.",
     "closeGroupError": "Failed to close group"
   },
-
-  "tripIntents": ["friendship", "networking", "shared-travel", "lounge", "local-guide", "first-time"],
-
+  "tripIntents": [
+    "friendship",
+    "networking",
+    "shared-travel",
+    "lounge",
+    "local-guide",
+    "first-time"
+  ],
   "intents": {
-    "networking": { "label": "Networking", "emoji": "💼" },
-    "friendship": { "label": "Friendship", "emoji": "🤝" },
-    "shared-travel": { "label": "Travel Buddy", "emoji": "🧳" },
-    "lounge": { "label": "Lounge", "emoji": "🛋️" },
-    "dating": { "label": "Dating", "emoji": "💫" },
-    "local-guide": { "label": "Local Guide", "emoji": "🗺️" },
-    "first-time": { "label": "First Flight Support", "emoji": "✈️" }
+    "networking": {
+      "label": "Networking",
+      "emoji": "💼"
+    },
+    "friendship": {
+      "label": "Friendship",
+      "emoji": "🤝"
+    },
+    "shared-travel": {
+      "label": "Travel Buddy",
+      "emoji": "🧳"
+    },
+    "lounge": {
+      "label": "Lounge",
+      "emoji": "🛋️"
+    },
+    "dating": {
+      "label": "Dating",
+      "emoji": "💫"
+    },
+    "local-guide": {
+      "label": "Local Guide",
+      "emoji": "🗺️"
+    },
+    "first-time": {
+      "label": "First Flight Support",
+      "emoji": "✈️"
+    }
   },
-
   "groupCategories": {
-    "concert": { "label": "Concert / Show", "emoji": "🎵" },
-    "sport": { "label": "Sport Event", "emoji": "🏟️" },
-    "travel": { "label": "Travel Buddy", "emoji": "🧳" },
-    "cab": { "label": "Share a Ride", "emoji": "🚕" },
-    "food": { "label": "Food / Drinks", "emoji": "🍽️" },
-    "family": { "label": "Family Travel", "emoji": "👨‍👩‍👧‍👦" },
-    "other": { "label": "Other", "emoji": "✨" }
+    "concert": {
+      "label": "Concert / Show",
+      "emoji": "🎵"
+    },
+    "sport": {
+      "label": "Sport Event",
+      "emoji": "🏟️"
+    },
+    "travel": {
+      "label": "Travel Buddy",
+      "emoji": "🧳"
+    },
+    "cab": {
+      "label": "Share a Ride",
+      "emoji": "🚕"
+    },
+    "food": {
+      "label": "Food / Drinks",
+      "emoji": "🍽️"
+    },
+    "family": {
+      "label": "Family Travel",
+      "emoji": "👨‍👩‍👧‍👦"
+    },
+    "other": {
+      "label": "Other",
+      "emoji": "✨"
+    }
   },
-
   "tripSetup": {
     "title": "Where are you going?",
     "subtitle": "Add your flight, or start with your destination and date.",
@@ -320,7 +356,6 @@
     "kidsAgesLabel": "Kids' ages",
     "kidsAgesPlaceholder": "e.g. 5, 8"
   },
-
   "trips": {
     "title": "My Trips",
     "active": "Active Trip",
@@ -332,7 +367,6 @@
     "emptyCta": "Start your trip",
     "planningBadge": "Planning"
   },
-
   "tripHub": {
     "title": "My Trip",
     "peopleTab": "People",
@@ -349,7 +383,7 @@
     "sectionEvent": "At {label}",
     "sectionDestination": "In {label} while you're there",
     "sectionPlanners": "Planning {label} too",
-    "sectionNearby": "Nearby travelers",
+    "sectionNearby": "More travelers",
     "sectionCounts": "{people} travelers · {groups} groups",
     "sectionPeopleOnly": "{people} travelers",
     "sectionEmpty": "You're first here — open a group so the next traveler who adds this finds it.",
@@ -359,14 +393,12 @@
     "noSections": "Add a flight, event, or destination to this trip to start matching.",
     "clearFilters": "Clear filters"
   },
-
   "intentScreen": {
     "title": "What are you looking for?",
     "subtitle": "Pick anything that fits — you can change it later.",
     "cta": "Create Trip",
     "ctaSaving": "Creating your trip…"
   },
-
   "peopleFeed": {
     "title": "People",
     "loading": "Finding travelers for this trip…",
@@ -383,9 +415,10 @@
     "reasonFamilies": "Kids same age",
     "reasonPlanning": "Still planning",
     "sayHi": "Say Hi 👋",
-    "viewProfile": "View profile"
+    "viewProfile": "View profile",
+    "reasonSameOrigin": "Same origin",
+    "reasonSharedInterests": "Shared interests"
   },
-
   "connections": {
     "title": "Chats",
     "subtitle": "Your people and group conversations",

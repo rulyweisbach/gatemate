@@ -17,6 +17,11 @@ export const handler = async (event) => {
   if (!mine) return json(404, { error: 'trip not found' });
   if (mine.userId !== userId) return json(403, { error: 'not your trip' });
 
+  // The caller's discovery setting ('wide' default | 'focused') widens or
+  // narrows which signals count as a match.
+  const meRes = await ddb.send(new GetCommand({ TableName: TABLES.users, Key: { userId } }));
+  const wide = meRes.Item?.discovery !== 'focused';
+
   // Small scale (≈100 users) — a scan of the trips table is cheap and avoids
   // maintaining several match GSIs.
   const scan = await ddb.send(new ScanCommand({ TableName: TABLES.trips }));
@@ -25,7 +30,7 @@ export const handler = async (event) => {
   // Best-scoring trip per other traveler.
   const best = new Map(); // userId -> { score, reasons, trip }
   for (const t of trips) {
-    const { score, reasons } = scoreMatch(mine, t);
+    const { score, reasons } = scoreMatch(mine, t, { wide });
     if (score <= 0) continue;
     if (filter && !reasons.includes(filter)) continue;
     const prev = best.get(t.userId);

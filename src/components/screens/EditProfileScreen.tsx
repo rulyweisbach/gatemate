@@ -4,7 +4,7 @@ import { ArrowLeft, Plus, X, LogOut, Trash2, UsersRound } from 'lucide-react';
 import { useAuth } from 'react-oidc-context';
 import { useApi } from '../../api/client';
 import { useAppStore } from '../../store/useAppStore';
-import type { Intent, Group } from '../../types';
+import type { Intent, Group, DiscoveryMode } from '../../types';
 import { cognitoLogoutUrl } from '../../auth/authConfig';
 import { groupCategoryMeta } from '../../data/groupMeta';
 import { content, fmt } from '../../content';
@@ -37,6 +37,7 @@ export default function EditProfileScreen() {
   const [tagline, setTagline] = useState('');
   const [bio, setBio] = useState('');
   const [intents, setIntents] = useState<Intent[]>([]);
+  const [discovery, setDiscovery] = useState<DiscoveryMode>('wide');
   const [myGroups, setMyGroups] = useState<Group[]>([]);
   const myId = auth.user?.profile?.sub;
 
@@ -75,6 +76,7 @@ export default function EditProfileScreen() {
         setTagline(profile.tagline ?? '');
         setBio(profile.bio ?? '');
         setIntents(profile.intents ?? []);
+        setDiscovery(profile.discovery === 'focused' ? 'focused' : 'wide');
       })
       .catch(() => {})
       .finally(() => !cancelled && setLoading(false));
@@ -128,6 +130,7 @@ export default function EditProfileScreen() {
         photos,
         photo: photos[0], // keep the single-photo field in sync for avatars
         intents,
+        discovery,
       });
       setMyProfile(profile); // refresh cached avatar app-wide
       navigate(-1);
@@ -266,6 +269,34 @@ export default function EditProfileScreen() {
               {ALL_INTENTS.map((it) => (
                 <IntentChip key={it} intent={it} selected={intents.includes(it)} onClick={() => toggleIntent(it)} />
               ))}
+            </div>
+          </div>
+
+          {/* Discovery range */}
+          <div>
+            <p className="text-xs font-semibold mb-1" style={{ color: 'rgba(255,255,255,0.55)' }}>{c.discoveryLabel}</p>
+            <p className="text-xs mb-2" style={{ color: 'rgba(255,255,255,0.4)' }}>{c.discoveryHint}</p>
+            <div className="flex flex-col gap-2">
+              {([
+                { id: 'wide' as DiscoveryMode, title: c.discoveryWideTitle, hint: c.discoveryWideHint },
+                { id: 'focused' as DiscoveryMode, title: c.discoveryFocusedTitle, hint: c.discoveryFocusedHint },
+              ]).map((opt) => {
+                const selected = discovery === opt.id;
+                return (
+                  <button
+                    key={opt.id}
+                    onClick={() => setDiscovery(opt.id)}
+                    className="text-left p-3 rounded-2xl"
+                    style={{
+                      background: selected ? 'rgba(125,211,252,0.15)' : 'rgba(255,255,255,0.07)',
+                      border: selected ? '1.5px solid rgba(125,211,252,0.6)' : '1px solid rgba(255,255,255,0.15)',
+                    }}
+                  >
+                    <p className="text-sm font-bold" style={{ color: selected ? '#7dd3fc' : '#fff' }}>{opt.title}</p>
+                    <p className="text-xs mt-0.5 leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>{opt.hint}</p>
+                  </button>
+                );
+              })}
             </div>
           </div>
 

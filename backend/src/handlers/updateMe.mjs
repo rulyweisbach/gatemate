@@ -6,6 +6,7 @@ import { json, getUserId, getClaims, parseBody } from '../lib/http.mjs';
 const ALLOWED = [
   'name', 'age', 'intents', 'tagline', 'bio',
   'flight', 'gate', 'departure', 'origin', 'destination', 'photo', 'photos',
+  'discovery',
 ];
 
 // PUT /me — upsert the caller's profile (partial update).
@@ -17,6 +18,11 @@ export const handler = async (event) => {
   if (!body) return json(400, { error: 'invalid json' });
 
   const claims = getClaims(event);
+
+  // How widely this user's trip hub matches travelers.
+  if (body.discovery !== undefined) {
+    body.discovery = body.discovery === 'focused' ? 'focused' : 'wide';
+  }
 
   // Build a dynamic update expression. All attribute names go through
   // ExpressionAttributeNames to avoid DynamoDB reserved-word collisions.

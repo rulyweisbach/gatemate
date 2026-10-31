@@ -22,6 +22,8 @@ export default function GroupChatScreen() {
   const [text, setText] = useState('');
   const [sending, setSending] = useState(false);
   const [denied, setDenied] = useState(false);
+  const [joining, setJoining] = useState(false);
+  const [joinError, setJoinError] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const loadMessages = useCallback(async () => {
@@ -78,6 +80,23 @@ export default function GroupChatScreen() {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); void handleSend(); }
   };
 
+  const handleJoin = async () => {
+    if (joining) return;
+    setJoining(true);
+    setJoinError(null);
+    try {
+      const r = await api.joinGroup(id);
+      setGroup(r.group);
+      setDenied(false);
+      await loadMessages();
+    } catch (e) {
+      const full = e instanceof Error && e.message.includes('409');
+      setJoinError(full ? c.joinFull : c.joinFailed);
+    } finally {
+      setJoining(false);
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* Header */}
@@ -117,8 +136,18 @@ export default function GroupChatScreen() {
           <div className="flex flex-col items-center justify-center flex-1 gap-3 text-center py-12">
             <div className="text-5xl">🔒</div>
             <p className="font-bold text-white">{c.lockedTitle}</p>
-            <button onClick={() => navigate('/chats')} className="btn-glass mt-2" style={{ width: 'auto', padding: '10px 24px' }}>
-              {c.backToGroups}
+            <p className="text-sm px-8" style={{ color: 'rgba(255,255,255,0.5)' }}>{c.lockedBody}</p>
+            {joinError && <p className="text-xs" style={{ color: '#ffb4b4' }}>{joinError}</p>}
+            <button
+              onClick={() => void handleJoin()}
+              disabled={joining}
+              className="btn-solid mt-2"
+              style={{ width: 'auto', padding: '12px 32px', opacity: joining ? 0.6 : 1 }}
+            >
+              {joining ? c.joining : c.joinCta}
+            </button>
+            <button onClick={() => navigate(-1)} className="btn-glass" style={{ width: 'auto', padding: '10px 24px' }}>
+              {content.common.back}
             </button>
           </div>
         )}

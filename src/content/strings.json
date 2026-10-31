@@ -162,7 +162,12 @@
     "emptyTitle": "Start the conversation",
     "emptyBody": "Say hi to your group!",
     "placeholder": "Message the group…",
-    "notFound": "Group not found"
+    "notFound": "Group not found",
+    "lockedBody": "Members can chat and plan together. Join to be part of it.",
+    "joinCta": "Join group",
+    "joining": "Joining…",
+    "joinFull": "This group is already full.",
+    "joinFailed": "Couldn't join — try again."
   },
   "members": {
     "fallbackTitle": "Members",

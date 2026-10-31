@@ -4,11 +4,16 @@ import { useApi } from '../../api/client';
 import { content } from '../../content';
 import type { Trip } from '../../types';
 
-// Discover has no screen of its own — it jumps to the People feed of the
-// user's most relevant trip (active → soonest upcoming → most recent). With no
-// trips, it sends them to create one.
+// Discover has no screen of its own — it jumps to the People feed of the trip
+// hub the user last opened, falling back to the most relevant trip (active →
+// soonest upcoming → most recent). With no trips, it sends them to create one.
 function pickTrip(trips: Trip[]): Trip | null {
   if (trips.length === 0) return null;
+  try {
+    const lastId = localStorage.getItem('gm_lastTripId');
+    const last = trips.find((t) => t.tripId === lastId);
+    if (last) return last;
+  } catch { /* ignore */ }
   const active = trips.find((t) => (t.status ?? 'active') === 'active');
   if (active) return active;
   const upcoming = trips

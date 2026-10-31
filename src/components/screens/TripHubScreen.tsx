@@ -124,6 +124,8 @@ export default function TripHubScreen() {
         setTrip(t.trip);
         setPeople(p.people ?? []);
         setGroups(g.groups ?? []);
+        // The Discover tab returns to the trip hub that was open last.
+        try { localStorage.setItem('gm_lastTripId', id); } catch { /* ignore */ }
         // Visiting the hub marks its matches as seen (clears the Discover badge).
         api.markRead(`hub#${id}`).catch(() => {});
       })

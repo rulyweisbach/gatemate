@@ -211,9 +211,12 @@ export default function TripHubScreen() {
           <>
             <div className="fixed inset-0 z-10" onClick={() => setSwitcherOpen(false)} />
             <div
-              className="absolute left-4 right-4 z-20 rounded-2xl glass-dark anim-fade-in"
+              className="absolute left-4 right-4 z-20 rounded-2xl anim-fade-in"
               style={{
                 top: 'calc(100% - 8px)',
+                background: 'rgba(13,27,58,0.97)',
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)',
                 border: '1px solid rgba(255,255,255,0.15)',
                 boxShadow: '0 12px 32px rgba(0,0,0,0.4)',
                 overflow: 'hidden',

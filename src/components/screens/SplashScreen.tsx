@@ -36,12 +36,9 @@ export default function SplashScreen() {
       className="flex flex-col items-center justify-center gap-6 px-6 anim-fade-in"
       style={{ minHeight: '100dvh', paddingBottom: 'max(2.5rem, env(safe-area-inset-bottom))' }}
     >
-      <img
-        src="/gatemate-logo.png"
-        alt="GateMate logo"
-        className="anim-float-plane select-none"
-        style={{ width: 160, height: 160, objectFit: 'contain' }}
-      />
+      <div aria-hidden="true" className="anim-float-plane select-none">
+        <div style={{ fontSize: 110, lineHeight: 1, transform: 'rotate(-8deg)' }}>✈️</div>
+      </div>
 
       <div className="text-center">
         <h1

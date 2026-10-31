@@ -8,6 +8,7 @@ import { groupCategoryMeta } from '../../data/groupMeta';
 import { content, fmt } from '../../content';
 import Avatar from '../ui/Avatar';
 import GlassCard from '../layout/GlassCard';
+import GroupContextLine from '../ui/GroupContextLine';
 
 const c = content.members;
 
@@ -65,6 +66,7 @@ export default function GroupMembersScreen() {
           <p className="font-bold text-white text-sm truncate" style={{ fontFamily: 'Nunito, sans-serif' }}>
             {group ? group.title : c.fallbackTitle}
           </p>
+          <GroupContextLine ctx={group?.context} className="text-xs" style={{ color: '#7dd3fc' }} />
           <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
             {group ? fmt(c.count, { count: group.members?.length ?? 0, max: group.maxMembers }) : ' '}
           </p>

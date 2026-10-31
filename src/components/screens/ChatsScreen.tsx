@@ -7,6 +7,7 @@ import { content } from '../../content';
 import type { Match, Group } from '../../types';
 import GlassCard from '../layout/GlassCard';
 import Avatar from '../ui/Avatar';
+import GroupContextLine from '../ui/GroupContextLine';
 
 const c = content.connections;
 
@@ -134,9 +135,10 @@ export default function ChatsScreen() {
               >
                 <div className="flex-1 min-w-0">
                   <p className="font-bold text-white text-sm truncate">{g.title}</p>
+                  <GroupContextLine ctx={g.context} className="mt-1 text-xs" style={{ color: '#7dd3fc' }} />
                   <div className="flex items-center gap-3 mt-1 text-xs" style={{ color: 'rgba(255,255,255,0.55)' }}>
                     <span className="flex items-center gap-1"><Users size={12} /> {g.members?.length ?? 0}/{g.maxMembers}</span>
-                    {g.location && <span className="truncate">{g.location}</span>}
+                    {!g.context && g.location && <span className="truncate">{g.location}</span>}
                   </div>
                 </div>
                 <MessageCircle size={18} style={{ color: '#7dd3fc' }} />

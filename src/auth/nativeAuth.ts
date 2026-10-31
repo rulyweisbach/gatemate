@@ -53,8 +53,14 @@ async function handleUrl(url: string) {
   if (url.startsWith(NATIVE_CALLBACK)) {
     await Browser.close().catch(() => {});
     const client = new OidcClient(nativeSettings);
-    const response = await client.processSigninResponse(url);
-    await nativeUserManager().storeUser(new User(response));
+    try {
+      const response = await client.processSigninResponse(url);
+      await nativeUserManager().storeUser(new User(response));
+    } catch (e) {
+      console.error('native sign-in failed', e);
+      alert('Sign-in didn’t complete. Please try again.');
+      return;
+    }
     window.location.reload();
   } else if (url.startsWith(NATIVE_SIGNOUT)) {
     await Browser.close().catch(() => {});
@@ -68,7 +74,17 @@ export function initNativeAuth() {
     handleUrl(url).catch((e) => console.error('native auth callback failed', e));
   });
   // Cold start straight from the deep link (app was killed mid sign-in).
+  // getLaunchUrl keeps returning the same URL after every reload, so remember
+  // what was already handled or the signout link causes an endless reload loop.
   void CapApp.getLaunchUrl().then((launch) => {
-    if (launch?.url) handleUrl(launch.url).catch(() => {});
+    if (!launch?.url) return;
+    const KEY = 'gm_handled_launch_url';
+    try {
+      if (sessionStorage.getItem(KEY) === launch.url) return;
+      sessionStorage.setItem(KEY, launch.url);
+    } catch {
+      return;
+    }
+    handleUrl(launch.url).catch(() => {});
   });
 }

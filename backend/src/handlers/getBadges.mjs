@@ -66,19 +66,26 @@ export const handler = async (event) => {
     (t) => t.userId && t.userId !== userId && !connected.has(t.userId)
   );
 
+  // Per trip: which travelers are new since the caller last opened that hub.
+  // The trip switcher shows a dot per trip; the nav badge counts each
+  // traveler once even when they match several trips.
+  const newByTrip = new Map(); // tripId -> Set of userIds
   const newMatches = new Set();
   for (const mine of myTrips) {
     const seen = reads[`hub#${mine.tripId}`] ?? 0;
+    const fresh = new Set();
     for (const t of others) {
-      if ((t.createdAt ?? 0) <= seen || newMatches.has(t.userId)) continue;
+      if ((t.createdAt ?? 0) <= seen || fresh.has(t.userId)) continue;
       const { score } = scoreMatch(mine, t, { wide });
-      if (score > 0) newMatches.add(t.userId);
+      if (score > 0) fresh.add(t.userId);
     }
+    if (fresh.size) newByTrip.set(mine.tripId, fresh);
+    for (const u of fresh) newMatches.add(u);
   }
 
   // Travelers without a completed profile never appear in discovery
   // (getTripPeople filters them), so they shouldn't light the badge either.
-  let discover = 0;
+  const named = new Set();
   const matchIds = [...newMatches];
   for (let i = 0; i < matchIds.length; i += 100) {
     const chunk = matchIds.slice(i, i + 100);
@@ -87,8 +94,15 @@ export const handler = async (event) => {
         RequestItems: { [TABLES.users]: { Keys: chunk.map((uid) => ({ userId: uid })) } },
       })
     );
-    discover += (res.Responses?.[TABLES.users] ?? []).filter((p) => p.name).length;
+    for (const p of res.Responses?.[TABLES.users] ?? []) if (p.name) named.add(p.userId);
   }
 
-  return json(200, { chats, discover });
+  const discover = [...newMatches].filter((u) => named.has(u)).length;
+  const discoverByTrip = {};
+  for (const [tripId, fresh] of newByTrip) {
+    const n = [...fresh].filter((u) => named.has(u)).length;
+    if (n > 0) discoverByTrip[tripId] = n;
+  }
+
+  return json(200, { chats, discover, discoverByTrip });
 };

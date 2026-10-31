@@ -66,7 +66,8 @@ export function useApi() {
 
       sayHi: (id: string): Promise<{ ok: boolean }> =>
         request(`/connections/${id}`, { method: 'POST' }),
-      getBadges: (): Promise<{ chats: number; discover: number }> => request('/badges'),
+      getBadges: (): Promise<{ chats: number; discover: number; discoverByTrip?: Record<string, number> }> =>
+        request('/badges'),
       // key: DM conversationId ("a#b"), "group#<id>", "hub#<tripId>", or "chats".
       markRead: (key: string): Promise<{ ok: boolean }> =>
         request('/reads', { method: 'POST', body: JSON.stringify({ key }) }),

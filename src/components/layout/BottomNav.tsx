@@ -7,10 +7,14 @@ import { useApi } from '../../api/client';
 import { useAppStore } from '../../store/useAppStore';
 import { content } from '../../content';
 
+// A trip hub (/trips/:id) IS the Discover view for that trip, so the Discover
+// tab lights up there; My Trips stays lit only on the list itself.
+const isHub = (p: string) => /^\/trips\/[^/]+$/.test(p) && p !== '/trips/new';
+
 // The four core tabs.
 const TABS: { to: string; label: string; icon: LucideIcon; match: (p: string) => boolean }[] = [
-  { to: '/trips',    label: content.trips.title,       icon: Luggage,       match: (p) => p === '/trips' || p.startsWith('/trips/') },
-  { to: '/discover', label: content.nav.discover,      icon: Compass,       match: (p) => p === '/discover' },
+  { to: '/trips',    label: content.trips.title,       icon: Luggage,       match: (p) => p === '/trips' || (p.startsWith('/trips/') && !isHub(p)) },
+  { to: '/discover', label: content.nav.discover,      icon: Compass,       match: (p) => p === '/discover' || isHub(p) },
   { to: '/chats',    label: content.connections.title, icon: MessageCircle, match: (p) => p === '/chats' },
   { to: '/me',       label: content.nav.profile,       icon: User,          match: (p) => p === '/me' },
 ];

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Plus, Users, MessageCircle, Plane, Ticket, MapPin, Compass } from 'lucide-react';
+import { ArrowLeft, Plus, Users, MessageCircle, Plane, Ticket, MapPin, Compass, ChevronDown, Pencil, Check } from 'lucide-react';
 import { useApi } from '../../api/client';
 import { content, fmt } from '../../content';
 import type { Trip, TripPerson, Group, MatchReason, ContextType } from '../../types';
@@ -116,6 +116,17 @@ export default function TripHubScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
+  // Trip switcher: all my trips + which of them have unseen matches.
+  const [myTrips, setMyTrips] = useState<Trip[]>([]);
+  const [tripNews, setTripNews] = useState<Record<string, number>>({});
+  const [switcherOpen, setSwitcherOpen] = useState(false);
+
+  useEffect(() => {
+    api.listTrips().then((r) => setMyTrips(r.trips ?? [])).catch(() => {});
+    api.getBadges().then((b) => setTripNews(b.discoverByTrip ?? {})).catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
   useEffect(() => {
     setLoading(true);
     setError(false);
@@ -177,11 +188,90 @@ export default function TripHubScreen() {
                 </span>
               )}
             </div>
-            <button onClick={() => navigate(`/trips/new?edit=${id}`)} className="text-xs" style={{ color: '#7dd3fc' }}>
-              {c.editTrip}
+            <button
+              onClick={() => setSwitcherOpen((o) => !o)}
+              className="flex items-center gap-1 text-xs"
+              style={{ color: '#7dd3fc' }}
+              aria-expanded={switcherOpen}
+            >
+              {c.switchTrip}
+              <ChevronDown
+                size={12}
+                style={{ transition: 'transform 0.15s', transform: switcherOpen ? 'rotate(180deg)' : 'none' }}
+              />
             </button>
           </div>
         </div>
+
+        {switcherOpen && (
+          <>
+            <div className="fixed inset-0 z-10" onClick={() => setSwitcherOpen(false)} />
+            <div
+              className="absolute left-4 right-4 z-20 rounded-2xl glass-dark anim-fade-in"
+              style={{
+                top: 'calc(100% - 8px)',
+                border: '1px solid rgba(255,255,255,0.15)',
+                boxShadow: '0 12px 32px rgba(0,0,0,0.4)',
+                overflow: 'hidden',
+              }}
+            >
+              {myTrips.map((t) => {
+                const current = t.tripId === id;
+                const news = current ? 0 : tripNews[t.tripId] ?? 0;
+                return (
+                  <button
+                    key={t.tripId}
+                    onClick={() => {
+                      setSwitcherOpen(false);
+                      if (!current) navigate(`/trips/${t.tripId}`);
+                    }}
+                    className="flex items-center gap-3 w-full px-4 py-3 text-left"
+                    style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}
+                  >
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-bold truncate" style={{ color: current ? '#7dd3fc' : '#fff' }}>
+                        {t.label}
+                      </p>
+                      {t.travelDate && (
+                        <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                          {new Date(`${t.travelDate}T00:00:00`).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                        </p>
+                      )}
+                    </div>
+                    {news > 0 && (
+                      <span
+                        className="flex items-center justify-center font-bold shrink-0"
+                        style={{
+                          minWidth: 18,
+                          height: 18,
+                          padding: '0 5px',
+                          borderRadius: 999,
+                          background: '#ff4d67',
+                          color: '#fff',
+                          fontSize: 10,
+                        }}
+                      >
+                        {news > 9 ? '9+' : news}
+                      </span>
+                    )}
+                    {current && <Check size={16} className="shrink-0" style={{ color: '#7dd3fc' }} />}
+                  </button>
+                );
+              })}
+              <button
+                onClick={() => {
+                  setSwitcherOpen(false);
+                  navigate(`/trips/new?edit=${id}`);
+                }}
+                className="flex items-center gap-2 w-full px-4 py-3 text-left text-xs font-semibold"
+                style={{ color: '#7dd3fc' }}
+              >
+                <Pencil size={13} />
+                {c.editTrip}
+              </button>
+            </div>
+          </>
+        )}
       </div>
 
       <div className="flex flex-col gap-4 px-4 py-4" style={{ paddingBottom: 'calc(84px + env(safe-area-inset-bottom))' }}>

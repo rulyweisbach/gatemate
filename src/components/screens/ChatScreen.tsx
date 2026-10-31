@@ -115,14 +115,20 @@ export default function ChatScreen() {
           <ArrowLeft size={18} className="text-white" />
         </button>
 
-        <Avatar photo={other?.photos?.[0] ?? other?.photo} size={40} radius={12} />
-
-        <div className="flex-1 min-w-0">
-          <p className="font-bold text-white text-sm truncate">{other?.name ?? 'Traveler'}</p>
-          <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            {other?.distance ? `📍 ${other.distance} · ` : ''}✈️ {other?.gate ?? other?.flight ?? c.atTheAirport}
-          </p>
-        </div>
+        {/* Tapping the person opens their profile; fromChat lets the
+            profile's Say Hi return here instead of opening a new chat. */}
+        <button
+          onClick={() => navigate(`/profile/${id}`, { state: { fromChat: true } })}
+          className="flex items-center gap-3 flex-1 min-w-0 text-left"
+        >
+          <Avatar photo={other?.photos?.[0] ?? other?.photo} size={40} radius={12} />
+          <div className="flex-1 min-w-0">
+            <p className="font-bold text-white text-sm truncate">{other?.name ?? 'Traveler'}</p>
+            <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
+              {content.peopleFeed.viewProfile}
+            </p>
+          </div>
+        </button>
       </div>
 
       {/* Messages */}

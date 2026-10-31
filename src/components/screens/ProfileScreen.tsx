@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Plane, DoorOpen, Clock, MapPin, Ticket, Calendar } from 'lucide-react';
 import { useApi } from '../../api/client';
 import { content, fmt } from '../../content';
@@ -15,7 +15,10 @@ import Avatar from '../ui/Avatar';
 export default function ProfileScreen() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const api = useApi();
+  // Opened from this person's chat — Say Hi should just return to it.
+  const fromChat = (location.state as { fromChat?: boolean } | null)?.fromChat === true;
 
   const [user, setUser] = useState<Profile | null>(null);
   const [trips, setTrips] = useState<ProfileTrip[]>([]);
@@ -221,7 +224,12 @@ export default function ProfileScreen() {
           <GlassButton variant="glass" onClick={() => navigate(-1)}>{c.pass}</GlassButton>
           {/* Replace the profile in history so Back from the chat returns
               straight to where the person was found (hub / discover). */}
-          <GlassButton variant="solid" onClick={() => navigate(`/chat/${user.userId}`, { replace: true })}>{c.sayHi}</GlassButton>
+          <GlassButton
+            variant="solid"
+            onClick={() => (fromChat ? navigate(-1) : navigate(`/chat/${user.userId}`, { replace: true }))}
+          >
+            {c.sayHi}
+          </GlassButton>
         </div>
       </div>
     </div>

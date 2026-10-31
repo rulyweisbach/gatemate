@@ -34,6 +34,8 @@ import { handler as adminDeleteGroup } from './handlers/adminDeleteGroup.mjs';
 import { handler as adminListTrips } from './handlers/adminListTrips.mjs';
 import { handler as adminDeleteTrip } from './handlers/adminDeleteTrip.mjs';
 import { handler as adminRemoveMember } from './handlers/adminRemoveMember.mjs';
+import { handler as getBadges } from './handlers/getBadges.mjs';
+import { handler as markRead } from './handlers/markRead.mjs';
 import { handler as getContent } from './handlers/getContent.mjs';
 import { handler as adminUpdateContent } from './handlers/adminUpdateContent.mjs';
 import { json } from './lib/http.mjs';
@@ -48,6 +50,8 @@ const routes = [
   { method: 'POST',   re: /^\/messages\/([^/]+)$/,        fn: sendMessage, params: ['otherId'] },
   { method: 'POST',   re: /^\/upload-url$/,               fn: uploadUrl,   params: [] },
   { method: 'GET',    re: /^\/matches$/,                 fn: getMatches,  params: [] },
+  { method: 'GET',    re: /^\/badges$/,                  fn: getBadges,   params: [] },
+  { method: 'POST',   re: /^\/reads$/,                   fn: markRead,    params: [] },
   { method: 'POST',   re: /^\/groups$/,                   fn: createGroup, params: [] },
   { method: 'GET',    re: /^\/groups$/,                   fn: listGroups,  params: [] },
   { method: 'POST',   re: /^\/groups\/([^/]+)\/join$/,     fn: joinGroup,        params: ['id'] },

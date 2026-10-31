@@ -24,6 +24,8 @@ export default function ChatsScreen() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Opening the tab marks "new match" notifications as seen.
+    api.markRead('chats').catch(() => {});
     Promise.all([
       api.getMatches().then((r) => r.matches ?? []).catch(() => []),
       api.listGroups().then((r) => r.groups ?? []).catch(() => []),

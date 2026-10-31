@@ -26,15 +26,23 @@ export default function GroupChatScreen() {
   const [joinError, setJoinError] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
+  const lastMarkedRef = useRef(0);
   const loadMessages = useCallback(async () => {
     if (!id) return;
     try {
       const res = await api.getGroupMessages(id);
-      setMessages(res.messages ?? []);
+      const msgs = res.messages ?? [];
+      setMessages(msgs);
+      // Reading the group chat marks incoming messages as read.
+      const latest = Math.max(0, ...msgs.filter((m) => m.senderId !== myId).map((m) => m.sentAt));
+      if (latest > lastMarkedRef.current) {
+        lastMarkedRef.current = latest;
+        api.markRead(`group#${id}`).catch(() => {});
+      }
     } catch (e) {
       if (e instanceof Error && e.message.includes('403')) setDenied(true);
     }
-  }, [api, id]);
+  }, [api, id, myId]);
 
   useEffect(() => {
     if (!id) return;

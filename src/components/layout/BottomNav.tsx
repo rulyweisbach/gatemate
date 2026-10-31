@@ -1,7 +1,9 @@
+import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
 import { Luggage, Compass, MessageCircle, User } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
+import { useApi } from '../../api/client';
 import { useAppStore } from '../../store/useAppStore';
 import { content } from '../../content';
 
@@ -24,7 +26,24 @@ export default function BottomNav() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const auth = useAuth();
+  const api = useApi();
   const myProfile = useAppStore((s) => s.myProfile);
+
+  // Unread counters: refreshed on every route change and every 30s, so the
+  // badge clears shortly after a chat/hub marks itself read.
+  const [badges, setBadges] = useState({ chats: 0, discover: 0 });
+  useEffect(() => {
+    let alive = true;
+    const load = () =>
+      api.getBadges().then((b) => { if (alive) setBadges(b); }).catch(() => {});
+    load();
+    const t = setInterval(load, 30000);
+    return () => { alive = false; clearInterval(t); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
+
+  const badgeFor = (to: string) =>
+    to === '/chats' ? badges.chats : to === '/discover' ? badges.discover : 0;
 
   const photo =
     myProfile?.photos?.[0] ||
@@ -70,7 +89,29 @@ export default function BottomNav() {
                   )}
                 </span>
               ) : (
-                <Icon size={22} style={{ color }} />
+                <span className="relative" style={{ display: 'inline-flex' }}>
+                  <Icon size={22} style={{ color }} />
+                  {badgeFor(t.to) > 0 && (
+                    <span
+                      className="absolute flex items-center justify-center font-bold"
+                      style={{
+                        top: -5,
+                        right: -9,
+                        minWidth: 16,
+                        height: 16,
+                        padding: '0 4px',
+                        borderRadius: 999,
+                        background: '#ff4d67',
+                        color: '#fff',
+                        fontSize: 9.5,
+                        border: '1.5px solid #0b1a3b',
+                        lineHeight: 1,
+                      }}
+                    >
+                      {badgeFor(t.to) > 9 ? '9+' : badgeFor(t.to)}
+                    </span>
+                  )}
+                </span>
               )}
               <span style={{ fontSize: 10, fontWeight: 600, color }}>{t.label}</span>
             </button>

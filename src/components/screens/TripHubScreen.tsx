@@ -124,6 +124,8 @@ export default function TripHubScreen() {
         setTrip(t.trip);
         setPeople(p.people ?? []);
         setGroups(g.groups ?? []);
+        // Visiting the hub marks its matches as seen (clears the Discover badge).
+        api.markRead(`hub#${id}`).catch(() => {});
       })
       .catch(() => setError(true))
       .finally(() => setLoading(false));

@@ -22,15 +22,23 @@ export default function ChatScreen() {
   const [sending, setSending] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
+  const lastMarkedRef = useRef(0);
   const loadMessages = useCallback(async () => {
     if (!id) return;
     try {
       const res = await api.getMessages(id);
-      setMessages(res.messages ?? []);
+      const msgs = res.messages ?? [];
+      setMessages(msgs);
+      // Reading the chat marks incoming messages as read (clears the badge).
+      const latest = Math.max(0, ...msgs.filter((m) => m.senderId !== myId).map((m) => m.sentAt));
+      if (myId && latest > lastMarkedRef.current) {
+        lastMarkedRef.current = latest;
+        api.markRead([myId, id].sort().join('#')).catch(() => {});
+      }
     } catch {
       /* keep existing messages on transient errors */
     }
-  }, [api, id]);
+  }, [api, id, myId]);
 
   // Load the other user's profile + record the connection (best-effort).
   useEffect(() => {

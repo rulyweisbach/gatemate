@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plane, MapPin, Calendar, Ticket, ChevronRight, Plus, Luggage } from 'lucide-react';
+import { Plane, MapPin, Calendar, Ticket, Pencil, Plus, Luggage } from 'lucide-react';
 import { useApi } from '../../api/client';
 import { content } from '../../content';
 import type { Trip, TripStatus } from '../../types';
@@ -64,7 +64,7 @@ function TripCard({ trip, delay, onClick }: { trip: Trip; delay: number; onClick
           {trip.flightNumber && <span>{trip.flightNumber}</span>}
         </div>
       </div>
-      <ChevronRight size={18} style={{ color: 'rgba(255,255,255,0.35)' }} />
+      <Pencil size={16} style={{ color: 'rgba(255,255,255,0.35)' }} />
     </GlassCard>
   );
 }
@@ -134,7 +134,7 @@ export default function TripsListScreen() {
             </p>
             {g.items.map((t) => {
               const delay = (idx++) * 0.05;
-              return <TripCard key={t.tripId} trip={t} delay={delay} onClick={() => navigate(`/trips/${t.tripId}`)} />;
+              return <TripCard key={t.tripId} trip={t} delay={delay} onClick={() => navigate(`/trips/new?edit=${t.tripId}`)} />;
             })}
           </div>
         ))}

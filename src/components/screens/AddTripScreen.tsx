@@ -90,7 +90,7 @@ export default function AddTripScreen() {
           : null,
       };
       const { trip } = editId ? await api.updateTrip(editId, input) : await api.createTrip(input);
-      navigate(`/trips/${trip.tripId}`, { replace: true });
+      navigate(editId ? '/trips' : `/trips/${trip.tripId}`, { replace: true });
     } catch (e) {
       setError(e instanceof Error ? e.message : c.error);
       setSaving(false);
